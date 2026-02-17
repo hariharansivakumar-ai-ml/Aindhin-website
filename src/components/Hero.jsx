@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Phone } from 'lucide-react';
+import heroStudentImg from '../assets/hero_student.png';
 
 const Hero = () => {
     return (
@@ -65,7 +66,7 @@ const Hero = () => {
                             className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl border-[4px] border-white cursor-pointer"
                         >
                             <img
-                                src="/src/assets/hero_student.png"
+                                src={heroStudentImg}
                                 alt="Student with books"
                                 className="w-full h-auto object-cover"
                             />

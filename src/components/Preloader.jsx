@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import preloaderGif from '../assets/preloader.gif';
 
 const Preloader = () => {
     const [show, setShow] = useState(true);
@@ -22,7 +23,7 @@ const Preloader = () => {
     return (
         <div className="fixed inset-0 z-[10000] bg-white flex items-center justify-center transition-opacity duration-500">
             <img
-                src="/src/assets/preloader.gif"
+                src={preloaderGif}
                 alt="Loading..."
                 className="w-40 h-auto object-contain"
             />

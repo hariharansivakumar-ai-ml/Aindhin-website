@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Linkedin, Send, Youtube } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer } from '../utils/motion';
+import logo from '../assets/logo_aindhin.png';
 
 const Footer = () => {
     return (
@@ -17,7 +18,7 @@ const Footer = () => {
                 {/* Brand Column */}
                 <motion.div variants={fadeIn("up", 0.2)} className="flex flex-col gap-6 lg:col-span-1">
                     <Link to="/" className="inline-block">
-                        <img src="/src/assets/logo.png" alt="Aindhin Logo" className="w-32 h-auto" />
+                        <img src={logo} alt="Aindhin Logo" className="w-32 h-auto" />
                     </Link>
                     <p className="text-text text-[15px] leading-relaxed pr-4">
                         Aindhin empowers learners and organizations with high-quality online courses, skill development programs, and corporate training solutions.

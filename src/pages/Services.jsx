@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer } from '../utils/motion';
 import { BookOpen, GraduationCap, Briefcase, Users } from 'lucide-react';
 import aboutImg from '../assets/about_img.png';
+import servicesHeroImg from '../assets/Gemini_Generated_Image_2ly66v2ly66v2ly6.png';
+import collegePartnershipImg from '../assets/steptodown.com436606 (1).jpg';
 
 const Services = () => {
     return (
@@ -50,7 +52,7 @@ const Services = () => {
                                 className="relative"
                             >
                                 <img
-                                    src="/src/assets/Gemini_Generated_Image_2ly66v2ly66v2ly6.png"
+                                    src={servicesHeroImg}
                                     alt="Services Illustration"
                                     className="w-full h-auto object-contain relative z-10 scale-125 translate-x-12"
                                 />
@@ -197,7 +199,7 @@ const Services = () => {
                     >
                         <div className="absolute inset-0 bg-[#9333EA]/10 rounded-3xl -rotate-3 transition-transform group-hover:rotate-2"></div>
                         <img
-                            src="/src/assets/steptodown.com436606 (1).jpg"
+                            src={collegePartnershipImg}
                             alt="College Partnership"
                             className="relative z-10 w-full max-w-[550px] object-contain drop-shadow-2xl rounded-2xl"
                         />

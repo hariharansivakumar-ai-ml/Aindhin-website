@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { fadeIn } from '../utils/motion';
 import { MapPin, Phone, Mail, Monitor, ArrowDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import mobilePicImg from '../assets/mobile pic.png';
 
 const ContactUs = () => {
     const navigate = useNavigate();
@@ -231,7 +232,7 @@ const ContactUs = () => {
                             className="relative w-full max-w-[380px]"
                         >
                             <img
-                                src="/src/assets/mobile pic.png"
+                                src={mobilePicImg}
                                 alt="Aindhin Mobile App"
                                 className="w-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
                             />

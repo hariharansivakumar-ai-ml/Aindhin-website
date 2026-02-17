@@ -2,6 +2,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer } from '../utils/motion';
 import { Wallet, Smartphone, GraduationCap, Play, ArrowDown, BookOpen, Lightbulb, Star } from 'lucide-react';
+import aboutHeroImg from '../assets/About1.png';
+import whyChoose3Img from '../assets/why_choose_3.jpg';
+import whyChoose2Img from '../assets/why_choose_2.jpg';
+import whyChoose1Img from '../assets/why_choose_1.jpg';
+import mobilePicImg from '../assets/mobile pic.png';
 
 const AboutUs = () => {
     const navigate = useNavigate();
@@ -60,7 +65,7 @@ const AboutUs = () => {
                         className="relative flex justify-center lg:justify-end"
                     >
                         <img
-                            src="/src/assets/About1.png"
+                            src={aboutHeroImg}
                             alt="Aindhin Learning Illustration"
                             className="w-full max-w-[650px] object-contain drop-shadow-xl relative z-10"
                         />
@@ -182,7 +187,7 @@ const AboutUs = () => {
                         {/* Main Image (Group) */}
                         <div className="absolute top-0 left-0 w-[85%] h-[85%] rounded-[30px] overflow-hidden z-10">
                             <img
-                                src="/src/assets/why_choose_3.jpg"
+                                src={whyChoose3Img}
                                 alt="Students group"
                                 className="w-full h-full object-cover"
                             />
@@ -191,7 +196,7 @@ const AboutUs = () => {
                         {/* Secondary Image (Individual/Work) */}
                         <div className="absolute bottom-0 right-0 w-[55%] h-[45%] rounded-[20px] overflow-hidden border-[6px] border-white shadow-xl z-20">
                             <img
-                                src="/src/assets/why_choose_2.jpg"
+                                src={whyChoose2Img}
                                 alt="Aindhin Learning"
                                 className="w-full h-full object-cover"
                             />
@@ -309,7 +314,7 @@ const AboutUs = () => {
                         className="rounded-[40px] overflow-hidden shadow-2xl relative"
                     >
                         <img
-                            src="/src/assets/why_choose_1.jpg"
+                            src={whyChoose1Img}
                             alt="Aindhin Students"
                             className="w-full h-full object-cover aspect-[4/3] lg:aspect-auto min-h-[400px]"
                         />
@@ -357,7 +362,7 @@ const AboutUs = () => {
                             className="relative w-full max-w-[380px]"
                         >
                             <img
-                                src="/src/assets/mobile pic.png"
+                                src={mobilePicImg}
                                 alt="Aindhin Mobile App"
                                 className="w-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
                             />

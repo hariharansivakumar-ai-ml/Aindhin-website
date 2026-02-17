@@ -5,24 +5,34 @@ import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer, zoomIn } from '../utils/motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Users, BookOpen, PieChart, EyeOff, ThumbsUp, Code, ArrowDown } from 'lucide-react';
+import blogIdeasImg from '../assets/blog_ideas.png';
+import blogSkillsImg from '../assets/blog_skills.png';
+import blogTechImg from '../assets/blog_tech.png';
+import aboutShapeImg from '../assets/about_shape.png';
+import imageAnimeImg from '../assets/image_anime.png';
+import shape3Img from '../assets/shape_3.png';
+import whyChoose1Img from '../assets/why_choose_1.jpg';
+import whyChoose2Img from '../assets/why_choose_2.jpg';
+import whyChoose3Img from '../assets/why_choose_3.jpg';
+import mobilePicImg from '../assets/mobile pic.png';
 
 const blogPreviews = [
     {
         title: "How to Make Innovative Ideas For Project And Skill Development",
         date: "February 6, 2026",
-        image: "/src/assets/blog_ideas.png",
+        image: blogIdeasImg,
         desc: "Are you a college or university student looking for a project that is both exciting and useful? Higher education today is no longer just about lectures and exams. Students want experiences that..."
     },
     {
         title: "Skill Building Tips for College Students: Essential Skills Every Student Should Know",
         date: "January 30, 2026",
-        image: "/src/assets/blog_skills.png",
+        image: blogSkillsImg,
         desc: "Skill Building Tips for College Students: Essential Skills Every Student Should Know College is more than lectures, exams, and assignments. It's a journey where students explore their strengths..."
     },
     {
         title: "Beyond textbooks: how digital learning platforms improve student outcomes",
         date: "January 23, 2026",
-        image: "/src/assets/blog_tech.png",
+        image: blogTechImg,
         desc: "Beyond textbooks: how digital learning platforms improve student outcomes Higher education has always been about growth, but the way students learn has changed dramatically. Today's learners balance..."
     }
 ];
@@ -71,12 +81,12 @@ const Home = () => {
                         className="w-full lg:w-1/2 relative"
                     >
                         <div className="absolute -top-10 -left-10 w-[120%] h-[120%] -z-10 opacity-40">
-                            <img src="/src/assets/about_shape.png" alt="" className="w-full h-full object-contain" />
+                            <img src={aboutShapeImg} alt="" className="w-full h-full object-contain" />
                         </div>
 
                         <div className="relative z-10 flex justify-center">
                             <img
-                                src="/src/assets/image_anime.png"
+                                src={imageAnimeImg}
                                 alt="Aindhin Students"
                                 className="w-full max-w-[350px] h-auto drop-shadow-2xl relative z-20"
                             />
@@ -117,7 +127,7 @@ const Home = () => {
                             <div className="absolute top-20 left-[-40px] w-10 h-10 bg-blue-100 rounded-lg -z-10 rotate-45 opacity-60"></div>
                         </div>
                         <div className="absolute bottom-0 right-0 -z-10 translate-x-10 translate-y-10">
-                            <img src="/src/assets/shape_3.png" alt="" className="w-24 opacity-30 rotate-180" />
+                            <img src={shape3Img} alt="" className="w-24 opacity-30 rotate-180" />
                         </div>
                     </motion.div>
                 </div>
@@ -182,19 +192,19 @@ const Home = () => {
                     >
                         <motion.div variants={fadeIn("up", 0.2)} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all duration-300">
                             <div className="h-56 overflow-hidden">
-                                <img src="/src/assets/why_choose_1.jpg" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                                <img src={whyChoose1Img} alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
                             </div>
                             <div className="p-8"><div className="border-l-4 border-primary pl-4"><h3 className="font-inter text-xl font-bold text-primary mb-3">Industry-Aligned</h3><p className="font-inter text-gray-600">Relevant to current industrial standards.</p></div></div>
                         </motion.div>
                         <motion.div variants={fadeIn("up", 0.4)} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all duration-300">
                             <div className="h-56 overflow-hidden">
-                                <img src="/src/assets/why_choose_2.jpg" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                                <img src={whyChoose2Img} alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
                             </div>
                             <div className="p-8"><div className="border-l-4 border-primary pl-4"><h3 className="font-inter text-xl font-bold text-primary mb-3">Flexible Learning</h3><p className="font-inter text-gray-600">Access self-paced modules anytime.</p></div></div>
                         </motion.div>
                         <motion.div variants={fadeIn("up", 0.6)} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all duration-300">
                             <div className="h-56 overflow-hidden">
-                                <img src="/src/assets/why_choose_3.jpg" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                                <img src={whyChoose3Img} alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
                             </div>
                             <div className="p-8"><div className="border-l-4 border-primary pl-4"><h3 className="font-inter text-xl font-bold text-primary mb-3">Recognized</h3><p className="font-inter text-gray-600">Earn globally accepted certificates.</p></div></div>
                         </motion.div>
@@ -244,7 +254,7 @@ const Home = () => {
                             className="relative w-full max-w-[380px]"
                         >
                             <img
-                                src="/src/assets/mobile pic.png"
+                                src={mobilePicImg}
                                 alt="Aindhin Mobile App"
                                 className="w-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
                             />
