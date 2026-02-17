@@ -49,12 +49,7 @@ const BScCSCourse = () => {
         setOpenModuleIndex(openModuleIndex === index ? null : index);
     };
 
-    const [openModuleIndex, setOpenModuleIndex] = useState(0);
 
-    const handleToggle = (index, e) => {
-        e.preventDefault();
-        setOpenModuleIndex(openModuleIndex === index ? null : index);
-    };
 
     return (
         <div className="fs-course">
