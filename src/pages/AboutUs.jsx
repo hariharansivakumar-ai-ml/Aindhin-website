@@ -47,6 +47,7 @@ const AboutUs = () => {
                             variants={fadeIn("up", 0.6)}
                             initial="hidden"
                             animate="show"
+                            className="relative z-20"
                         >
                             <Link
                                 to="/contact-us"
