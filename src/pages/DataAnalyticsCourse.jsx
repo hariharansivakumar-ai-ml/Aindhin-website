@@ -5,9 +5,9 @@ import './DataAnalyticsCourse.css';
 import DataHeroImg from '../assets/data_analytics.jpg';
 
 // Logos
-import ExcelLogo from '../assets/excel_logo.svg';
-import PowerBILogo from '../assets/powerbi_logo.svg';
-import TableauLogo from '../assets/tableau_logo.svg';
+import ExcelLogo from '../assets/excel_logo.png';
+import PowerBILogo from '../assets/power_bi_logo.svg';
+import TableauLogo from '../assets/tableau_logo.png';
 import PythonLogo from '../assets/python_logo.svg';
 import RLogo from '../assets/r_logo.svg';
 import MySQLLogo from '../assets/mysql_logo.svg';
@@ -16,12 +16,12 @@ import PandasLogo from '../assets/pandas_logo.svg';
 
 import AccentureLogo from '../assets/accenture_logo.svg';
 import DeloitteLogo from '../assets/deloitte_logo.svg';
-import MuSigmaLogo from '../assets/musigma_logo.png';
-import FractalLogo from '../assets/fractal_logo.png';
-import IBMDataLogo from '../assets/ibm_data_logo.svg';
+import InfosysLogo from '../assets/infosys_logo.svg';
+import WiproLogo from '../assets/wipro_logo.svg';
+import TCSLogo from '../assets/tcs_logo.svg';
+import IBMLogo from '../assets/ibm_logo.svg';
 import GoogleLogo from '../assets/google_logo.svg';
 import AmazonLogo from '../assets/amazon_logo.svg';
-import FlipkartLogo from '../assets/flipkart_logo.svg';
 
 import {
     BarChart, PieChart, Database, TrendingUp, Search, FileText, Globe, Server, CheckCircle,
@@ -296,13 +296,13 @@ const DataAnalyticsCourse = () => {
                             <img src={DeloitteLogo} alt="Deloitte" />
                         </div>
                         <div className="fs-logo-card">
-                            <img src={MuSigmaLogo} alt="Mu Sigma" />
+                            <img src={InfosysLogo} alt="Infosys" />
                         </div>
                         <div className="fs-logo-card">
-                            <img src={FractalLogo} alt="Fractal Analytics" />
+                            <img src={WiproLogo} alt="Wipro" />
                         </div>
                         <div className="fs-logo-card">
-                            <img src={IBMDataLogo} alt="IBM" />
+                            <img src={IBMLogo} alt="IBM" />
                         </div>
                         <div className="fs-logo-card">
                             <img src={GoogleLogo} alt="Google" />
@@ -311,7 +311,7 @@ const DataAnalyticsCourse = () => {
                             <img src={AmazonLogo} alt="Amazon" />
                         </div>
                         <div className="fs-logo-card">
-                            <img src={FlipkartLogo} alt="Flipkart" />
+                            <img src={TCSLogo} alt="TCS" />
                         </div>
                     </div>
                 </div>
