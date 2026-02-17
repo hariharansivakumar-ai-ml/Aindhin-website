@@ -16,7 +16,7 @@ import numpyLogo from '../assets/courses/logos/numpy.svg';
 import pandasLogo from '../assets/courses/logos/pandas.svg';
 import pytestLogo from '../assets/courses/logos/pytest.svg';
 import gitLogo from '../assets/courses/logos/git.svg';
-import djangoLogo from '../assets/courses/logos/django.svg';
+
 
 // Company Logos (Reusing existing ones)
 import googleLogo from '../assets/courses/logos/google.svg';
@@ -1008,7 +1008,6 @@ const PythonCertificationCourse = () => {
                 </div>
                 <div className="py-tool-logos">
                   <img className="py-tool-logo" src={pythonLogo} alt="Python" />
-                  <img className="py-tool-logo" src={djangoLogo} alt="Django" />
                 </div>
               </div>
 
