@@ -5,19 +5,18 @@ import './DesignThinkingCourse.css';
 import DesignThinkingHeroImg from '../assets/design_thinking.jpg';
 
 // Logos
-import IdeoLogo from '../assets/ideo_logo.svg';
-import StanfordLogo from '../assets/stanford_dschool_logo.png';
-import IBMDesignLogo from '../assets/ibm_design_logo.svg';
-import GoogleDesignLogo from '../assets/google_design_logo.svg';
-import AppleLogo from '../assets/apple_logo.svg';
-import AirbnbLogo from '../assets/airbnb_logo.svg';
+// Logos
+import IBMDesignLogo from '../assets/courses/logos/ibm.svg';
+import GoogleDesignLogo from '../assets/courses/logos/google.svg';
+import MicrosoftLogo from '../assets/courses/logos/microsoft.svg';
+import AccentureLogo from '../assets/courses/logos/accenture.svg';
+import EYLogo from '../assets/courses/logos/ey.svg';
+import InfosysLogo from '../assets/courses/logos/infosys.svg';
 
 import FigmaLogo from '../assets/figma_logo.svg';
-import MiroLogo from '../assets/miro_logo.svg';
-import MuralLogo from '../assets/mural_logo.png';
-import AdobeXDLogo from '../assets/adobexd_logo.svg';
-import InVisionLogo from '../assets/invision_logo.svg';
-import SketchLogo from '../assets/sketch_logo.svg';
+import MiroLogo from '../assets/miro_logo.png';
+import CanvaLogo from '../assets/courses/logos/canva.svg';
+
 
 import {
     Lightbulb, Users, Target, Zap, Layout, ArrowRight, CheckCircle,
@@ -282,22 +281,22 @@ const DesignThinkingCourse = () => {
                     <p>Companies that use design thinking to innovate and lead their markets.</p>
                     <div className="dt-logo-row">
                         <div className="dt-logo-card">
-                            <img src={IdeoLogo} alt="IDEO" />
-                        </div>
-                        <div className="dt-logo-card">
-                            <img src={StanfordLogo} alt="Stanford d.school" />
-                        </div>
-                        <div className="dt-logo-card">
                             <img src={IBMDesignLogo} alt="IBM Design" />
                         </div>
                         <div className="dt-logo-card">
                             <img src={GoogleDesignLogo} alt="Google Design" />
                         </div>
                         <div className="dt-logo-card">
-                            <img src={AppleLogo} alt="Apple" />
+                            <img src={MicrosoftLogo} alt="Microsoft" />
                         </div>
                         <div className="dt-logo-card">
-                            <img src={AirbnbLogo} alt="Airbnb" />
+                            <img src={AccentureLogo} alt="Accenture" />
+                        </div>
+                        <div className="dt-logo-card">
+                            <img src={EYLogo} alt="EY" />
+                        </div>
+                        <div className="dt-logo-card">
+                            <img src={InfosysLogo} alt="Infosys" />
                         </div>
                     </div>
                 </div>
@@ -390,25 +389,14 @@ const DesignThinkingCourse = () => {
                             <span>Miro</span>
                         </div>
                         <div className="dt-tools-card">
-                            <img className="dt-tools-logo" src={MuralLogo} alt="Mural" />
-                            <span>Mural</span>
-                        </div>
-                        <div className="dt-tools-card">
                             <img className="dt-tools-logo" src={FigmaLogo} alt="Figma" />
-                            <span>Figma (FigJam)</span>
+                            <span>Figma</span>
                         </div>
                         <div className="dt-tools-card">
-                            <img className="dt-tools-logo" src={InVisionLogo} alt="InVision" />
-                            <span>InVision</span>
+                            <img className="dt-tools-logo" src={CanvaLogo} alt="Canva" />
+                            <span>Canva</span>
                         </div>
-                        <div className="dt-tools-card">
-                            <img className="dt-tools-logo" src={AdobeXDLogo} alt="Adobe XD" />
-                            <span>Adobe XD</span>
-                        </div>
-                        <div className="dt-tools-card">
-                            <img className="dt-tools-logo" src={SketchLogo} alt="Sketch" />
-                            <span>Sketch</span>
-                        </div>
+
                     </div>
                 </div>
             </section>
