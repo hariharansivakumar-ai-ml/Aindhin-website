@@ -1,0 +1,291 @@
+import { motion } from 'framer-motion';
+import { fadeIn } from '../utils/motion';
+import { MapPin, Phone, Mail, Monitor, ArrowDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+const ContactUs = () => {
+    const navigate = useNavigate();
+
+    return (
+        <div className="min-h-screen bg-white flex flex-col pt-20 lg:pt-28 pb-0 relative overflow-hidden">
+
+            {/* --- SECTION 1: "Let us help you" + Contact Grid --- */}
+            <div className="mb-0">
+                <div className="flex flex-col items-center text-center px-6 lg:px-12 mb-16">
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="flex items-center gap-2 mb-4"
+                    >
+                        <Monitor className="w-5 h-5 text-primary" />
+                        <span className="text-primary font-medium font-inter">Get In Touch</span>
+                    </motion.div>
+
+                    <motion.h1
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-5xl lg:text-[64px] font-bold text-secondary font-inter mb-6"
+                    >
+                        Let us help you
+                    </motion.h1>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        className="text-gray-500 text-lg lg:text-[20px] font-inter max-w-2xl leading-relaxed"
+                    >
+                        Our platform is built on the principles of innovation, quality, and inclusivity, aiming to provide a seamless learning
+                    </motion.p>
+                </div>
+
+                {/* Contact Info Grid */}
+                <div className="max-w-[1400px] mx-auto px-6 lg:px-12 w-full mb-24">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+                        <ContactCard
+                            icon={<MapPin className="w-8 h-8 text-primary" />}
+                            title="Head Office"
+                            content={
+                                <>
+                                    139, Old Airport Road,<br />
+                                    Kodihalli, Bengaluru,<br />
+                                    Bengaluru Urban, Karnataka<br />
+                                    - 560 008.
+                                </>
+                            }
+                            linkText="Find Location"
+                            delay={0.2}
+                        />
+                        <ContactCard
+                            icon={<MapPin className="w-8 h-8 text-primary" />}
+                            title="Operation"
+                            content={
+                                <>
+                                    No. 8, Manickavasagar<br />
+                                    Colony, Eraniyan Street,<br />
+                                    Karur Bypass Road, Erode,<br />
+                                    Tamil Nadu - 638002.
+                                </>
+                            }
+                            linkText="Find Location"
+                            delay={0.4}
+                        />
+                        <ContactCard
+                            icon={<Mail className="w-8 h-8 text-primary" />}
+                            title="Email Address"
+                            content="connect@aindhin.com"
+                            linkText="Get In Touch"
+                            delay={0.6}
+                        />
+                        <ContactCard
+                            icon={<Phone className="w-8 h-8 text-primary" />}
+                            title="Phone Number"
+                            content="+91 8807100669"
+                            linkText="Contact Us Today!"
+                            delay={0.8}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* --- SECTION 2: Split Layout Form --- */}
+            <div className="w-full bg-[#F8FAFC] py-24 pb-32">
+                <div className="max-w-[1400px] mx-auto px-6 lg:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+                    {/* Left Side: Text Content & Social Proof */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="flex flex-col items-start gap-6"
+                    >
+                        <div className="flex items-center gap-2 text-primary font-bold font-inter uppercase tracking-wider text-sm bg-blue-50 px-3 py-1 rounded-md">
+                            <Monitor className="w-4 h-4" />
+                            <span>Contact Us</span>
+                        </div>
+
+                        <h2 className="text-4xl lg:text-[56px] font-bold text-secondary font-inter leading-[1.15]">
+                            Have questions? don't hesitate to contact us
+                        </h2>
+
+                        <p className="text-gray-500 text-lg font-inter leading-relaxed max-w-lg">
+                            We are passionate about transforming lives through education. Founded with a vision to make learning accessible to all, we believe in the power of knowledge to unlock opportunities and shape the future.
+                        </p>
+
+                        {/* Social Proof */}
+                        <div className="flex items-center gap-5 mt-4">
+                            <div className="flex -space-x-4">
+                                {[1, 2, 3, 4].map(i => (
+                                    <img
+                                        key={i}
+                                        src={`https://i.pravatar.cc/100?u=${i + 25}`}
+                                        className="w-12 h-12 rounded-full border-[3px] border-white object-cover shadow-sm"
+                                        alt="Reviewer"
+                                    />
+                                ))}
+                            </div>
+                            <div className="flex flex-col">
+                                <div className="flex items-center gap-1">
+                                    {[1, 2, 3, 4, 5].map(star => (
+                                        <span key={star} className="text-yellow-400 text-lg">★</span>
+                                    ))}
+                                </div>
+                                <span className="text-gray-700 font-bold font-inter text-sm">
+                                    2.5k+ reviews (4.95 of 5)
+                                </span>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Right Side: Contact Form */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="bg-white p-8 lg:p-10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 w-full"
+                    >
+                        <form
+                            action="https://formsubmit.co/your@email.com"
+                            method="POST"
+                            className="flex flex-col gap-5"
+                        >
+                            {/* FormSubmit Configuration */}
+                            <input type="hidden" name="_subject" value="New Submission from Aindhin Contact Form" />
+                            <input type="hidden" name="_captcha" value="false" />
+                            <input type="hidden" name="_next" value="http://localhost:5173/contact-us" />
+                            <input type="hidden" name="_template" value="table" />
+
+                            {/* Name */}
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-700 font-bold font-inter text-sm">Name <span className="text-red-500">*</span></label>
+                                <input type="text" name="name" placeholder="Enter Your Name" required className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white" />
+                            </div>
+
+                            {/* Email */}
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-700 font-bold font-inter text-sm">Email <span className="text-red-500">*</span></label>
+                                <input type="email" name="email" placeholder="Email Address" required className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white" />
+                            </div>
+
+                            {/* Phone */}
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-700 font-bold font-inter text-sm">Phone Number <span className="text-red-500">*</span></label>
+                                <input type="text" name="phone" placeholder="Enter your Phone Number" required className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white" />
+                            </div>
+
+                            {/* Message */}
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-700 font-bold font-inter text-sm">Message <span className="text-red-500">*</span></label>
+                                <textarea name="message" rows="4" required className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none font-inter bg-gray-50/50 focus:bg-white"></textarea>
+                            </div>
+
+                            <button type="submit" className="mt-2 bg-primary text-white py-4 rounded-xl font-bold font-inter text-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                                Submit Form
+                            </button>
+                        </form>
+                    </motion.div>
+                </div>
+            </div>
+            {/* --- SECTION 3: Download App Section --- */}
+            <section className="py-16 px-6 md:px-12 bg-white flex justify-center relative overflow-hidden">
+                <div className="max-w-[1000px] w-full bg-gradient-to-br from-[#002FA7] via-[#0051D4] to-[#4FA1FF] rounded-[40px] px-6 py-10 md:px-12 md:py-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl z-10">
+
+                    {/* Content */}
+                    <motion.div
+                        variants={fadeIn("right", 0.2)}
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true }}
+                        className="flex flex-col items-start text-white max-w-xl z-20 space-y-6"
+                    >
+                        <span className="text-white/80 font-inter text-lg font-medium tracking-wide uppercase">Mobile App</span>
+                        <h2 className="text-3xl md:text-4xl font-bold font-inter leading-tight">
+                            Download Our Application!
+                        </h2>
+                        <p className="text-white/90 text-lg leading-relaxed font-inter max-w-lg">
+                            Aindhin is an edutech platform that makes learning simple, interactive, and accessible from anywhere. Explore lessons, quizzes, and progress tracking right from your phone.
+                            <br /><br />
+                            Stay ahead in your studies and keep learning on the go with the Aindhin mobile app.
+                        </p>
+
+                        <div className="hidden lg:block">
+                            <button
+                                onClick={() => navigate('/download-app')}
+                                className="flex items-center gap-2 bg-primary hover:bg-[#1D4ED8] text-white px-8 py-4 rounded-xl font-bold font-inter transition-all shadow-xl text-lg mt-4 group"
+                            >
+                                Download App
+                                <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                            </button>
+                        </div>
+                    </motion.div>
+
+                    {/* Image */}
+                    <div className="relative z-20 w-full lg:w-[45%] flex flex-col items-center lg:items-end">
+                        <motion.div
+                            animate={{ y: [0, -15, 0] }}
+                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                            className="relative w-full max-w-[380px]"
+                        >
+                            <img
+                                src="/src/assets/mobile pic.png"
+                                alt="Aindhin Mobile App"
+                                className="w-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+                            />
+                        </motion.div>
+
+                        {/* Mobile Button (Visible only on mobile/tablet, appearing after image) */}
+                        <div className="block lg:hidden mt-8 w-full flex justify-center">
+                            <button
+                                onClick={() => navigate('/download-app')}
+                                className="flex items-center gap-2 bg-primary hover:bg-[#1D4ED8] text-white px-8 py-4 rounded-xl font-bold font-inter transition-all shadow-xl text-lg group"
+                            >
+                                Download App
+                                <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Decorative Elements */}
+                <div className="absolute top-[-100px] left-[-100px] w-80 h-80 bg-white/10 rounded-full blur-[80px]"></div>
+                <div className="absolute bottom-[-150px] right-[-100px] w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[100px]"></div>
+            </section >
+        </div >
+    );
+};
+
+// Helper Component for Contact Cards
+const ContactCard = ({ icon, title, content, linkText, delay }) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -5 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay }}
+            className="flex flex-col items-start gap-4 p-6 hover:bg-gray-50 rounded-2xl transition-colors cursor-default border border-transparent hover:border-gray-100"
+        >
+            <div className="w-14 h-14 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-center mb-2 bg-white">
+                {icon}
+            </div>
+
+            <h3 className="text-xl font-bold text-secondary font-inter">
+                {title}
+            </h3>
+
+            <p className="text-gray-500 font-inter text-sm leading-relaxed min-h-[60px]">
+                {content}
+            </p>
+
+            <span className="text-primary text-sm font-medium border-b border-primary pb-0.5 cursor-pointer hover:opacity-80 transition-opacity">
+                {linkText}
+            </span>
+        </motion.div>
+    );
+};
+
+export default ContactUs;
