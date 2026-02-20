@@ -1,38 +1,51 @@
 import { motion } from 'framer-motion';
-import { fadeIn, staggerContainer } from '../utils/motion';
+import { fadeIn, staggerContainer, float } from '../utils/motion';
 import { BookOpen, GraduationCap, Briefcase, Users } from 'lucide-react';
 import aboutImg from '../assets/about_img.png';
 import servicesHeroImg from '../assets/Gemini_Generated_Image_2ly66v2ly66v2ly6.png';
 import collegePartnershipImg from '../assets/steptodown.com436606 (1).jpg';
 
+import { useEffect } from 'react';
+
 const Services = () => {
+    useEffect(() => {
+        document.title = "Professional Training & Certification | Online Skill Development in India";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Elevate your career with Aindhin's specialized training programs. From university degrees to corporate upskilling, we provide industry-ready learning paths.");
+        }
+    }, []);
+
     return (
-        <div className="min-h-screen bg-white relative overflow-hidden flex flex-col pt-0 lg:pt-0">
+        <div className="min-h-screen bg-white relative overflow-hidden flex flex-col pt-8 lg:pt-0">
             {/* Background Blobs (Optional/Subtle) */}
-            <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#F5F3FF] rounded-full blur-3xl opacity-60 z-0 pointer-events-none"></div>
+            <motion.div
+                animate={float(10, 40)}
+                className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#F5F3FF] rounded-full blur-3xl opacity-60 z-0 pointer-events-none"
+            ></motion.div>
 
             {/* Hero Section */}
             <section className="w-full relative z-10 overflow-hidden bg-white">
                 <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-12 lg:gap-0">
 
                     {/* Left Content */}
-                    <div className="flex flex-col items-start gap-3 lg:gap-4 px-6 lg:pl-12 py-12 lg:py-12 z-20">
+                    <div className="flex flex-col items-start gap-4 lg:gap-2 px-6 lg:pl-12 py-12 lg:py-12 z-20">
                         <motion.h1
                             variants={fadeIn("down", 0.2)}
                             initial="hidden"
                             animate="show"
-                            className="text-5xl lg:text-[64px] font-bold text-[#2563EB] font-inter"
+                            className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary font-inter uppercase leading-tight"
                         >
-                            Our Services
+                            Future-Proof Your Career: <br className="hidden lg:block" /> Online Skill Development
                         </motion.h1>
 
                         <motion.p
                             variants={fadeIn("right", 0.4)}
                             initial="hidden"
                             animate="show"
-                            className="text-gray-600 text-lg lg:text-[20px] leading-[1.6] font-inter max-w-3xl"
+                            className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter max-w-3xl"
                         >
-                            At Aindhin, we offer <span className="font-bold text-gray-900">comprehensive corporate learning solutions</span> designed to upskill your workforce, enhance leadership capabilities, and enable business transformation through technology and innovation.
+                            Aindhin offers <span className="font-bold text-gray-900">online skill development courses in India</span> with career-focused training, certification programs, and industry-ready learning for students.
                         </motion.p>
                     </div>
 
@@ -51,9 +64,10 @@ const Services = () => {
                                 transition={{ duration: 0.3 }}
                                 className="relative"
                             >
-                                <img
+                                <motion.img
+                                    animate={float(6, 15)}
                                     src={servicesHeroImg}
-                                    alt="Services Illustration"
+                                    alt="Career-focused online courses in India – Leading online career development courses India for professionals"
                                     className="w-full h-auto object-contain relative z-10 scale-125 translate-x-12"
                                 />
 
@@ -75,7 +89,7 @@ const Services = () => {
             </section>
 
             {/* How Aindhin Works Section */}
-            <section className="w-full px-6 lg:px-12 py-16 lg:py-24 bg-[#F8FAFC]">
+            <section className="w-full px-6 lg:px-12 py-12 lg:py-16 bg-[#F8FAFC]">
                 <div className="max-w-[1400px] mx-auto">
                     {/* Section Header */}
                     <div className="flex flex-col items-center text-center mb-16 lg:mb-20">
@@ -84,9 +98,9 @@ const Services = () => {
                             initial="hidden"
                             whileInView="show"
                             viewport={{ once: true }}
-                            className="text-4xl lg:text-5xl font-bold text-[#1A237E] font-inter mb-6"
+                            className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary font-inter mb-6 leading-tight"
                         >
-                            How Aindhin Works
+                            Professional Skill Training Programs in India
                         </motion.h2>
 
                         {/* Decorative Line (Matches screenshot's accent) */}
@@ -103,18 +117,24 @@ const Services = () => {
                             initial="hidden"
                             whileInView="show"
                             viewport={{ once: true }}
-                            className="text-gray-500 text-lg lg:text-[19px] font-inter max-w-2xl"
+                            className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter max-w-2xl"
                         >
                             Select Your Learning Path: Aindhin Provides Four Specialized Course Categories
                         </motion.p>
                     </div>
 
                     {/* Service Cards Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                    <motion.div
+                        variants={staggerContainer(0.2, 0.1)}
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true }}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12"
+                    >
                         {/* Card 1: Certification Courses */}
                         <ServiceCard
                             icon={<BookOpen className="w-10 h-10 text-white" />}
-                            title="CERTIFICATION COURSES"
+                            title="INDUSTRY-READY CERTIFICATION COURSES IN INDIA"
                             description="Certifications are offered either directly by Aindhin or through industry-leading companies such as AWS, Google, Microsoft, and more. These programs include short-term skill-building courses, career-focused certificates, and practical hands-on learning, delivered through a flexible blend of self-paced modules and live classes."
                             delay={0.1}
                         />
@@ -142,12 +162,12 @@ const Services = () => {
                             description="Leadership courses are designed to develop managerial and strategic skills. Through workshops, live sessions, and mentorship, learners gain the knowledge and confidence to lead teams effectively and drive business impact."
                             delay={0.4}
                         />
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
             {/* Why Colleges Partner Section */}
-            <section className="w-full px-6 lg:px-12 py-16 lg:py-24 bg-white">
+            <section className="w-full px-6 lg:px-12 py-12 lg:py-16 bg-white">
                 <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                     {/* Left Content */}
                     <motion.div
@@ -164,8 +184,8 @@ const Services = () => {
                             </span>
                         </div>
 
-                        <h2 className="text-3xl md:text-4xl lg:text-[42px] font-bold font-inter text-secondary leading-tight">
-                            WHY COLLEGES PARTNER WITH AINDHIN?
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-inter text-secondary leading-tight">
+                            Why Colleges and <br /> Universities Partner <br /> with Aindhin?
                         </h2>
 
                         <div className="text-text text-base lg:text-lg leading-relaxed font-inter w-full lg:max-w-lg space-y-2">
@@ -200,7 +220,7 @@ const Services = () => {
                         <div className="absolute inset-0 bg-[#9333EA]/10 rounded-3xl -rotate-3 transition-transform group-hover:rotate-2"></div>
                         <img
                             src={collegePartnershipImg}
-                            alt="College Partnership"
+                            alt="Professional skill training programs in India – Industry-ready certification courses for colleges"
                             className="relative z-10 w-full max-w-[550px] object-contain drop-shadow-2xl rounded-2xl"
                         />
                     </motion.div>
@@ -208,11 +228,11 @@ const Services = () => {
             </section>
 
             {/* Partnership Models Section */}
-            <section className="w-full py-16 lg:py-24 bg-white overflow-hidden">
+            <section className="w-full py-12 lg:py-16 bg-white overflow-hidden">
                 <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-                        {/* Left Column: Visuals (Hidden on mobile in HTML, but we can keep it responsive or hide if requested. HTML said hidden-mobile) */}
+                        {/* Left Column: Visuals */}
                         <motion.div
                             initial={{ opacity: 0, x: -50 }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -242,11 +262,11 @@ const Services = () => {
                             transition={{ duration: 0.8 }}
                             className="flex flex-col gap-6"
                         >
-                            <h2 className="text-3xl lg:text-[42px] font-bold font-inter text-[#1A237E] leading-tight">
-                                PARTNERSHIP MODELS<br />FOR INSTITUTIONS
-                            </h2>
-                            <p className="text-gray-600 text-lg leading-relaxed font-inter">
-                                We offer department-focused skill programs, college-wide training access, placement-oriented job tracks, and custom curriculum integration, along with comprehensive faculty development and academic support to help institutions enhance learning outcomes and improve student career readiness.
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary font-inter uppercase leading-tight">
+                                Advanced Online <br /> Skill Training Programs <br /> in India
+                            </h1>
+                            <p className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter max-w-3xl">
+                                Aindhin provides professional online training programs in India designed to help students and professionals excel in their careers with job-ready expertise.
                             </p>
                         </motion.div>
 

@@ -25,6 +25,14 @@ import JupyterLogo from '../assets/jupyter_logo.svg';
 
 const BAEconomicsCourse = () => {
     useEffect(() => {
+        document.title = "B.A. Economics with Data Analytics: Master Economic Science | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Earn your B.A. in Economics with a specialized focus on Data Analytics. Learn to interpret market trends and drive policy decisions with data-backed insights.");
+        }
+    }, []);
+
+    useEffect(() => {
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -59,7 +67,7 @@ const BAEconomicsCourse = () => {
                 <div className="fs-hero-content">
                     <span className="fs-badge">B.A. · Economics with Data Analytics</span>
                     <h1 className="fs-hero-title">
-                        B.A. Economics with Data Analytics
+                        B.A. Economics with Data Analytics: Master Economic Theory &amp; Data-Driven Decision Making
                     </h1>
                     <p className="fs-hero-sub">
                         Learn how economies work and how data shapes decisions. Build a strong foundation in micro

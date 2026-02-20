@@ -27,6 +27,14 @@ import GitLogo from '../assets/git_logo.svg';
 
 const BScCSCourse = () => {
     useEffect(() => {
+        document.title = "B.Sc. Computer Science with AI & Data Science | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Build a future-proof career in tech. Our B.Sc. in Computer Science offers specialized training in AI and Data Science with hands-on labs and capstone projects.");
+        }
+    }, []);
+
+    useEffect(() => {
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -63,7 +71,7 @@ const BScCSCourse = () => {
                 <div className="fs-hero-content">
                     <span className="fs-badge">B.Sc. · Computer Science with AI & Data Science</span>
                     <h1 className="fs-hero-title">
-                        B.Sc. Computer Science with AI & Data Science
+                        B.Sc. Computer Science: Specialise in AI &amp; Data Science for the Digital Future
                     </h1>
                     <p className="fs-hero-sub">
                         Build strong computer science fundamentals while specialising in artificial intelligence

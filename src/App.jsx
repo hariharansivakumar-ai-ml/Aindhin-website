@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Preloader from './components/Preloader';
@@ -12,6 +12,15 @@ const Services = lazy(() => import('./pages/Services'));
 const Courses = lazy(() => import('./pages/Courses'));
 const ContactUs = lazy(() => import('./pages/ContactUs'));
 const DownloadApp = lazy(() => import('./pages/DownloadApp'));
+const Blogs = lazy(() => import('./pages/Blogs'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const AddBlogPost = lazy(() => import('./pages/AddBlogPost'));
+const AllBlogs = lazy(() => import('./pages/AllBlogs'));
+const BlogDetail = lazy(() => import('./pages/BlogDetail'));
+const AdminEditPost = lazy(() => import('./pages/AdminEditPost'));
+const AdminTrash = lazy(() => import('./pages/AdminTrash'));
+const AdminDrafts = lazy(() => import('./pages/AdminDrafts'));
 
 // Course Pages
 const AiMlCourse = lazy(() => import('./pages/AiMlCourse'));
@@ -49,20 +58,33 @@ const EffectiveCommunicatorCourse = lazy(() => import('./pages/EffectiveCommunic
 const BusinessStrategistCourse = lazy(() => import('./pages/BusinessStrategistCourse'));
 const OperationsOptimizerCourse = lazy(() => import('./pages/OperationsOptimizerCourse'));
 const DesignThinkingCourse = lazy(() => import('./pages/DesignThinkingCourse'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
-function App() {
+function Layout() {
+    const location = useLocation();
+    const isAdminRoute = location.pathname.startsWith('/wp-admin');
+
     return (
         <div className="min-h-screen bg-white flex flex-col">
             <ScrollToTop />
             <Preloader />
-            <Header />
-            <main className="flex-grow pt-[80px]">
+            {!isAdminRoute && <Header />}
+            <main className={`flex-grow ${!isAdminRoute ? 'pt-[80px]' : ''}`}>
                 <Suspense fallback={<Preloader />}>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/download-app" element={<DownloadApp />} />
                         <Route path="/about-us" element={<AboutUs />} />
                         <Route path="/service" element={<Services />} />
+                        <Route path="/blog" element={<Blogs />} />
+                        <Route path="/blog/:slug" element={<BlogDetail />} />
+                        <Route path="/wp-admin" element={<AdminLogin />} />
+                        <Route path="/wp-admin/dashboard" element={<AdminDashboard />} />
+                        <Route path="/wp-admin/add-new" element={<AddBlogPost />} />
+                        <Route path="/wp-admin/all-blogs" element={<AllBlogs />} />
+                        <Route path="/wp-admin/edit/:id" element={<AdminEditPost />} />
+                        <Route path="/wp-admin/trash" element={<AdminTrash />} />
+                        <Route path="/wp-admin/drafts" element={<AdminDrafts />} />
                         <Route path="/our-courses" element={<Courses />} />
                         <Route path="/university-courses" element={<UniversityCourses />} />
                         <Route path="/corporate-courses" element={<CorporateCourses />} />
@@ -99,14 +121,20 @@ function App() {
                         <Route path="/the-business-strategist" element={<BusinessStrategistCourse />} />
                         <Route path="/the-operations-optimizer" element={<OperationsOptimizerCourse />} />
                         <Route path="/design-thinking" element={<DesignThinkingCourse />} />
-
                         <Route path="/contact-us" element={<ContactUs />} />
+
+                        {/* Catch-all 404 Route */}
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Suspense>
             </main>
-            <Footer />
+            {!isAdminRoute && <Footer />}
         </div>
     );
+}
+
+function App() {
+    return <Layout />;
 }
 
 export default App;

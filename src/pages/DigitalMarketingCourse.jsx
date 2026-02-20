@@ -41,6 +41,14 @@ const Section = ({ children, className }) => {
 };
 
 const DigitalMarketingCourse = () => {
+  useEffect(() => {
+    document.title = "Digital Marketing Course: Master Social Media, SEO & Ads | Aindhin";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Scale your brand with our comprehensive Digital Marketing course. Master SEO, Social Media Marketing, and Paid Ads with hands-on growth campaigns.");
+    }
+  }, []);
+
   const [activeModule, setActiveModule] = useState(0);
 
   return (
@@ -611,7 +619,7 @@ const DigitalMarketingCourse = () => {
           <div className="dm-hero-content">
             <span className="dm-badge">Digital Marketing</span>
             <h1 className="fs-hero-title">
-              Digital Marketing – From Basics to Growth Campaigns
+              Master Digital Marketing: Grow Businesses with Social Media, Ads &amp; SEO
             </h1>
             <p className="fs-hero-sub">
               Learn SEO, paid ads, social media, email and analytics to design and run growth campaigns.

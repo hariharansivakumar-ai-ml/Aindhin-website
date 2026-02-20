@@ -48,6 +48,14 @@ const Section = ({ children, className }) => {
 };
 
 const DataAnalystCourse = () => {
+  useEffect(() => {
+    document.title = "Data Analyst Course: Master Data Analytics & Business Intelligence | Aindhin";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Become a job-ready data expert. Master Excel, SQL, Python, and Power BI with our comprehensive Data Analytics course. Learn to turn raw data into actionable insights.");
+    }
+  }, []);
+
   const [openModuleIndex, setOpenModuleIndex] = useState(0);
 
   const handleToggle = (index, e) => {
@@ -624,7 +632,7 @@ const DataAnalystCourse = () => {
           <div className="fs-hero-content">
             <span className="fs-badge">Data Analytics Course</span>
             <h1 className="fs-hero-title">
-              Data Analytics Course
+              Become a Data Expert: Master Data Analytics &amp; Business Intelligence
             </h1>
             <p className="fs-hero-sub">
               Gain job‑ready skills in data cleaning, analysis, visualisation and basic machine learning

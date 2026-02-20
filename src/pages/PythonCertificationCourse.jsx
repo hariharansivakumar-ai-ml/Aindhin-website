@@ -46,6 +46,14 @@ const Section = ({ children, className }) => {
 };
 
 const PythonCertificationCourse = () => {
+  useEffect(() => {
+    document.title = "Python Certification Course: Master Python Programming | Aindhin";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Level up your coding skills with our Python Certification course. From basics to advanced automation and data science, master the world's most popular language.");
+    }
+  }, []);
+
   const [openModuleIndex, setOpenModuleIndex] = useState(0);
 
   const handleToggle = (index, e) => {
@@ -678,7 +686,7 @@ const PythonCertificationCourse = () => {
           <div className="py-hero-content">
             <span className="py-badge">Python Programming</span>
             <h1 className="fs-hero-title">
-              Python Certification – From Basics to Practical Applications
+              Master Python Programming: Get Certified and Build Real-World Applications
             </h1>
             <p className="fs-hero-sub">
               Learn Python from the ground up, master core programming concepts, work with data using

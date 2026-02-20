@@ -14,7 +14,7 @@
 /* HERO */
 .fs-hero {
     color: #fff;
-    padding: 70px 20px;
+    padding: 40px 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,7 +42,7 @@
 .fs-hero-title {
     color: #fff;
     font-size: 32px;
-    line-height: 1.2;
+    line-height: 1.35;
     margin: 0 0 14px;
     font-weight: 700;
 }
@@ -70,7 +70,7 @@
 
 /* MAIN LAYOUT */
 .fs-main {
-    padding: 40px 20px 50px;
+    padding: 20px 20px 30px;
 }
 
 .fs-main-inner {
@@ -239,7 +239,7 @@
 /* TOP SECTORS / ORGANISATIONS */
 .fs-companies {
     background: #e0f2fe;
-    padding: 40px 20px 40px;
+    padding: 20px 20px;
 }
 
 .fs-companies-inner {
@@ -293,7 +293,7 @@
 /* EXTRA COURSE DETAILS SECTION */
 .fs-highlights {
     background: #e0f2fe;
-    padding: 10px 20px 50px;
+    padding: 10px 20px 30px;
 }
 
 .fs-highlights-inner {
@@ -449,7 +449,7 @@
 /* TOOLS SECTION */
 .fs-tools {
     background: #e0f2fe;
-    padding: 0 20px 50px;
+    padding: 0 20px 30px;
 }
 
 .fs-tools-inner {
@@ -505,7 +505,7 @@
 /* MORE DETAILS SECTION */
 .fs-more {
     background: #e0f2fe;
-    padding: 0 20px 50px;
+    padding: 0 20px 30px;
 }
 
 .fs-more-inner {

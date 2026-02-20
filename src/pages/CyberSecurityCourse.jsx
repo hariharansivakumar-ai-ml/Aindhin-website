@@ -32,6 +32,14 @@ const CyberSecurityCourse = () => {
 
     const [openModule, setOpenModule] = useState(1);
 
+    useEffect(() => {
+        document.title = "Cyber Security Course: Become an Ethical Hacker | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Learn to defend against cyber threats. Master network security, ethical hacking, and risk management with our professional Cyber Security course.");
+        }
+    }, []);
+
     const toggleModule = (id) => {
         setOpenModule(openModule === id ? null : id);
     };
@@ -65,7 +73,7 @@ const CyberSecurityCourse = () => {
                 <div className="fs-hero-content">
                     <span className="fs-badge">Cyber Security Course</span>
                     <h1 className="fs-hero-title">
-                        Cyber Security Course
+                        Protect the Digital Frontier: Master Cyber Security &amp; Ethical Hacking
                     </h1>
                     <p className="fs-hero-sub">
                         Learn how to protect systems, networks and data from cyber threats. Build skills in

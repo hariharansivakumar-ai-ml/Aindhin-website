@@ -27,6 +27,13 @@ import GoogleDriveLogo from '../assets/google_drive_logo.png';
 
 
 const BComCourse = () => {
+    useEffect(() => {
+        document.title = "B.Com Computer Applications: Commerce & Technology | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Scale your commerce career with advanced technology skills. Our B.Com in Computer Applications covers accounting, taxation, and Tally with hands-on labs.");
+        }
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries, obs) => {
@@ -64,7 +71,7 @@ const BComCourse = () => {
                 <div className="fs-hero-content">
                     <span className="fs-badge">B.Com · Computer Applications</span>
                     <h1 className="fs-hero-title">
-                        B.Com (Computer Applications)
+                        B.Com Computer Applications: The Perfect Blend of Commerce &amp; Technology
                     </h1>
                     <p className="fs-hero-sub">
                         Combine a strong commerce foundation with practical computer skills. Learn financial

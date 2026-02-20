@@ -29,6 +29,14 @@ const CloudComputingCourse = () => {
 
     const [openModule, setOpenModule] = useState(1);
 
+    useEffect(() => {
+        document.title = "Cloud Computing Course: Master AWS, Azure & GCP | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Master the world's leading cloud platforms. Learn virtualization, containerization, and cloud architecture with our industry-focused Cloud Computing course.");
+        }
+    }, []);
+
     const toggleModule = (id) => {
         setOpenModule(openModule === id ? null : id);
     };
@@ -62,7 +70,7 @@ const CloudComputingCourse = () => {
                 <div className="fs-hero-content">
                     <span className="fs-badge">Cloud Computing Course</span>
                     <h1 className="fs-hero-title">
-                        Cloud Computing Course
+                        Scale Your Career in the Cloud: Master AWS, Azure &amp; Google Cloud
                     </h1>
                     <p className="fs-hero-sub">
                         Learn the fundamentals of cloud computing, AWS / Azure / Google Cloud, virtualisation,

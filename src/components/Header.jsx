@@ -14,6 +14,7 @@ const Header = () => {
     const navigate = useNavigate();
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobileCoursesOpen, setIsMobileCoursesOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -34,6 +35,17 @@ const Header = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isCategoryOpen]);
+
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -70,7 +82,7 @@ const Header = () => {
     return (
         <header className={cn(
             "fixed top-0 left-0 right-0 w-full z-[9999] transition-all duration-300 bg-white shadow-sm",
-            isScrolled ? "py-2 shadow-md" : "py-3 px-4 lg:px-8"
+            isScrolled ? "py-2 shadow-md" : "py-3 px-6 lg:px-12"
         )}>
             <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                 {/* Left Section: Logo & Category */}
@@ -167,9 +179,8 @@ const Header = () => {
 
 
                     <Link
-                        to="#"
-                        onClick={(e) => e.preventDefault()}
-                        className="text-sm font-medium text-secondary hover:text-primary transition-colors cursor-default"
+                        to="/blog"
+                        className="text-sm font-medium text-secondary hover:text-primary transition-colors"
                     >
                         Blog
                     </Link>
@@ -213,27 +224,30 @@ const Header = () => {
                     <Link to="/about-us" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-secondary">About Us</Link>
                     <Link to="/service" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-secondary">Services</Link>
 
-                    <div className="flex flex-col gap-3">
-                        <span className="text-lg font-semibold text-secondary flex justify-between items-center">
-                            Courses <ChevronDown className="w-4 h-4" />
-                        </span>
-                        <div className="flex flex-col gap-2 pl-4 py-2 bg-gray-50 rounded-2xl">
-                            <Link to="/our-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text">Certification Courses</Link>
-                            <Link to="/university-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text">University Courses</Link>
-                            <Link to="/corporate-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text">Corporate Courses</Link>
-                            <Link to="/leadership-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text">Leadership Courses</Link>
-                        </div>
+                    <div className="flex flex-col gap-1">
+                        <button
+                            onClick={() => setIsMobileCoursesOpen(!isMobileCoursesOpen)}
+                            className="text-lg font-semibold text-secondary flex justify-between items-center w-full py-2"
+                        >
+                            <span>Courses</span>
+                            <ChevronDown className={cn("w-5 h-5 transition-transform duration-200", isMobileCoursesOpen && "rotate-180")} />
+                        </button>
+                        {isMobileCoursesOpen && (
+                            <div className="flex flex-col gap-2 pl-4 py-2 bg-gray-50 rounded-2xl animate-in fade-in slide-in-from-top-1">
+                                <Link to="/our-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Certification Courses</Link>
+                                <Link to="/university-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">University Courses</Link>
+                                <Link to="/corporate-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Corporate Courses</Link>
+                                <Link to="/leadership-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Leadership Courses</Link>
+                            </div>
+                        )}
                     </div>
 
 
 
                     <Link
-                        to="#"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setIsMobileMenuOpen(false);
-                        }}
-                        className="text-lg font-semibold text-secondary cursor-default"
+                        to="/blog"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="text-lg font-semibold text-secondary"
                     >
                         Blog
                     </Link>

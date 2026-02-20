@@ -8,8 +8,18 @@ import whyChoose2Img from '../assets/why_choose_2.jpg';
 import whyChoose1Img from '../assets/why_choose_1.jpg';
 import mobilePicImg from '../assets/mobile pic.png';
 
+import { useEffect } from 'react';
+
 const AboutUs = () => {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = "Our Story & Mission | Aindhin: Empowering Learners Across India";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Discover how Aindhin is revolutionizing education in India. We bridge the gap between learning and careers with professional training and global opportunities.");
+        }
+    }, []);
 
     return (
         <div className="min-h-screen bg-white relative overflow-hidden flex flex-col">
@@ -19,29 +29,18 @@ const AboutUs = () => {
             <div className="absolute top-[20%] right-[40%] w-[300px] h-[300px] bg-[#F5F3FF] rounded-full blur-3xl opacity-50 z-0 pointer-events-none"></div>
 
             {/* 1. Hero Section: Learn and Live Better */}
-            <section className="w-full px-6 lg:px-12 py-12 lg:py-24 relative z-10">
+            <section className="w-full px-6 lg:px-12 pt-16 pb-8 lg:pt-24 lg:pb-16 relative z-10">
                 <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
                     {/* Left Content */}
                     <div className="flex flex-col items-start gap-6 lg:gap-8">
-                        <motion.h1
-                            variants={fadeIn("right", 0.2)}
-                            initial="hidden"
-                            animate="show"
-                            className="text-3xl md:text-5xl lg:text-[64px] font-bold text-secondary font-inter leading-[1.2] lg:leading-[1.1]"
-                        >
-                            Aindhin – Learn <br />
-                            and <span className="text-primary">Live Better</span>
-                        </motion.h1>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary font-inter leading-tight">
+                            Our Mission: Empowering India Through <span className="text-primary">Career-Focused Online Learning</span>
+                        </h1>
 
-                        <motion.p
-                            variants={fadeIn("right", 0.4)}
-                            initial="hidden"
-                            animate="show"
-                            className="text-gray-600 text-lg lg:text-[20px] leading-[1.6] font-inter max-w-lg"
-                        >
-                            Aindhin is a comprehensive EdTech platform in India that helps you learn and live better through skill enhancement courses.
-                        </motion.p>
+                        <p className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter max-w-lg">
+                            Learn about Aindhin, an online learning platform in India offering career-focused courses, skill development programs, and industry-ready training.
+                        </p>
 
                         <motion.div
                             variants={fadeIn("up", 0.6)}
@@ -67,7 +66,7 @@ const AboutUs = () => {
                     >
                         <img
                             src={aboutHeroImg}
-                            alt="Aindhin Learning Illustration"
+                            alt="Aindhin EdTech platform in India - Comprehensive digital learning illustration"
                             className="w-full max-w-[650px] object-contain drop-shadow-xl relative z-10"
                         />
 
@@ -100,21 +99,21 @@ const AboutUs = () => {
             </section>
 
             {/* 2. Core Commitments Section */}
-            <section className="py-24 px-6 lg:px-12 bg-white relative z-10">
-                <div className="max-w-[1400px] mx-auto flex flex-col items-center">
+            <section className="py-12 px-6 lg:px-12 bg-white relative z-10">
+                <div className="max-w-[1400px] mx-auto flex flex-col items-start">
 
                     <motion.div
                         variants={fadeIn("up", 0.2)}
                         initial="hidden"
                         whileInView="show"
                         viewport={{ once: true }}
-                        className="text-center mb-16 max-w-3xl"
+                        className="text-left mb-10 max-w-3xl"
                     >
-                        <h2 className="text-4xl lg:text-5xl font-bold text-primary font-inter mb-6">
-                            Our Core Commitments
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary font-inter mb-6 leading-tight">
+                            Aindhin EdTech Platform in India: Our Core Commitments
                         </h2>
-                        <p className="text-gray-500 text-lg leading-relaxed font-inter">
-                            We would rather be thought of as a boutique of digital art than a factory which exceeds its capacity.
+                        <p className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter">
+                            As a leading Aindhin online education company, we prioritize quality and learner success over mass production.
                         </p>
                     </motion.div>
 
@@ -134,7 +133,7 @@ const AboutUs = () => {
                             <div className="w-20 h-20 bg-[#FF5252] rounded-2xl flex items-center justify-center shadow-lg shadow-red-200 mb-2">
                                 <Wallet className="w-10 h-10 text-white" />
                             </div>
-                            <h3 className="text-2xl font-bold text-secondary font-inter">Unlimited Learning</h3>
+                            <h3 className="text-2xl font-bold text-secondary font-inter">Aindhin Skill Development Platform</h3>
                             <p className="text-gray-500 leading-relaxed font-inter text-[15px]">
                                 Provides unlimited, cost-effective access to world-class learning and advanced IT solutions for everyone.
                             </p>
@@ -174,8 +173,8 @@ const AboutUs = () => {
             </section>
 
             {/* 3. Learn. Grow. Innovate Section */}
-            <section className="w-full bg-white pt-24 pb-24 px-6 lg:px-12 relative z-10 border-t border-gray-100/50">
-                <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <section className="w-full bg-white py-12 px-6 lg:px-12 relative z-10 border-t border-gray-100/50">
+                <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
                     {/* Left: Image Collage */}
                     <motion.div
@@ -189,7 +188,7 @@ const AboutUs = () => {
                         <div className="absolute top-0 left-0 w-[85%] h-[85%] rounded-[30px] overflow-hidden z-10">
                             <img
                                 src={whyChoose3Img}
-                                alt="Students group"
+                                alt="Aindhin online education company fosters collaborative group study"
                                 className="w-full h-full object-cover"
                             />
                         </div>
@@ -198,7 +197,7 @@ const AboutUs = () => {
                         <div className="absolute bottom-0 right-0 w-[55%] h-[45%] rounded-[20px] overflow-hidden border-[6px] border-white shadow-xl z-20">
                             <img
                                 src={whyChoose2Img}
-                                alt="Aindhin Learning"
+                                alt="Career-focused learning platform India training session for students"
                                 className="w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 flex items-center justify-center">
@@ -228,12 +227,11 @@ const AboutUs = () => {
                         transition={{ duration: 0.8 }}
                         className="flex flex-col gap-6"
                     >
-                        <h1 className="text-4xl lg:text-5xl font-black text-secondary font-inter uppercase leading-tight tracking-wide">
-                            AINDHIN - LEARN. <br />
-                            GROW. INNOVATE
-                        </h1>
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary font-inter uppercase leading-tight">
+                            Aindhin: Your Partner for Professional Growth & Career Success in India
+                        </h2>
 
-                        <p className="text-gray-500 text-[16px] leading-[1.8] font-inter">
+                        <p className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter">
                             Aindhin is a global platform built to empower learners, job seekers, and businesses. We provide unlimited access to world-class education, connect users to real industry opportunities, and support enterprises with advanced IT solutions. Whether you're upgrading skills, building your career, or growing your organization, Aindhin helps you unlock your potential and thrive in a rapidly evolving world.
                         </p>
 
@@ -271,7 +269,7 @@ const AboutUs = () => {
             </section>
 
             {/* 4. Why Choose Us Section */}
-            <section className="py-24 px-6 lg:px-12 bg-[#F8FAFC]/30 relative z-10 border-t border-gray-100/50">
+            <section className="py-12 px-6 lg:px-12 bg-[#F8FAFC]/30 relative z-10 border-t border-gray-100/50">
                 <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
                     {/* Left content */}
@@ -285,10 +283,10 @@ const AboutUs = () => {
                         <span className="text-primary font-semibold text-lg tracking-wide uppercase font-inter">
                             Why Choose Us
                         </span>
-                        <h2 className="text-4xl lg:text-[48px] font-bold text-secondary font-inter leading-tight">
-                            Empowering You to Learn, Grow & Succeed.
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary font-inter leading-tight">
+                            AI-Powered Online Learning Platform India
                         </h2>
-                        <p className="text-gray-500 text-lg leading-relaxed font-inter max-w-xl">
+                        <p className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter max-w-xl">
                             At Aindhin, we are committed to transforming the way people learn, build careers, and innovate. Our platform connects world-class education with real-world opportunities...
                         </p>
 
@@ -316,7 +314,7 @@ const AboutUs = () => {
                     >
                         <img
                             src={whyChoose1Img}
-                            alt="Aindhin Students"
+                            alt="Aindhin skill development platform - empowering learners to succeed"
                             className="w-full h-full object-cover aspect-[4/3] lg:aspect-auto min-h-[400px]"
                         />
                         <div className="absolute top-0 right-0 w-32 h-32 bg-[#6366F1]/10 rounded-bl-full z-0"></div>
@@ -325,7 +323,7 @@ const AboutUs = () => {
             </section>
 
             {/* 5. Download App Section - Refined and Added to About Us */}
-            <section className="py-16 px-6 lg:px-12 bg-white border-t border-gray-100/50 flex justify-center relative overflow-hidden">
+            <section className="py-12 px-6 lg:px-12 bg-white border-t border-gray-100/50 flex justify-center relative overflow-hidden">
                 <div className="max-w-[1000px] w-full bg-gradient-to-br from-[#002FA7] via-[#0051D4] to-[#4FA1FF] rounded-[40px] px-6 py-10 md:px-12 md:py-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
 
                     {/* Content */}
@@ -337,10 +335,10 @@ const AboutUs = () => {
                         className="flex flex-col items-start text-white max-w-xl z-20 space-y-6"
                     >
                         <span className="text-white/80 font-outfit text-lg font-medium tracking-wide uppercase">Mobile App</span>
-                        <h2 className="text-3xl md:text-4xl font-bold font-outfit leading-tight">
-                            Download Our Application!
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-inter leading-tight">
+                            Learn Anywhere with the Aindhin Mobile App
                         </h2>
-                        <p className="text-white/90 text-lg leading-relaxed font-inter max-w-lg">
+                        <p className="text-white/90 text-base lg:text-lg leading-relaxed font-inter max-w-lg">
                             Aindhin is an edutech platform that makes learning simple, interactive, and accessible from anywhere. Explore lessons, quizzes, and progress tracking right from your phone.
                             <br /><br />
                             Stay ahead in your studies and keep learning on the go with the Aindhin mobile app.
@@ -364,7 +362,7 @@ const AboutUs = () => {
                         >
                             <img
                                 src={mobilePicImg}
-                                alt="Aindhin Mobile App"
+                                alt="AI-powered online learning platform India accessible on mobile devices"
                                 className="w-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
                             />
                         </motion.div>

@@ -24,6 +24,13 @@ import PowerBILogo from '../assets/power_bi_logo.svg';
 
 
 const AIForBusinessCourse = () => {
+    useEffect(() => {
+        document.title = "AI for Business: Master Practical AI & Automation | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Scale your business with AI. Learn practical prompt engineering, workflow automation, and data-driven decision making in our AI for Business course.");
+        }
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries, obs) => {
@@ -61,7 +68,7 @@ const AIForBusinessCourse = () => {
                 <div className="fs-hero-content">
                     <span className="fs-badge">Data · Automation · Decisions</span>
                     <h1 className="fs-hero-title">
-                        AI for Business
+                        Lead with AI: Practical AI for Business &amp; Workflow Automation
                     </h1>
                     <p className="fs-hero-sub">
                         Learn how to turn AI into a practical assistant for your daily work. Understand what

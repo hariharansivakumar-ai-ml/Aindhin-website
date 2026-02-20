@@ -27,6 +27,14 @@ import TrelloLogo from '../assets/trello_logo.svg';
 
 const BBACourse = () => {
     useEffect(() => {
+        document.title = "BBA Degree: Bachelor of Business Administration | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Launch your management career with our BBA degree. Master marketing, finance, and entrepreneurship with case studies and industry-led projects.");
+        }
+    }, []);
+
+    useEffect(() => {
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -62,7 +70,7 @@ const BBACourse = () => {
                 <div className="fs-hero-content">
                     <span className="fs-badge">BBA · Bachelor of Business Administration</span>
                     <h1 className="fs-hero-title">
-                        BBA – Bachelor of Business Administration
+                        BBA Degree: Build Your Business Foundation for Management &amp; Leadership Excellence
                     </h1>
                     <p className="fs-hero-sub">
                         Build a strong foundation in business, management and leadership. Learn marketing, finance,

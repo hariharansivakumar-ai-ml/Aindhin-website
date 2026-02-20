@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Quote, Star } from 'lucide-react';
+import { Quote, Star, User } from 'lucide-react';
 import { fadeIn, staggerContainer } from '../utils/motion';
 
 const testimonials = [
@@ -96,7 +96,7 @@ const Testimonials = () => {
     // And ensure the container width is handled correctly by CSS.
 
     return (
-        <section className="py-24 px-4 md:px-8 bg-white relative overflow-hidden">
+        <section className="py-6 px-4 md:px-8 bg-white relative overflow-hidden">
             <div className="max-w-[1400px] mx-auto flex flex-col items-center gap-16 relative z-10">
                 <div className="flex flex-col items-center text-center gap-2">
                     <h2 className="text-5xl lg:text-6xl font-bold text-primary font-inter mb-2">Testimonial</h2>
@@ -164,13 +164,9 @@ const Testimonials = () => {
                                         </div>
                                     </div>
 
-                                    {/* Avatar */}
-                                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg mb-4 -mt-20 bg-gray-50 z-10">
-                                        <img
-                                            src={t.avatar}
-                                            alt={t.author}
-                                            className="w-full h-full object-cover"
-                                        />
+                                    {/* Professional Icon Placeholder */}
+                                    <div className="w-24 h-24 rounded-full flex items-center justify-center border-4 border-white shadow-lg mb-4 -mt-20 bg-blue-50 z-10">
+                                        <User className="w-12 h-12 text-primary opacity-80" />
                                     </div>
 
                                     <h3 className="text-xl font-bold text-secondary font-inter mt-2">{t.author}</h3>

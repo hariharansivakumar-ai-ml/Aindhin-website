@@ -18,8 +18,24 @@ import digitalMarketingImg from '../assets/courses/digital-marketing-hero.jpg';
 
 const Courses = () => {
     const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        document.title = "Explore Job-Ready Online Certification Courses in India | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Browse our curated selection of online certification courses. Master AI, Data Science, Marketing, and more with practical, industry-aligned programs.");
+        }
+    }, []);
     const initialTab = searchParams.get('tab') || 'all';
     const [activeTab, setActiveTab] = useState(initialTab);
+
+    useEffect(() => {
+        document.title = "Aindhin | Online Certification Courses in India";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Aindhin provides high-quality online certification courses in India, offering career-focused training, skill development, and industry-ready learning for students and professionals.");
+        }
+    }, []);
 
     // Categories
     const tabs = [
@@ -175,86 +191,100 @@ const Courses = () => {
         : courses.filter(c => c.category === activeTab);
 
     return (
-        <section className="w-full bg-[#f3f7ff] py-16 px-4 font-inter relative min-h-screen">
+        <section className="w-full bg-[#f8faff] pt-12 pb-20 px-4 font-inter relative min-h-screen">
             <div className="max-w-[1200px] mx-auto">
 
                 {/* Header */}
-                <div className="flex flex-wrap items-end justify-between gap-5 mb-7">
-                    <div>
-                        <h2 className="text-[28px] font-bold text-[#0f172a] mb-1.5 leading-tight">Explore Our Top Courses</h2>
-                        <p className="text-[#6b7280] text-sm m-0">Pick a category to see curated programs.</p>
+                <div className="text-center mb-10">
+                    <h1 className="text-3xl lg:text-4xl font-bold text-secondary mb-3">Explore Our Top Courses</h1>
+                    <p className="text-gray-500 text-lg">Pick a category to see curated programs.</p>
+                </div>
+
+                {/* Tabs / Categories Layout - Mobile Centric from Screenshot */}
+                <div className="max-w-[450px] mx-auto mb-12">
+                    <div className="bg-white p-3 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.05)] flex flex-col gap-2">
+                        {tabs.map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`
+                                    w-full border-none rounded-2xl px-6 py-3.5 flex items-center gap-4 
+                                    text-[15px] font-bold cursor-pointer transition-all duration-300 whitespace-nowrap
+                                    ${activeTab === tab.id
+                                        ? 'bg-primary text-white shadow-lg'
+                                        : 'bg-white text-primary hover:bg-blue-50'
+                                    }
+                                `}
+                            >
+                                <span className={`flex-shrink-0 p-1.5 rounded-lg ${activeTab === tab.id ? 'bg-white/20' : 'bg-blue-50'}`}>
+                                    {tab.icon}
+                                </span>
+                                <span className="text-left">{tab.label}</span>
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                {/* Tabs */}
-                <div className="flex flex-nowrap items-center gap-2.5 p-2.5 mt-2.5 bg-white rounded-full shadow-[0_16px_40px_rgba(15,23,42,0.1)] w-full max-w-fit mx-auto overflow-x-auto mb-7 scrollbar-hide">
-                    {tabs.map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`
-                                border-none rounded-full px-[22px] py-[10px] inline-flex items-center gap-2 
-                                text-sm font-semibold cursor-pointer whitespace-nowrap transition-all duration-200 ease-out
-                                ${activeTab === tab.id
-                                    ? 'bg-[#0066ff] text-white shadow-[0_12px_28px_rgba(37,99,235,0.55)] transform translate-y-[-1px]'
-                                    : 'bg-transparent text-[#1d4ed8] hover:bg-[#eff6ff] hover:translate-y-[-1px]'
-                                }
-                            `}
-                        >
-                            <span className="flex items-center">{tab.icon}</span>
-                            <span>{tab.label}</span>
-                        </button>
-                    ))}
-                </div>
-
                 {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[22px] mt-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <AnimatePresence mode="popLayout">
                         {filteredCourses.map(course => (
                             <motion.article
                                 layout
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ duration: 0.2 }}
+                                transition={{ duration: 0.4 }}
                                 key={course.id}
-                                className="bg-white rounded-[22px] overflow-hidden shadow-[0_12px_30px_rgba(15,23,42,0.12)] flex flex-col border border-[rgba(226,232,240,0.8)] hover:translate-y-[-4px] hover:shadow-[0_20px_48px_rgba(15,23,42,0.18)] hover:border-[rgba(129,140,248,0.65)] transition-all duration-200 ease-out group"
+                                className="bg-white rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.06)] flex flex-col border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group"
                             >
-                                <div className="relative w-full aspect-video bg-black overflow-hidden">
+                                <div className="relative w-full aspect-[16/10] overflow-hidden">
                                     <img
                                         src={course.image}
                                         alt={course.title}
-                                        className="w-full h-full object-cover block"
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 </div>
 
-                                <div className="p-[16px_18px_18px] flex flex-col items-start flex-1">
-                                    <h3 className="text-base font-bold text-[#0f172a] mb-2.5 leading-snug">
+                                <div className="p-8 flex flex-col items-start flex-1">
+                                    <h3 className="text-xl font-bold text-secondary mb-4 leading-tight">
                                         {course.title}
                                     </h3>
 
                                     {!course.comingSoon ? (
                                         <>
-                                            <div className="text-[13px] text-[#6b7280] mb-2.5 w-full">
-                                                <p className="mb-1.5"><strong className="text-[#0f172a]">Skills you'll gain:</strong> {course.skills}</p>
-                                                <div className="text-xs text-[#6b7280] mb-1">{course.students} students enrolled</div>
-                                                <div className="flex items-center gap-1.5 mb-1">
-                                                    <span className="text-[#2563eb] text-sm">★</span>
-                                                    <span className="font-semibold text-[#0f172a]">{course.rating}</span>
-                                                    <span className="text-xs">({course.reviews} reviews)</span>
+                                            <div className="space-y-4 mb-8 flex-1">
+                                                <p className="text-[15px] text-gray-500 leading-relaxed">
+                                                    <strong className="text-secondary font-bold">Skills you'll gain:</strong> {course.skills}
+                                                </p>
+
+                                                <div className="flex items-center gap-4 text-sm font-medium text-gray-400">
+                                                    <span className="flex items-center gap-1">
+                                                        <span className="text-yellow-400 text-lg">★</span>
+                                                        <span className="text-secondary font-bold">{course.rating}</span>
+                                                        <span>({course.reviews})</span>
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span>{course.duration}</span>
                                                 </div>
-                                                <div className="text-xs">{course.level} · {course.duration}</div>
+
+                                                <div className="text-[13px] font-bold text-primary bg-blue-50 px-4 py-1.5 rounded-full inline-block">
+                                                    {course.students} students enrolled
+                                                </div>
                                             </div>
 
                                             <a
                                                 href={course.link}
-                                                className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-[#0066ff] text-white text-[13px] font-semibold no-underline border-none cursor-pointer shadow-[0_8px_18px_rgba(37,99,235,0.4)] mt-auto transition-all duration-200 hover:bg-[#004fd1] hover:shadow-[0_12px_26px_rgba(37,99,235,0.6)] hover:translate-y-[-1px]"
+                                                className="w-full inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-primary text-white font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
                                             >
-                                                Explore More
+                                                Explore Course
                                             </a>
                                         </>
                                     ) : (
-                                        <div className="flex-1"></div>
+                                        <div className="mt-4 px-6 py-3 bg-gray-50 rounded-2xl text-gray-400 font-bold text-sm">
+                                            Stay Tuned
+                                        </div>
                                     )}
                                 </div>
                             </motion.article>

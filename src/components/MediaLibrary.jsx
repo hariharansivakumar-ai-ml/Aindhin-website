@@ -1,0 +1,189 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '../utils/supabaseClient';
+import { X, Image as ImageIcon, Loader2, Check, Trash2 } from 'lucide-react';
+
+const MediaLibrary = ({ onSelect, onClose }) => {
+    const [images, setImages] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [deleting, setDeleting] = useState(null);
+
+    useEffect(() => {
+        fetchImages();
+    }, []);
+
+    const fetchImages = async () => {
+        try {
+            setLoading(true);
+            const { data, error } = await supabase
+                .storage
+                .from('blog_images')
+                .list('', {
+                    limit: 100,
+                    offset: 0,
+                    sortBy: { column: 'created_at', order: 'desc' },
+                });
+
+            if (error) {
+                throw error;
+            }
+
+            const imagesWithUrls = data
+                .filter(file => file.name !== '.emptyFolderPlaceholder')
+                .map(file => {
+                    const { data: { publicUrl } } = supabase
+                        .storage
+                        .from('blog_images')
+                        .getPublicUrl(file.name);
+
+                    return {
+                        name: file.name,
+                        url: publicUrl,
+                        ...file
+                    };
+                });
+
+            setImages(imagesWithUrls);
+        } catch (error) {
+            console.error('Error fetching images:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (image, e) => {
+        e.stopPropagation();
+        if (!window.confirm("Are you sure you want to delete this image?")) return;
+
+        try {
+            setDeleting(image.name);
+            const { error } = await supabase
+                .storage
+                .from('blog_images')
+                .remove([image.name]);
+
+            if (error) throw error;
+
+            // Remove from local state
+            setImages(images.filter(img => img.name !== image.name));
+            if (selectedImage?.name === image.name) setSelectedImage(null);
+
+        } catch (error) {
+            console.error("Error deleting image:", error);
+            alert("Failed to delete image");
+        } finally {
+            setDeleting(null);
+        }
+    };
+
+    const handleSelect = () => {
+        if (selectedImage) {
+            onSelect(selectedImage.url);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl w-full max-w-4xl h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
+                    <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <ImageIcon className="w-5 h-5 text-gray-400" />
+                        Media Library
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-6 bg-gray-50/50">
+                    {loading ? (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-3">
+                            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                            <p className="text-sm font-medium">Loading images...</p>
+                        </div>
+                    ) : images.length === 0 ? (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-3">
+                            <ImageIcon className="w-12 h-12 opacity-20" />
+                            <p className="text-sm font-medium">No images found in library</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {images.map((image) => (
+                                <div
+                                    key={image.name}
+                                    onClick={() => setSelectedImage(image)}
+                                    className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${selectedImage?.name === image.name
+                                            ? 'border-primary ring-2 ring-primary/20 bg-primary/5'
+                                            : 'border-transparent hover:border-gray-200 bg-gray-100'
+                                        }`}
+                                >
+                                    <img
+                                        src={image.url}
+                                        alt={image.name}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        loading="lazy"
+                                    />
+
+                                    {/* Selection Indicator */}
+                                    {selectedImage?.name === image.name && (
+                                        <div className="absolute inset-0 bg-primary/10 flex items-center justify-center pointer-events-none">
+                                            <div className="bg-primary text-white p-2 rounded-full shadow-lg transform scale-100 transition-transform">
+                                                <Check className="w-5 h-5" />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Delete Button - Top Right */}
+                                    <button
+                                        onClick={(e) => handleDelete(image, e)}
+                                        className="absolute top-2 right-2 p-2 bg-white/90 text-red-500 rounded-lg shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 z-10"
+                                        disabled={deleting === image.name}
+                                        title="Delete Image"
+                                    >
+                                        {deleting === image.name ? (
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                        ) : (
+                                            <Trash2 className="w-4 h-4" />
+                                        )}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-gray-100 bg-white flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                        {images.length} images found
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={onClose}
+                            className="px-5 py-2.5 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleSelect}
+                            disabled={!selectedImage}
+                            className={`px-6 py-2.5 rounded-xl font-bold text-white shadow-lg shadow-primary/20 transition-all ${selectedImage
+                                ? 'bg-primary hover:bg-primary/90 transform hover:-translate-y-0.5'
+                                : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                                }`}
+                        >
+                            Select Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default MediaLibrary;

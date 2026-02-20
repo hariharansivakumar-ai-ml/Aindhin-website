@@ -13,7 +13,7 @@
 /* HERO */
 .dt-hero {
     color: #fff;
-    padding: 70px 20px;
+    padding: 40px 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,7 +66,7 @@
 
 /* MAIN LAYOUT */
 .dt-main {
-    padding: 40px 20px 50px;
+    padding: 20px 20px 30px;
 }
 
 .dt-main-inner {
@@ -234,7 +234,7 @@
 /* TOP SECTORS / ORGANISATIONS */
 .dt-companies {
     background: #e0f2fe;
-    padding: 40px 20px 40px;
+    padding: 20px 20px;
 }
 
 .dt-companies-inner {
@@ -287,7 +287,7 @@
 /* EXTRA COURSE DETAILS SECTION */
 .dt-highlights {
     background: #e0f2fe;
-    padding: 10px 20px 50px;
+    padding: 10px 20px 30px;
 }
 
 .dt-highlights-inner {
@@ -441,7 +441,7 @@
 /* TOOLS SECTION */
 .dt-tools {
     background: #e0f2fe;
-    padding: 0 20px 50px;
+    padding: 0 20px 30px;
 }
 
 .dt-tools-inner {
@@ -496,7 +496,7 @@
 /* MORE DETAILS SECTION */
 .dt-more {
     background: #e0f2fe;
-    padding: 0 20px 50px;
+    padding: 0 20px 30px;
 }
 
 .dt-more-inner {

@@ -9,7 +9,7 @@
 /* Section wrapper – FULL WIDTH */
 .courses-tabs-section {
     background: var(--bg-soft-blue);
-    padding: 60px 16px 80px;
+    padding: 40px 16px 60px;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     width: 100vw;
     margin-left: calc(50% - 50vw);
@@ -28,7 +28,7 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: 20px;
-    margin-bottom: 28px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
 }
 
@@ -45,30 +45,21 @@
     font-size: 14px;
 }
 
-/* Tabs row */
+/* Tabs list – flex row on desktop */
 .courses-tabs-wrapper {
     display: flex;
-    flex-wrap: nowrap !important;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    /* IE/Edge */
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-start;
-    /* Changed from center to allow scrolling from start */
-    gap: 10px;
-    padding: 10px;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px 40px;
     margin-top: 10px;
     background: #ffffff;
     border-radius: 999px;
     box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
-    max-width: 100%;
-    /* Ensure it doesn't overflow parent weirdly */
-}
-
-/* Scrollbar hiding for Webkit */
-.courses-tabs-wrapper::-webkit-scrollbar {
-    display: none;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Single tab button */
@@ -101,15 +92,16 @@
     transform: translateY(-1px);
 }
 
-.course-tab.active {
+.active-tab,
+.active-tab:hover {
     background: var(--primary-blue);
-    color: #ffffff;
+    color: #ffffff !important;
     box-shadow: 0 12px 28px rgba(37, 99, 235, 0.55);
 }
 
-/* Courses grid – 3 cards per row on desktop */
+/* Courses grid – desktop */
 .courses-grid {
-    margin-top: 28px;
+    margin-top: 16px;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 22px;

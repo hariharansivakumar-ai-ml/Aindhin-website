@@ -3,6 +3,50 @@
   publish = "dist"
 
 [[redirects]]
+  from = "http://www.aindhin.com/*"
+  to = "https://aindhin.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.aindhin.com/*"
+  to = "https://aindhin.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Caching for images
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, must-revalidate"
+    Expires = "1 year"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, must-revalidate"
+    Expires = "1 year"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, must-revalidate"
+    Expires = "1 year"
+
+# Caching for fonts
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Expires = "1 year"
+
+# Caching for build assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -60,7 +60,7 @@ export const hoverScale = {
     transition: { type: "spring", stiffness: 300 }
 };
 
-// Text Variant (Letter by letter or word by word if needed, but simple block reveal is usually better for headings)
+// Text Variant
 export const textVariant = (delay = 0) => {
     return {
         hidden: {
@@ -77,4 +77,51 @@ export const textVariant = (delay = 0) => {
             },
         },
     };
+};
+
+// Slide In Animation
+export const slideIn = (direction, type, delay, duration) => {
+    return {
+        hidden: {
+            x: direction === "left" ? "-100%" : direction === "right" ? "100%" : 0,
+            y: direction === "up" ? "100%" : direction === "down" ? "100%" : 0,
+        },
+        show: {
+            x: 0,
+            y: 0,
+            transition: {
+                type: type,
+                delay: delay,
+                duration: duration,
+                ease: "easeOut",
+            },
+        },
+    };
+};
+
+// Floating Animation (Continuous)
+export const float = (duration = 3, y = 15) => ({
+    y: [0, -y, 0],
+    transition: {
+        duration: duration,
+        repeat: Infinity,
+        ease: "easeInOut"
+    }
+});
+
+// Text Reveal Wrapper
+export const textRevealContainer = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.3,
+        },
+    },
+};
+
+export const textRevealItem = {
+    hidden: { y: "100%", opacity: 0 },
+    show: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
 };

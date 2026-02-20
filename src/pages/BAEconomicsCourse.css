@@ -15,7 +15,7 @@
 .fs-hero {
     color: #fff;
     /* Background image set inline in JSX to use import */
-    padding: 70px 20px;
+    padding: 40px 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,7 +68,7 @@
 
 /* MAIN LAYOUT */
 .fs-main {
-    padding: 40px 20px 50px;
+    padding: 20px 20px 30px;
 }
 
 .fs-main-inner {
@@ -237,7 +237,7 @@
 /* TOP SECTORS / ORGANISATIONS */
 .fs-companies {
     background: #e0f2fe;
-    padding: 40px 20px 40px;
+    padding: 20px 20px;
 }
 
 .fs-companies-inner {
@@ -290,7 +290,7 @@
 /* EXTRA COURSE DETAILS SECTION */
 .fs-highlights {
     background: #e0f2fe;
-    padding: 10px 20px 50px;
+    padding: 10px 20px 30px;
 }
 
 .fs-highlights-inner {
@@ -444,7 +444,7 @@
 /* TOOLS SECTION */
 .fs-tools {
     background: #e0f2fe;
-    padding: 0 20px 50px;
+    padding: 0 20px 30px;
 }
 
 .fs-tools-inner {
@@ -499,7 +499,7 @@
 /* MORE DETAILS SECTION */
 .fs-more {
     background: #e0f2fe;
-    padding: 0 20px 50px;
+    padding: 0 20px 30px;
 }
 
 .fs-more-inner {

@@ -4,15 +4,25 @@ import { MapPin, Phone, Mail, Monitor, ArrowDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import mobilePicImg from '../assets/mobile pic.png';
 
+import { useEffect } from 'react';
+
 const ContactUs = () => {
     const navigate = useNavigate();
 
+    useEffect(() => {
+        document.title = "Contact Aindhin | Get Expert Guidance on Your Learning Journey";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Have questions about our courses or partnerships? Contact the Aindhin team today for expert support, career guidance, and technical assistance.");
+        }
+    }, []);
+
     return (
-        <div className="min-h-screen bg-white flex flex-col pt-20 lg:pt-28 pb-0 relative overflow-hidden">
+        <div className="min-h-screen bg-white flex flex-col pt-32 lg:pt-36 pb-0 relative overflow-hidden">
 
             {/* --- SECTION 1: "Let us help you" + Contact Grid --- */}
             <div className="mb-0">
-                <div className="flex flex-col items-center text-center px-6 lg:px-12 mb-16">
+                <div className="flex flex-col items-center text-center px-6 lg:px-12 mb-10">
                     <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -27,9 +37,9 @@ const ContactUs = () => {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-5xl lg:text-[64px] font-bold text-secondary font-inter mb-6"
+                        className="text-4xl lg:text-[64px] font-bold text-secondary font-inter mb-6 leading-[1.15]"
                     >
-                        Let us help you
+                        Contact Us: Get Expert Guidance for Your Career Success
                     </motion.h1>
 
                     <motion.p
@@ -43,7 +53,7 @@ const ContactUs = () => {
                 </div>
 
                 {/* Contact Info Grid */}
-                <div className="max-w-[1400px] mx-auto px-6 lg:px-12 w-full mb-24">
+                <div className="max-w-[1400px] mx-auto px-6 lg:px-12 w-full mb-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
                         <ContactCard
                             icon={<MapPin className="w-8 h-8 text-primary" />}
@@ -92,7 +102,7 @@ const ContactUs = () => {
             </div>
 
             {/* --- SECTION 2: Split Layout Form --- */}
-            <div className="w-full bg-[#F8FAFC] py-24 pb-32">
+            <div className="w-full bg-[#F8FAFC] py-12 pb-16">
                 <div className="max-w-[1400px] mx-auto px-6 lg:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
                     {/* Left Side: Text Content & Social Proof */}
@@ -192,7 +202,7 @@ const ContactUs = () => {
                 </div>
             </div>
             {/* --- SECTION 3: Download App Section --- */}
-            <section className="py-16 px-6 md:px-12 bg-white flex justify-center relative overflow-hidden">
+            <section className="py-12 px-6 md:px-12 bg-white flex justify-center relative overflow-hidden">
                 <div className="max-w-[1000px] w-full bg-gradient-to-br from-[#002FA7] via-[#0051D4] to-[#4FA1FF] rounded-[40px] px-6 py-10 md:px-12 md:py-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl z-10">
 
                     {/* Content */}

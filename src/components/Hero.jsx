@@ -5,7 +5,7 @@ import heroStudentImg from '../assets/hero_student.png';
 
 const Hero = () => {
     return (
-        <section className="relative overflow-hidden bg-white pt-16 pb-12 lg:pt-16 lg:pb-20 px-6 lg:px-12">
+        <section className="relative overflow-hidden bg-white pt-16 pb-4 lg:pt-16 lg:pb-6 px-6 lg:px-12">
             {/* Background Shape/Blob */}
             <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-50/50 rounded-full blur-3xl opacity-60 z-0 pointer-events-none"></div>
             <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-pink-50/30 rounded-full blur-3xl opacity-60 z-0 pointer-events-none"></div>
@@ -23,13 +23,13 @@ const Hero = () => {
                         Learn and Live
                     </span>
 
-                    <h1 className="text-5xl lg:text-[64px] font-bold text-secondary leading-[1.1] font-inter">
-                        Future‑Ready Learning for{' '}
-                        <span className="text-primary">Students & Professionals</span>
+                    <h1 className="text-4xl lg:text-[56px] font-bold text-secondary leading-[1.2] font-inter">
+                        <span className="text-primary block mb-2 lg:whitespace-nowrap">Master In-Demand Skills</span>
+                        Accelerate Your Career with the Best <span className="text-primary">Online Courses in India</span>
                     </h1>
 
                     <p className="text-lg lg:text-[20px] text-gray-600 leading-[1.7] font-inter max-w-xl">
-                        Aindhin is an Indian EdTech platform offering career-focused courses and corporate training that bridge learning with real job opportunities.
+                        Aindhin is the premier provider of <span className="font-semibold text-gray-900">online courses in India</span>, offering career-focused programs and corporate training that bridge learning with real job opportunities.
                     </p>
 
                     <div className="flex flex-wrap gap-5 mt-6">
@@ -67,7 +67,7 @@ const Hero = () => {
                         >
                             <img
                                 src={heroStudentImg}
-                                alt="Student with books"
+                                alt="Online learning platform in india - Aindhin Student"
                                 className="w-full h-auto object-cover"
                             />
                         </motion.div>
@@ -95,7 +95,7 @@ const Hero = () => {
                                             key={i}
                                             src={`https://i.pravatar.cc/100?u=${i + 10}`}
                                             className="w-6 h-6 lg:w-9 lg:h-9 rounded-full border-2 border-white object-cover shadow-sm bg-gray-200"
-                                            alt="Avatar"
+                                            alt={`Enrolled Student ${i}`}
                                         />
                                     ))}
                                     <div className="w-6 h-6 lg:w-9 lg:h-9 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-[8px] lg:text-xs font-bold text-gray-500 shadow-sm">+</div>

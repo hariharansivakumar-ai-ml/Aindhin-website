@@ -30,6 +30,13 @@ import GitHubLogo from '../assets/github_logo.svg';
 import VSCodeLogo from '../assets/vscode_logo.svg';
 
 const FullStackDevelopmentCourse = () => {
+    useEffect(() => {
+        document.title = "Full Stack Development Course: Build Job-Ready Web Apps | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Master both front-end and back-end development. Learn HTML, CSS, JavaScript, React, and Node.js with our project-based Full Stack Development course.");
+        }
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries, obs) => {
@@ -67,7 +74,7 @@ const FullStackDevelopmentCourse = () => {
                 <div className="fs-hero-content">
                     <span className="fs-badge">Full Stack Development Course</span>
                     <h1 className="fs-hero-title">
-                        Full Stack Development Course
+                        Become a Job-Ready Full Stack Developer: Build Complete Web Applications from Scratch
                     </h1>
                     <p className="fs-hero-sub">
                         Learn to build complete web applications from scratch. Master front‑end and back‑end

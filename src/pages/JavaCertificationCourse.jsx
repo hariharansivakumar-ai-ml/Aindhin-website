@@ -44,6 +44,14 @@ const Section = ({ children, className }) => {
 };
 
 const JavaCertificationCourse = () => {
+  useEffect(() => {
+    document.title = "Java Certification Course: Master Object-Oriented Programming | Aindhin";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Master Java from basics to advanced enterprise applications. Learn OOPs, Spring, and Maven with our comprehensive Java Certification course.");
+    }
+  }, []);
+
   const [openModuleIndex, setOpenModuleIndex] = useState(0); // Open the first module by default
 
   const handleToggle = (index, e) => {
@@ -631,7 +639,7 @@ const JavaCertificationCourse = () => {
           <div className="jv-hero-content">
             <span className="jv-badge">Java Certification</span>
             <h1 className="fs-hero-title">
-              Java Certification – From Basics to Enterprise Applications
+              Master Java Programming: Get Certified and Build Enterprise-Grade Applications
             </h1>
             <p className="fs-hero-sub">
               Master Core Java, Object-Oriented Programming, and advanced concepts including Collections,

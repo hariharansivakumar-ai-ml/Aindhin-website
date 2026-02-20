@@ -5,6 +5,14 @@ import './DownloadApp.css';
 import downloadAppImg from '../assets/download image.png';
 
 const DownloadApp = () => {
+    React.useEffect(() => {
+        document.title = "Aindhin Web App: Learn Smarter Anywhere, Anytime";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Access the Aindhin learning platform from any device. Start your journey with our feature-rich web app while our mobile app is in development.");
+        }
+    }, []);
+
     return (
         <div className="download-page-section font-inter">
             <div className="download-container">
@@ -19,7 +27,7 @@ const DownloadApp = () => {
                     <span className="web-app-live-badge">Web App Live</span>
 
                     <h1 className="download-title">
-                        Learn smarter with Aindhin.
+                        Access the Future of Learning: Start Your Journey with the Aindhin Web App
                     </h1>
 
                     <p className="download-description">

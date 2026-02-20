@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Brain, Code, Rocket, Globe } from 'lucide-react';
 
@@ -45,6 +45,14 @@ const Section = ({ children, className }) => {
 };
 
 const AiMlCourse = () => {
+  useEffect(() => {
+    document.title = "AI & Machine Learning Course: Master Industry-Ready Skills | Aindhin";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Launch your career in AI. Master Machine Learning, Deep Learning, and Python with hands-on projects. Become an industry-ready AI/ML engineer today.");
+    }
+  }, []);
+
   const [activeModule, setActiveModule] = useState(0);
 
   return (
@@ -663,7 +671,7 @@ const AiMlCourse = () => {
         <div className="ai-ml-hero-content">
           <span className="ai-ml-badge">Artificial Intelligence</span>
           <h1 className="fs-hero-title">
-            AI &amp; Machine Learning – From Basics to Industry Applications
+            Master AI &amp; Machine Learning: From Fundamentals to Professional Industry Applications
           </h1>
           <p className="fs-hero-sub">
             Learn the foundations of AI, master core machine learning algorithms, and build

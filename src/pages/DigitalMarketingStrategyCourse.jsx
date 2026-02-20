@@ -1,5 +1,5 @@
 import { Clock, BarChart2, Users, Calendar, Award, Brain, Megaphone, Folder, Briefcase, Target, BookOpen, TrendingUp, Zap } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 // Hero Image
@@ -41,6 +41,14 @@ const Section = ({ children, className }) => {
 };
 
 const DigitalMarketingStrategyCourse = () => {
+  useEffect(() => {
+    document.title = "Digital Marketing Strategy, Ads & Analytics Course | Aindhin";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Master the art of digital growth. Learn advanced strategies in Google Ads, Meta Ads, and Analytics with our expert-led Digital Marketing course.");
+    }
+  }, []);
+
   return (
     <div className="dm-course font-sans text-slate-900 bg-blue-50 w-full overflow-x-hidden">
       <style>{`
@@ -666,7 +674,7 @@ const DigitalMarketingStrategyCourse = () => {
           <div className="dm-hero-content">
             <span className="dm-badge">Digital Marketing</span>
             <h1 className="fs-hero-title">
-              Digital Marketing – Strategy, Ads &amp; Analytics
+              Master Digital Marketing: Advanced Strategy, Ads &amp; Analytics for Business Growth
             </h1>
             <p className="fs-hero-sub">
               Master the core frameworks, channels and measurement skills needed to plan strategy,
