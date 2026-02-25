@@ -1,9 +1,9 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../utils/supabaseClient';
-import { ArrowLeft, Upload, Image as ImageIcon, Save, Send, Menu, Bell, ChevronDown, X, Home, FileText, PlusCircle, Trash2, LogOut, LayoutDashboard, Loader2, Clock } from 'lucide-react';
-
+import { apiGetSession, apiSaveBlog, apiUploadImage, apiLogout } from '../utils/apiClient';
+import { ArrowLeft, Upload, Image as ImageIcon, Save, Send, Bell, Loader2, X, ChevronDown } from 'lucide-react';
+import AdminSidebar from '../components/AdminSidebar';
 import RichTextEditor from '../components/RichTextEditor';
 import MediaLibrary from '../components/MediaLibrary';
 
@@ -12,6 +12,7 @@ const AddBlogPost = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [slug, setSlug] = useState('');
+    const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
     const [status, setStatus] = useState('Draft');
     const [featuredImage, setFeaturedImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -25,63 +26,47 @@ const AddBlogPost = () => {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const { data, error } = await supabase.auth.getUser();
-                if (data?.user) setUserEmail(data.user.email);
+                const session = await apiGetSession();
+                if (session?.user) setUserEmail(session.user.email);
             } catch (err) {
-                console.error("Error fetching user:", err);
+                console.error('Error fetching user:', err);
             }
         };
         getUser();
     }, []);
 
-    // Auto-generate slug from title
+    // Robust slug generator
+    const generateSlug = (text) => {
+        return text
+            .normalize('NFD')                    // decompose accented chars
+            .replace(/[\u0300-\u036f]/g, '')     // strip diacritics
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')        // remove special chars except space & hyphen
+            .trim()
+            .replace(/[\s_]+/g, '-')             // spaces/underscores → hyphen
+            .replace(/-+/g, '-')                 // collapse multiple hyphens
+            .replace(/^-+|-+$/g, '');            // trim leading/trailing hyphens
+    };
+
+    // Auto-generate slug from title ONLY if user hasn't manually edited it
     useEffect(() => {
-        const generateSlug = (text) => {
-            return text
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)+/g, '');
-        };
-        if (title) {
+        if (!slugManuallyEdited && title) {
             setSlug(generateSlug(title));
         }
-    }, [title]);
-
-    // Reusable upload function
-    const uploadImageToSupabase = async (file) => {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-            .from('blog_images')
-            .upload(filePath, file);
-
-        if (uploadError) throw uploadError;
-
-        const { data } = supabase.storage
-            .from('blog_images')
-            .getPublicUrl(filePath);
-
-        return data.publicUrl;
-    };
+    }, [title, slugManuallyEdited]);
 
     const handleFeaturedImageUpload = async (e) => {
         try {
             setUploading(true);
             const file = e.target.files[0];
             if (!file) return;
-
-            // Create preview
             const objectUrl = URL.createObjectURL(file);
             setImagePreview(objectUrl);
-
-            const publicUrl = await uploadImageToSupabase(file);
+            const publicUrl = await apiUploadImage(file);
             setFeaturedImage(publicUrl);
-
         } catch (error) {
-            console.error("Error uploading image:", error);
-            alert(`Error uploading image: ${error.message || "Unknown error"}`);
+            console.error('Error uploading image:', error);
+            alert(`Error uploading image: ${error.message || 'Unknown error'}`);
         } finally {
             setUploading(false);
         }
@@ -90,134 +75,32 @@ const AddBlogPost = () => {
     const handleSave = async (isPublished = false) => {
         try {
             setLoading(true);
-            const user = (await supabase.auth.getUser()).data.user;
-
             const postData = {
                 title,
                 description: content,
                 slug,
-                status: isPublished ? 'Published' : 'Draft', // Set correct status
+                status: isPublished ? 'Published' : 'Draft',
                 image_url: featuredImage,
                 author: 'Aindhin',
-                user_id: user?.id, // Added user_id for security policies
-                date: new Date().toISOString()
             };
-
-            const { data, error } = await supabase
-                .from('blogs')
-                .upsert([{
-                    ...(currentPostId ? { id: currentPostId } : {}),
-                    ...postData
-                }], { onConflict: 'slug' })
-                .select();
-
-            if (error) throw error;
-
-            if (data && data[0]) {
-                setCurrentPostId(data[0].id);
-            }
-
-            alert(isPublished ? "Blog published successfully!" : "Draft saved successfully!");
-            if (isPublished) {
-                setStatus('Published');
-            }
-
+            const saved = await apiSaveBlog(postData);
+            if (saved?.id) setCurrentPostId(saved.id);
+            alert(isPublished ? 'Blog published successfully!' : 'Draft saved successfully!');
+            if (isPublished) setStatus('Published');
         } catch (error) {
-            console.error("Error saving blog:", error.message);
-            alert("Error saving blog: " + error.message);
+            console.error('Error saving blog:', error.message);
+            alert('Error saving blog: ' + error.message);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-[#F4F6F8] font-inter flex">
-            {/* Desktop Sidebar */}
-            <aside className="w-72 bg-[#111827] text-white flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto shrink-0">
-                <div className="p-8">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                            <span className="font-bold text-xl">A</span>
-                        </div>
-                        <h2 className="text-xl font-bold tracking-tight">Admin<span className="text-primary">Panel</span></h2>
-                    </div>
-
-                    <div className="space-y-1">
-                        <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Main Menu</p>
-                        <nav className="space-y-1">
-                            <button onClick={() => navigate('/wp-admin/dashboard')} className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all group">
-                                <LayoutDashboard className="w-5 h-5 group-hover:text-gray-300" />
-                                <span className="font-medium">Dashboard</span>
-                            </button>
-                            <button onClick={() => navigate('/wp-admin/drafts')} className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all group text-left">
-                                <Clock className="w-5 h-5 group-hover:text-gray-300" />
-                                <span className="font-medium">Drafts</span>
-                            </button>
-                            <button className="w-full flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary border-r-[3px] border-primary rounded-lg transition-all text-left">
-                                <PlusCircle className="w-5 h-5" />
-                                <span className="font-medium">Add New Blog</span>
-                            </button>
-                            <button onClick={() => navigate('/wp-admin/trash')} className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all group text-left">
-                                <Trash2 className="w-5 h-5 group-hover:text-gray-300" />
-                                <span className="font-medium">Trash</span>
-                            </button>
-                        </nav>
-                    </div>
-                </div>
-
-                <div className="mt-auto p-6 border-t border-gray-800">
-                    <div className="flex items-center gap-3 mb-6 px-2">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center text-sm font-bold shadow-md">
-                            {userEmail.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="overflow-hidden">
-                            <p className="text-sm font-semibold truncate text-white">{userEmail.split('@')[0]}</p>
-                            <p className="text-xs text-gray-500 truncate">Administrator</p>
-                        </div>
-                    </div>
-                    <button
-                        onClick={async () => {
-                            await supabase.auth.signOut();
-                            navigate('/wp-admin');
-                        }}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-red-500/30 text-red-400 rounded-xl hover:bg-red-500/10 hover:text-red-300 transition-all font-medium text-sm"
-                    >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                    </button>
-                </div>
-            </aside>
+        <div className="min-h-screen bg-slate-50 font-inter flex">
+            <AdminSidebar userEmail={userEmail} />
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
-                {/* Top Navigation Bar */}
-                <nav className="bg-white px-6 py-3 flex items-center justify-between shadow-sm sticky top-0 z-50">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setShowSidebar(true)}
-                            className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors md:hidden"
-                        >
-                            <Menu className="w-6 h-6" />
-                        </button>
-                        {/* Optional: Add Logo here if needed, keeping it clean as per screenshot */}
-                    </div>
-
-                    <div className="flex items-center gap-6">
-                        <button className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full">
-                            <Bell className="w-6 h-6" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-                        </button>
-                        <div className="flex items-center gap-3 pl-6 border-l border-gray-200">
-                            <div className="w-10 h-10 rounded-lg bg-black text-white flex items-center justify-center font-bold text-sm">
-                                AD
-                            </div>
-                            <div className="hidden md:block">
-                                <p className="text-sm font-bold text-gray-900 leading-none">Admin</p>
-                                <p className="text-xs text-gray-500 mt-1">Administrator</p>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
 
                 {/* Main Content */}
                 <main className="max-w-[1400px] mx-auto p-6 md:p-8 lg:p-10">
@@ -269,7 +152,7 @@ const AddBlogPost = () => {
                                 <RichTextEditor
                                     content={content}
                                     onChange={setContent}
-                                    onImageUpload={uploadImageToSupabase}
+                                    onImageUpload={apiUploadImage}
                                 />
                             </div>
                         </div>
@@ -283,17 +166,43 @@ const AddBlogPost = () => {
 
                                 <div className="space-y-5">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">SLUG (URL)</label>
-                                        <div className="flex items-center px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-500 text-sm">
-                                            <span className="mr-2 opacity-40 transform rotate-45">🔗</span>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">SLUG (URL)</label>
+                                            {slugManuallyEdited && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { setSlugManuallyEdited(false); if (title) setSlug(generateSlug(title)); }}
+                                                    className="text-xs text-primary hover:underline font-semibold"
+                                                >
+                                                    ↺ Reset
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-500 text-sm focus-within:border-primary/50 focus-within:bg-white transition-all">
+                                            <span className="mr-2 text-gray-400 shrink-0">🔗</span>
                                             <input
                                                 type="text"
                                                 value={slug}
-                                                onChange={(e) => setSlug(e.target.value)}
-                                                className="bg-transparent border-none outline-none w-full text-gray-700 placeholder-gray-400"
-                                                placeholder="auto-generated"
+                                                onChange={(e) => {
+                                                    const clean = e.target.value
+                                                        .toLowerCase()
+                                                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // strip diacritics
+                                                        .replace(/[^a-z0-9-]/g, '-') // replace invalid chars with hyphens
+                                                        .replace(/-+/g, '-') // collapse multiple hyphens
+                                                        .replace(/^-+|-+$/g, ''); // trim leading/trailing hyphens
+                                                    setSlug(clean);
+                                                    setSlugManuallyEdited(true);
+                                                }}
+                                                className="bg-transparent border-none outline-none w-full text-gray-700 placeholder-gray-400 font-mono text-xs"
+                                                placeholder="auto-generated-from-title"
                                             />
                                         </div>
+                                        {slug && (
+                                            <p className="text-xs text-gray-400 mt-1.5 truncate">
+                                                <span className="text-gray-300">/blog/</span>
+                                                <span className="text-primary font-medium">{slug}</span>
+                                            </p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -395,64 +304,6 @@ const AddBlogPost = () => {
                     onClose={() => setShowMediaLibrary(false)}
                 />
             )}
-
-            {/* Navigation Sidebar Drawer (Mobile) */}
-            {/* Overlay */}
-            {showSidebar && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm transition-opacity md:hidden"
-                    onClick={() => setShowSidebar(false)}
-                />
-            )}
-
-            {/* Sidebar Mobile */}
-            <div className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white z-[101] transform transition-transform duration-300 shadow-2xl md:hidden ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}>
-                <div className="p-6 flex items-center justify-between border-b border-gray-800">
-                    <h2 className="text-xl font-bold tracking-wider">Aindhin Admin</h2>
-                    <button
-                        onClick={() => setShowSidebar(false)}
-                        className="p-1 hover:bg-gray-800 rounded-full transition-colors"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                <nav className="flex-1 py-6 space-y-2">
-                    <button onClick={() => navigate('/wp-admin/dashboard')} className="w-full flex items-center gap-3 px-6 py-3 hover:bg-gray-800 transition-colors text-gray-400 hover:text-white">
-                        <LayoutDashboard className="w-5 h-5" />
-                        <span className="font-medium">Dashboard</span>
-                    </button>
-                    <button onClick={() => navigate('/wp-admin/all-blogs')} className="w-full flex items-center gap-3 px-6 py-3 hover:bg-gray-800 transition-colors text-gray-400 hover:text-white">
-                        <FileText className="w-5 h-5" />
-                        <span className="font-medium">All Blogs</span>
-                    </button>
-                    <button onClick={() => navigate('/wp-admin/drafts')} className="w-full flex items-center gap-3 px-6 py-3 hover:bg-gray-800 transition-colors text-gray-400 hover:text-white">
-                        <Clock className="w-5 h-5" />
-                        <span className="font-medium">Drafts</span>
-                    </button>
-                    <button onClick={() => { navigate('/wp-admin/add-new'); setShowSidebar(false); }} className="w-full flex items-center gap-3 px-6 py-3 bg-primary/10 text-primary border-r-4 border-primary">
-                        <PlusCircle className="w-5 h-5" />
-                        <span className="font-medium">Add New</span>
-                    </button>
-                    <button onClick={() => navigate('/wp-admin/trash')} className="w-full flex items-center gap-3 px-6 py-3 hover:bg-gray-800 transition-colors text-gray-400 hover:text-white">
-                        <Trash2 className="w-5 h-5" />
-                        <span className="font-medium">Trash</span>
-                    </button>
-                </nav>
-
-                <div className="p-6 border-t border-gray-800">
-                    <button
-                        onClick={async () => {
-                            await supabase.auth.signOut();
-                            navigate('/wp-admin');
-                        }}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-bold transition-colors shadow-sm"
-                    >
-                        <LogOut className="w-4 h-4" />
-                        <span>Logout</span>
-                    </button>
-                </div>
-            </div>
         </div>
     );
 };

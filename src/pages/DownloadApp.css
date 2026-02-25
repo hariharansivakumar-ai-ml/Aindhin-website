@@ -228,3 +228,4 @@
         /* Keep card text left aligned */
     }
 }
+@media (min-width: 1024px) { .fs-hero, .fs-main, .fs-companies, .fs-highlights, .fs-tools, .fs-more, .fs-enquiry { padding-left: 48px !important; padding-right: 48px !important; } }

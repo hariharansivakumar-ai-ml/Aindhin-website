@@ -16,7 +16,7 @@ import AccentureLogo from '../assets/accenture_logo.svg'; // Check file extensio
 import TCSLogo from '../assets/tcs_logo.svg'; // Check file extension
 import WiproLogo from '../assets/wipro_logo.svg'; // Check file extension
 import DeloitteLogo from '../assets/deloitte_logo.svg'; // Check file extension
-import AmazonLogo from '../assets/amazon_logo.svg'; // Check file extension
+import AmazonLogo from '../assets/amazon_logo.webp'; // Check file extension
 import EYLogo from '../assets/ey_logo.svg'; // Check file extension
 
 // Tech Logos

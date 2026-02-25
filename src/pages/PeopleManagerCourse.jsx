@@ -8,7 +8,7 @@ import PeopleManagerHeroImg from '../assets/people_manager_hero.jpg';
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
 import GoogleLogo from '../assets/google_logo.svg';
-import AmazonLogo from '../assets/amazon_logo.svg';
+import AmazonLogo from '../assets/amazon_logo.webp';
 import TCSLogo from '../assets/tcs_logo.svg';
 import WiproLogo from '../assets/wipro_logo.svg';
 import DeloitteLogo from '../assets/deloitte_logo.svg';

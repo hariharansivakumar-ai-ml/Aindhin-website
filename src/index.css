@@ -32,3 +32,10 @@ body {
   scrollbar-width: none;
   /* Firefox */
 }
+
+.blog-content,
+.blog-content * {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}

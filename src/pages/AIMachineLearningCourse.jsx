@@ -11,7 +11,7 @@ import AIMLHeroImg from '../assets/ai_ml_hero.jpg';
 // Logos
 import GoogleLogo from '../assets/google_logo.svg';
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
-import AmazonLogo from '../assets/amazon_logo.svg';
+import AmazonLogo from '../assets/amazon_logo.webp';
 import IBMLogo from '../assets/ibm_logo.svg';
 import TCSLogo from '../assets/tcs_logo.svg';
 import AccentureLogo from '../assets/accenture_logo.svg';

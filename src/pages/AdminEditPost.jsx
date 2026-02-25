@@ -1,13 +1,12 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
-import { supabase } from '../utils/supabaseClient';
+import { useNavigate, useParams } from 'react-router-dom';
+import { apiGetSession, apiUpdateBlog, apiUploadImage, apiLogout } from '../utils/apiClient';
 import {
-    ArrowLeft, Save, Send, Menu, Bell, ChevronDown, X,
-    FileText, PlusCircle, Trash2, LogOut, LayoutDashboard,
-    Loader2, Upload, Image as ImageIcon, Clock
+    ArrowLeft, Save, Send, Bell, X,
+    Loader2, Upload, Image as ImageIcon
 } from 'lucide-react';
-
+import AdminSidebar from '../components/AdminSidebar';
 import RichTextEditor from '../components/RichTextEditor';
 import MediaLibrary from '../components/MediaLibrary';
 
@@ -30,7 +29,7 @@ const AdminEditPost = () => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
+            const session = await apiGetSession();
             if (!session) {
                 navigate('/wp-admin');
             } else {
@@ -40,25 +39,20 @@ const AdminEditPost = () => {
 
         const fetchPost = async () => {
             try {
-                const { data, error } = await supabase
-                    .from('blogs')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
-
-                if (error) throw error;
-                if (data) {
-                    setTitle(data.title || '');
-                    setContent(data.description || '');
-                    setSlug(data.slug || '');
-                    setFeaturedImage(data.image_url || null);
-                    setImagePreview(data.image_url || null);
-                    // Status isn't strictly in DB yet but we can default or handle
-                    setStatus('Published');
-                }
+                const res = await fetch(`http://localhost:5000/api/blogs/by-id/${id}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('aindhin_token')}` }
+                });
+                if (!res.ok) throw new Error('Blog not found');
+                const data = await res.json();
+                setTitle(data.title || '');
+                setContent(data.description || '');
+                setSlug(data.slug || '');
+                setFeaturedImage(data.image_url || null);
+                setImagePreview(data.image_url || null);
+                setStatus(data.status || 'Draft');
             } catch (error) {
-                console.error("Error fetching post:", error);
-                alert("Error fetching post");
+                console.error('Error fetching post:', error);
+                alert('Error fetching post');
                 navigate('/wp-admin/all-blogs');
             } finally {
                 setLoading(false);
@@ -69,38 +63,17 @@ const AdminEditPost = () => {
         fetchPost();
     }, [id, navigate]);
 
-    const uploadImageToSupabase = async (file) => {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-            .from('blog_images')
-            .upload(filePath, file);
-
-        if (uploadError) throw uploadError;
-
-        const { data } = supabase.storage
-            .from('blog_images')
-            .getPublicUrl(filePath);
-
-        return data.publicUrl;
-    };
-
     const handleFeaturedImageUpload = async (e) => {
         try {
             setUploading(true);
             const file = e.target.files[0];
             if (!file) return;
-
             const objectUrl = URL.createObjectURL(file);
             setImagePreview(objectUrl);
-
-            const publicUrl = await uploadImageToSupabase(file);
+            const publicUrl = await apiUploadImage(file);
             setFeaturedImage(publicUrl);
-
         } catch (error) {
-            console.error("Error uploading image:", error);
+            console.error('Error uploading image:', error);
             alert(`Error uploading image: ${error.message}`);
         } finally {
             setUploading(false);
@@ -110,29 +83,19 @@ const AdminEditPost = () => {
     const handleUpdate = async (isPublished = false) => {
         try {
             setSaving(true);
-            const { error } = await supabase
-                .from('blogs')
-                .update({
-                    title,
-                    description: content,
-                    slug,
-                    status: isPublished ? 'Published' : status,
-                    author: 'Aindhin',
-                    image_url: featuredImage,
-                })
-                .eq('id', id);
-
-            if (error) throw error;
-
-            alert("Blog updated successfully!");
-            // Stay on same page as requested for better UX
-            if (isPublished) {
-                setStatus('Published');
-            }
-
+            await apiUpdateBlog(id, {
+                title,
+                description: content,
+                slug,
+                status: isPublished ? 'Published' : status,
+                author: 'Aindhin',
+                image_url: featuredImage,
+            });
+            alert('Blog updated successfully!');
+            if (isPublished) setStatus('Published');
         } catch (error) {
-            console.error("Error updating blog:", error.message);
-            alert("Error updating blog: " + error.message);
+            console.error('Error updating blog:', error.message);
+            alert('Error updating blog: ' + error.message);
         } finally {
             setSaving(false);
         }
@@ -150,63 +113,11 @@ const AdminEditPost = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#F4F6F8] font-inter flex">
-            {/* Sidebar - Desktop */}
-            <aside className="w-72 bg-[#111827] text-white flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto shrink-0">
-                <div className="p-8">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                            <span className="font-bold text-xl">A</span>
-                        </div>
-                        <h2 className="text-xl font-bold tracking-tight">Admin<span className="text-primary">Panel</span></h2>
-                    </div>
-
-                    <nav className="space-y-1">
-                        <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Main Menu</p>
-                        <button onClick={() => navigate('/wp-admin/dashboard')} className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all group text-left">
-                            <LayoutDashboard className="w-5 h-5 group-hover:text-gray-300" />
-                            <span className="font-medium">Dashboard</span>
-                        </button>
-                        <button onClick={() => navigate('/wp-admin/all-blogs')} className="w-full flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary border-r-[3px] border-primary rounded-lg transition-all text-left">
-                            <FileText className="w-5 h-5" />
-                            <span className="font-medium">All Blogs</span>
-                        </button>
-                        <button onClick={() => navigate('/wp-admin/drafts')} className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all group text-left">
-                            <Clock className="w-5 h-5 group-hover:text-gray-300" />
-                            <span className="font-medium">Drafts</span>
-                        </button>
-                        <button onClick={() => navigate('/wp-admin/add-new')} className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all group text-left">
-                            <PlusCircle className="w-5 h-5 group-hover:text-gray-300" />
-                            <span className="font-medium">Add New Blog</span>
-                        </button>
-                        <button onClick={() => navigate('/wp-admin/trash')} className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all group text-left">
-                            <Trash2 className="w-5 h-5 group-hover:text-gray-300" />
-                            <span className="font-medium">Trash</span>
-                        </button>
-                    </nav>
-                </div>
-
-                <div className="mt-auto p-6 border-t border-gray-800">
-                    <button onClick={() => supabase.auth.signOut().then(() => navigate('/wp-admin'))} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-red-500/30 text-red-400 rounded-xl hover:bg-red-500/10 transition-all font-medium text-sm">
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                    </button>
-                </div>
-            </aside>
+        <div className="min-h-screen bg-slate-50 font-inter flex">
+            <AdminSidebar userEmail={userEmail} />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
-                <nav className="bg-white px-6 py-3 flex items-center justify-between shadow-sm sticky top-0 z-50">
-                    <button onClick={() => setShowSidebar(true)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors md:hidden">
-                        <Menu className="w-6 h-6" />
-                    </button>
-                    <div className="flex items-center gap-6">
-                        <button className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full">
-                            <Bell className="w-6 h-6" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-                        </button>
-                    </div>
-                </nav>
 
                 <main className="max-w-[1400px] mx-auto p-6 md:p-8 lg:p-10">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
@@ -248,7 +159,7 @@ const AdminEditPost = () => {
                                 <RichTextEditor
                                     content={content}
                                     onChange={setContent}
-                                    onImageUpload={uploadImageToSupabase}
+                                    onImageUpload={apiUploadImage}
                                 />
                             </div>
                         </div>
@@ -321,39 +232,6 @@ const AdminEditPost = () => {
                     onClose={() => setShowMediaLibrary(false)}
                 />
             )}
-
-            {/* Mobile Sidebar */}
-            {showSidebar && (
-                <div className="fixed inset-0 bg-black/50 z-[100] md:hidden" onClick={() => setShowSidebar(false)} />
-            )}
-            <div className={`fixed inset-y-0 left-0 w-64 bg-[#111827] z-[101] transform transition-transform duration-300 md:hidden ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}>
-                <div className="p-8 border-b border-gray-800 flex justify-between items-center text-white">
-                    <span className="font-bold">Aindhin Admin</span>
-                    <X className="w-5 h-5 cursor-pointer" onClick={() => setShowSidebar(false)} />
-                </div>
-                <div className="p-4 space-y-2 text-gray-400">
-                    <button onClick={() => navigate('/wp-admin/dashboard')} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-lg active:text-white">
-                        <LayoutDashboard className="w-5 h-5" />
-                        <span>Dashboard</span>
-                    </button>
-                    <button onClick={() => navigate('/wp-admin/all-blogs')} className="w-full flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-lg">
-                        <FileText className="w-5 h-5" />
-                        <span>All Blogs</span>
-                    </button>
-                    <button onClick={() => navigate('/wp-admin/drafts')} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-lg active:text-white">
-                        <Clock className="w-5 h-5" />
-                        <span>Drafts</span>
-                    </button>
-                    <button onClick={() => navigate('/wp-admin/add-new')} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-lg active:text-white">
-                        <PlusCircle className="w-5 h-5" />
-                        <span>Add New Blog</span>
-                    </button>
-                    <button onClick={() => navigate('/wp-admin/trash')} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-lg active:text-white">
-                        <Trash2 className="w-5 h-5" />
-                        <span>Trash</span>
-                    </button>
-                </div>
-            </div>
         </div>
     );
 };

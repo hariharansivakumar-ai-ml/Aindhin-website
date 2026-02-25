@@ -21,6 +21,8 @@ const BlogDetail = lazy(() => import('./pages/BlogDetail'));
 const AdminEditPost = lazy(() => import('./pages/AdminEditPost'));
 const AdminTrash = lazy(() => import('./pages/AdminTrash'));
 const AdminDrafts = lazy(() => import('./pages/AdminDrafts'));
+const Media = lazy(() => import('./pages/Media'));
+const AdminComments = lazy(() => import('./pages/AdminComments'));
 
 // Course Pages
 const AiMlCourse = lazy(() => import('./pages/AiMlCourse'));
@@ -67,10 +69,10 @@ function Layout() {
     return (
         <div className="min-h-screen bg-white flex flex-col">
             <ScrollToTop />
-            <Preloader />
+            {!isAdminRoute && <Preloader />}
             {!isAdminRoute && <Header />}
             <main className={`flex-grow ${!isAdminRoute ? 'pt-[80px]' : ''}`}>
-                <Suspense fallback={<Preloader />}>
+                <Suspense fallback={isAdminRoute ? null : <Preloader />}>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/download-app" element={<DownloadApp />} />
@@ -85,6 +87,8 @@ function Layout() {
                         <Route path="/wp-admin/edit/:id" element={<AdminEditPost />} />
                         <Route path="/wp-admin/trash" element={<AdminTrash />} />
                         <Route path="/wp-admin/drafts" element={<AdminDrafts />} />
+                        <Route path="/wp-admin/media" element={<Media />} />
+                        <Route path="/wp-admin/comments" element={<AdminComments />} />
                         <Route path="/our-courses" element={<Courses />} />
                         <Route path="/university-courses" element={<UniversityCourses />} />
                         <Route path="/corporate-courses" element={<CorporateCourses />} />

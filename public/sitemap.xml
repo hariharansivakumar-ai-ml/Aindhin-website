@@ -185,4 +185,29 @@
     <lastmod>2026-02-18</lastmod>
     <priority>0.70</priority>
   </url>
+  <url>
+    <loc>https://aindhin.com/blog</loc>
+    <lastmod>2026-02-24</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://aindhin.com/b-a-economics-with-data-analytics</loc>
+    <lastmod>2026-02-24</lastmod>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://aindhin.com/b-sc-computer-science-with-ai-data-science</loc>
+    <lastmod>2026-02-24</lastmod>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://aindhin.com/bba-bachelor-of-business-administration</loc>
+    <lastmod>2026-02-24</lastmod>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://aindhin.com/b-com-computer-applications</loc>
+    <lastmod>2026-02-24</lastmod>
+    <priority>0.70</priority>
+  </url>
 </urlset>

@@ -7,7 +7,7 @@ import DigitalTransformationHeroImg from '../assets/digital_transformation_hero.
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
 import GoogleLogo from '../assets/google_logo.svg';
-import AmazonLogo from '../assets/amazon_logo.svg';
+import AmazonLogo from '../assets/amazon_logo.webp';
 import AccentureLogo from '../assets/accenture_logo.svg'; // Check file extension
 import EYLogo from '../assets/ey_logo.svg'; // Check file extension
 import LandTLogo from '../assets/l_and_t_logo.png';

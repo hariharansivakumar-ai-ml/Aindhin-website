@@ -1,73 +1,164 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { User, Calendar, ArrowRight } from 'lucide-react';
-import { fadeIn, staggerContainer } from '../utils/motion';
-import { supabase } from '../utils/supabaseClient';
+import { Link, useNavigate } from 'react-router-dom';
+import { User, Calendar, ArrowRight, BookOpen, Rss } from 'lucide-react';
+import { apiGetPublicBlogs } from '../utils/apiClient';
 
-import logo from '../assets/logo_aindhin.png';
-
-// Strip HTML tags and return plain text for preview
+/* ── helpers ──────────────────────────────────────────────── */
 const stripHtml = (html) => {
     if (!html) return '';
-    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    return html.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
 };
 
+const fmtDate = (raw) => {
+    if (!raw) return '';
+    const d = new Date(raw);
+    if (isNaN(d)) return raw;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+/* ── Framer Motion variants ───────────────────────────────── */
+const fadeUp = (delay = 0) => ({
+    hidden: { opacity: 0, y: 28 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay } },
+});
+
+const stagger = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.1 } },
+};
+
+const cardVariant = {
+    hidden: { opacity: 0, y: 36, scale: 0.97 },
+    show: {
+        opacity: 1, y: 0, scale: 1,
+        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+    },
+};
+
+const BlogCard = ({ post }) => {
+    const navigate = useNavigate();
+    return (
+        <motion.article
+            variants={cardVariant}
+            onClick={() => navigate(`/blog/${post.slug}`)}
+            className="group bg-white rounded-2xl overflow-hidden border border-gray-100 
+                       shadow-[0_2px_16px_rgba(0,0,0,0.06)] 
+                       hover:shadow-[0_12px_44px_rgba(37,99,235,0.15)] 
+                       hover:-translate-y-1.5
+                       transition-all duration-300 flex flex-col h-full cursor-pointer"
+        >
+            {/* Image section */}
+            <div className="relative h-56 overflow-hidden bg-gray-100 shrink-0">
+                {(post.image_url || post.image) ? (
+                    <img
+                        src={post.image_url || post.image}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        onError={e => { e.target.style.display = 'none'; }}
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
+                        <BookOpen className="w-12 h-12 text-blue-200" />
+                    </div>
+                )}
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {/* Category badge */}
+                <div className="absolute top-4 left-4">
+                    <span className="bg-white/95 backdrop-blur-sm text-blue-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
+                        Blog
+                    </span>
+                </div>
+            </div>
+
+            {/* Content section */}
+            <div className="p-6 flex flex-col flex-grow">
+                {/* Meta info */}
+                <div className="flex items-center gap-3 text-[11px] font-semibold text-gray-400 mb-3 uppercase tracking-wider">
+                    <span className="flex items-center gap-1.5 text-blue-500/80">
+                        <User className="w-3.5 h-3.5" />
+                        {post.author || 'Aindhin Team'}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-gray-300" />
+                    <span className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {fmtDate(post.date || post.created_at)}
+                    </span>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg font-bold text-gray-900 leading-snug mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    {post.title}
+                </h3>
+
+                {/* Excerpt */}
+                <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-6">
+                    {stripHtml(post.description || post.desc)}
+                </p>
+
+                {/* Footer link style */}
+                <div className="mt-auto flex items-center gap-2 text-sm font-bold text-blue-600 group-hover:gap-3 transition-all duration-300">
+                    Read Full Article
+                    <ArrowRight className="w-4 h-4" />
+                </div>
+            </div>
+        </motion.article>
+    );
+};
+
+/* ── Page ─────────────────────────────────────────────────── */
 const Blogs = () => {
     const [blogPosts, setBlogPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        document.title = "Blogs | Aindhin - Latest Insights & Updates";
-
-        const fetchBlogs = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('blogs')
-                    .select('*')
-                    .order('date', { ascending: false });
-
-                if (error) {
-                    throw error;
-                }
-
-                if (data) {
-                    // Only show Published blogs (or legacy ones without a status)
-                    const visibleBlogs = data.filter(post =>
-                        post.status === 'Published' || !post.status
-                    );
-                    setBlogPosts(visibleBlogs);
-                }
-            } catch (error) {
-                console.error('Error fetching blogs:', error.message);
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchBlogs();
+        document.title = 'Blog | Aindhin - Latest Insights & Updates';
+        apiGetPublicBlogs()
+            .then(data => setBlogPosts(data || []))
+            .catch(err => setError(err.message))
+            .finally(() => setLoading(false));
     }, []);
 
+    /* ── Loading skeleton ─────────────── */
     if (loading) {
         return (
-            <div className="min-h-screen bg-white pt-32 pb-16 flex justify-center items-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <div className="min-h-screen bg-[#f8fafc] pt-32 pb-16">
+                <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                            <div key={i} className="bg-white rounded-2xl h-[450px] shadow-sm animate-pulse flex flex-col">
+                                <div className="h-56 bg-gray-100 rounded-t-2xl" />
+                                <div className="p-6 space-y-4">
+                                    <div className="h-4 w-1/3 bg-gray-100 rounded" />
+                                    <div className="h-6 w-3/4 bg-gray-100 rounded" />
+                                    <div className="h-20 w-full bg-gray-100 rounded" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         );
     }
 
+    /* ── Error ───────────────────────── */
     if (error) {
         return (
-            <div className="min-h-screen bg-white pt-32 pb-16 flex justify-center items-center">
-                <div className="text-center text-red-500">
-                    <p>Error loading blogs: {error}</p>
+            <div className="min-h-screen bg-[#f8fafc] pt-32 pb-16 flex justify-center items-center px-4">
+                <div className="text-center max-w-md">
+                    <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Rss className="w-10 h-10" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">Something went wrong</h2>
+                    <p className="text-gray-500 mb-8">{error || 'We couldn\'t load our latest insights. Please try again later.'}</p>
                     <button
-                        className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
                         onClick={() => window.location.reload()}
+                        className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/25 transition-all"
                     >
-                        Retry
+                        Try Again
                     </button>
                 </div>
             </div>
@@ -75,92 +166,54 @@ const Blogs = () => {
     }
 
     return (
-        <div className="min-h-screen bg-white pt-12 pb-16">
-            <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-                {/* Page Header */}
-                <motion.div
-                    variants={fadeIn("down", 0.1)}
-                    initial="hidden"
-                    animate="show"
-                    className="text-center mb-12"
-                >
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold font-inter text-black">
-                        Blogs
-                    </h1>
-                </motion.div>
+        <div className="min-h-screen bg-[#f8fafc]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
-                {/* Blog Grid */}
-                {blogPosts.length > 0 ? (
-                    <motion.div
-                        variants={staggerContainer(0.1, 0.1)}
-                        initial="hidden"
-                        animate="show"
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                    >
-                        {blogPosts.map((post) => (
-                            <motion.article
-                                key={post.id}
-                                variants={fadeIn("up", 0.2)}
-                                className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full"
-                            >
-                                {/* Blog Image */}
-                                <div className="relative h-60 overflow-hidden group">
-                                    <img
-                                        src={post.image || post.image_url} // Fallback for various column names
-                                        alt={post.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                        onError={(e) => { e.target.src = "https://via.placeholder.com/400x250?text=No+Image"; }}
-                                    />
-                                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur rounded-full px-3 py-1 flex items-center gap-1.5 shadow-sm">
-                                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <img src={logo} alt="" className="w-4 h-4 object-contain" />
-                                        </div>
-                                        <span className="text-xs font-bold font-inter text-secondary">AINDHIN</span>
-                                    </div>
-                                </div>
+            {/* ── Hero Banner ──────────────────────────────────────── */}
+            <div className="relative bg-[#0f172a] pt-32 pb-24 px-6 lg:px-12 overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-600/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 w-1/2 h-64 bg-gradient-to-t from-indigo-600/5 to-transparent" />
 
-                                {/* Blog Content */}
-                                <div className="p-6 flex flex-col flex-grow">
-                                    <h2 className="text-xl font-bold text-gray-900 font-inter mb-4 line-clamp-3 leading-snug">
-                                        {post.title}
-                                    </h2>
-
-                                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 font-inter">
-                                        <div className="flex items-center gap-1.5">
-                                            <User className="w-4 h-4 text-gray-400" />
-                                            <span>By {post.author || 'Admin'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <Calendar className="w-4 h-4 text-gray-400" />
-                                            <span>{post.date || new Date(post.created_at).toLocaleDateString()}</span>
-                                        </div>
-                                    </div>
-
-                                    <p className="text-gray-600 text-sm leading-relaxed mb-6 font-inter line-clamp-4 flex-grow">
-                                        {stripHtml(post.desc || post.description)}
-                                    </p>
-
-                                    <Link
-                                        to={`/blog/${post.slug}`}
-                                        className="inline-flex items-center text-gray-900 font-semibold text-sm hover:text-primary transition-colors mt-auto"
-                                    >
-                                        Read More
-                                        <ArrowRight className="w-4 h-4 ml-1" />
-                                    </Link>
-                                </div>
-                            </motion.article>
-                        ))}
+                <div className="relative z-10 max-w-[1400px] mx-auto">
+                    <motion.div variants={fadeUp(0)} initial="hidden" animate="show" className="max-w-3xl">
+                        <span className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <span className="w-8 h-px bg-blue-400" /> Aindhin Blog
+                        </span>
+                        <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-[1.15] mb-6">
+                            Master Your Future with{' '}
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Expert Blog</span>
+                        </h1>
+                        <p className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-2xl">
+                            Stay ahead of the curve with our latest articles on technology,
+                            career growth, and practical learning strategies.
+                        </p>
                     </motion.div>
-                ) : (
-                    <motion.div
-                        variants={fadeIn("up", 0.2)}
-                        initial="hidden"
-                        animate="show"
-                        className="text-center py-20"
-                    >
-                        <p className="text-gray-500 text-lg font-inter">No blogs available at the moment.</p>
-                    </motion.div>
-                )}
+                </div>
+            </div>
+
+            {/* ── Content ──────────────────────────────────────────── */}
+            <div className="px-6 lg:px-12 py-20">
+                <div className="max-w-[1400px] mx-auto">
+
+                    {blogPosts.length === 0 ? (
+                        <motion.div variants={fadeUp(0)} initial="hidden" animate="show"
+                            className="text-center py-32 border-2 border-dashed border-gray-100 rounded-3xl">
+                            <BookOpen className="w-16 h-16 text-gray-200 mx-auto mb-6" />
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">No articles found</h2>
+                            <p className="text-gray-500">We're currently crafting some amazing content. Check back soon!</p>
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            variants={stagger}
+                            initial="hidden"
+                            animate="show"
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-y-12"
+                        >
+                            {blogPosts.map(post => (
+                                <BlogCard key={post.id} post={post} />
+                            ))}
+                        </motion.div>
+                    )}
+                </div>
             </div>
         </div>
     );

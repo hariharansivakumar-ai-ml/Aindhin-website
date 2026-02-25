@@ -11,7 +11,7 @@ import BusinessStrategistHeroImg from '../assets/business_strategist_hero.jpg';
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
 import GoogleLogo from '../assets/google_logo.svg';
-import AmazonLogo from '../assets/amazon_logo.svg';
+import AmazonLogo from '../assets/amazon_logo.webp';
 import AccentureLogo from '../assets/accenture_logo.svg';
 import EYLogo from '../assets/ey_logo.svg';
 import LandTLogo from '../assets/l_and_t_logo.png';

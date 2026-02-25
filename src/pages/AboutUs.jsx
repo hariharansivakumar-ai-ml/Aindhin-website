@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer } from '../utils/motion';
 import { Wallet, Smartphone, GraduationCap, Play, ArrowDown, BookOpen, Lightbulb, Star } from 'lucide-react';
-import aboutHeroImg from '../assets/About1.png';
+import aboutHeroImg from '../assets/About1.webp';
 import whyChoose3Img from '../assets/why_choose_3.jpg';
 import whyChoose2Img from '../assets/why_choose_2.jpg';
 import whyChoose1Img from '../assets/why_choose_1.jpg';

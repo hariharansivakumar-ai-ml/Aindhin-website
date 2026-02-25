@@ -21,7 +21,7 @@ import WiproLogo from '../assets/wipro_logo.svg';
 import TCSLogo from '../assets/tcs_logo.svg';
 import IBMLogo from '../assets/ibm_logo.svg';
 import GoogleLogo from '../assets/google_logo.svg';
-import AmazonLogo from '../assets/amazon_logo.svg';
+import AmazonLogo from '../assets/amazon_logo.webp';
 
 import {
     BarChart, PieChart, Database, TrendingUp, Search, FileText, Globe, Server, CheckCircle,

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Phone } from 'lucide-react';
-import heroStudentImg from '../assets/hero_student.png';
+import heroStudentImg from '../assets/hero_student.webp';
 
 const Hero = () => {
     return (

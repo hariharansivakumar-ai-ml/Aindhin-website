@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer, float } from '../utils/motion';
 import { BookOpen, GraduationCap, Briefcase, Users } from 'lucide-react';
-import aboutImg from '../assets/about_img.png';
-import servicesHeroImg from '../assets/Gemini_Generated_Image_2ly66v2ly66v2ly6.png';
+import aboutImg from '../assets/about_img.webp';
+import servicesHeroImg from '../assets/Gemini_Generated_Image_2ly66v2ly66v2ly6.webp';
 import collegePartnershipImg from '../assets/steptodown.com436606 (1).jpg';
 
 import { useEffect } from 'react';
@@ -59,30 +59,13 @@ const Services = () => {
                             animate="show"
                             className="relative z-10 w-full max-w-[600px] lg:mr-[-50px]"
                         >
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                transition={{ duration: 0.3 }}
-                                className="relative"
-                            >
-                                <motion.img
-                                    animate={float(6, 15)}
+                            <div className="relative">
+                                <img
                                     src={servicesHeroImg}
                                     alt="Career-focused online courses in India – Leading online career development courses India for professionals"
                                     className="w-full h-auto object-contain relative z-10 scale-125 translate-x-12"
                                 />
-
-                                {/* Decorative Floating Elements behind the image */}
-                                <motion.div
-                                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-                                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute top-10 right-20 w-64 h-64 bg-blue-100 rounded-full blur-3xl -z-10"
-                                />
-                                <motion.div
-                                    animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-                                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                                    className="absolute bottom-10 left-20 w-48 h-48 bg-purple-100 rounded-full blur-3xl -z-10"
-                                />
-                            </motion.div>
+                            </div>
                         </motion.div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
-import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.bubble.css';
+import ReactQuill, { Quill } from 'react-quill-new';
+import 'react-quill-new/dist/quill.bubble.css';
 import { Heading1, Heading2, Heading3, Image as ImageIcon, List, Quote, CheckSquare, Code, X } from 'lucide-react';
 
 // --- Slash Menu Component ---
@@ -204,8 +204,9 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                     font-family: 'Inter', sans-serif;
                     line-height: 1.8;
                     font-size: 1.125rem; /* 18px */
-                    overflow-wrap: break-word;
-                    word-break: break-word;
+                    word-break: normal !important;
+                    overflow-wrap: anywhere !important;
+                    white-space: normal !important;
                 }
                 .rich-text-editor-container .ql-editor.ql-blank::before {
                     color: #9CA3AF;

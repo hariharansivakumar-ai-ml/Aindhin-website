@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, User } from 'lucide-react';
 import logo from '../assets/logo_aindhin.png';
-import { supabase } from '../utils/supabaseClient';
+import { apiLogin } from '../utils/apiClient';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
@@ -18,14 +18,7 @@ const AdminLogin = () => {
         setError(null);
 
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-
-            if (error) throw error;
-
-            console.log("Login successful:", data);
+            await apiLogin(email, password);
             navigate('/wp-admin/dashboard');
         } catch (err) {
             setError(err.message);

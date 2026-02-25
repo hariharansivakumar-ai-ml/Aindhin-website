@@ -9,7 +9,7 @@ import { ChevronRight, Users, BookOpen, PieChart, EyeOff, ThumbsUp, Code, ArrowD
 import blogIdeasImg from '../assets/blog_ideas.png';
 import blogSkillsImg from '../assets/blog_skills.png';
 import blogTechImg from '../assets/blog_tech.png';
-import aboutShapeImg from '../assets/about_shape.png';
+import aboutShapeImg from '../assets/about_shape.webp';
 import imageAnimeImg from '../assets/image_anime.png';
 import shape3Img from '../assets/shape_3.png';
 import whyChoose1Img from '../assets/why_choose_1.jpg';

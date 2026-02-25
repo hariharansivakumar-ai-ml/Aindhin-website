@@ -41,10 +41,10 @@ const Footer = () => {
                 <motion.div variants={fadeIn("up", 0.4)} className="flex flex-col gap-6">
                     <h4 className="text-primary font-bold text-lg">Our Courses</h4>
                     <ul className="flex flex-col gap-3 text-text text-[15px]">
-                        <li><Link to="/ai-machine-learning-course" className="hover:text-primary transition-colors">AI & Machine Learning</Link></li>
-                        <li><Link to="/data-analytics-course" className="hover:text-primary transition-colors">Data Analytics</Link></li>
-                        <li><Link to="/digital-marketing-course" className="hover:text-primary transition-colors">Digital Marketing</Link></li>
-                        <li><Link to="/full-stack-development-course" className="hover:text-primary transition-colors">Full Stack Development</Link></li>
+                        <li><Link to="/ai-machine-learning-from-basics-to-industry-applications" className="hover:text-primary transition-colors">AI & Machine Learning</Link></li>
+                        <li><Link to="/data-analyst-from-fundamentals-to-job‑ready-skills" className="hover:text-primary transition-colors">Data Analytics</Link></li>
+                        <li><Link to="/digital-marketing-from-basics-to-growth-campaigns" className="hover:text-primary transition-colors">Digital Marketing</Link></li>
+                        <li><Link to="/full-stack-development" className="hover:text-primary transition-colors">Full Stack Development</Link></li>
                     </ul>
                 </motion.div>
 
