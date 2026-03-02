@@ -6,7 +6,7 @@ import {
 import { motion, useInView } from 'framer-motion';
 
 // Hero Image
-import heroImg from '../assets/courses/python-certification-hero.jpg';
+import heroImg from '../assets/courses/python-certification-hero.webp';
 
 // Tool Logos
 import pythonLogo from '../assets/courses/logos/python.svg';
@@ -23,7 +23,7 @@ import googleLogo from '../assets/courses/logos/google.svg';
 import microsoftLogo from '../assets/courses/logos/microsoft.svg';
 import awsLogo from '../assets/courses/logos/aws.svg';
 import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.png';
+import metaLogo from '../assets/courses/logos/meta.webp';
 import netflixLogo from '../assets/courses/logos/netflix.svg';
 import infosysLogo from '../assets/courses/logos/infosys.svg';
 import accentureLogo from '../assets/courses/logos/accenture.svg';
@@ -50,7 +50,7 @@ const PythonCertificationCourse = () => {
     document.title = "Python Certification Course: Master Python Programming | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Level up your coding skills with our Python Certification course. From basics to advanced automation and data science, master the world's most popular language.");
+      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
     }
   }, []);
 

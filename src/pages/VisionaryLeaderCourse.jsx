@@ -3,7 +3,7 @@ import { Clock, Users, Target, Zap, Star, Map, Lightbulb, Compass, Megaphone, He
 import './VisionaryLeaderCourse.css';
 
 // Import local images
-import VisionaryLeaderHeroImg from '../assets/visionary_leader_hero.jpg';
+import VisionaryLeaderHeroImg from '../assets/visionary_leader_hero.webp';
 
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
@@ -11,14 +11,14 @@ import GoogleLogo from '../assets/google_logo.svg';
 import AmazonLogo from '../assets/amazon_logo.webp';
 import AccentureLogo from '../assets/accenture_logo.svg';
 import EYLogo from '../assets/ey_logo.svg';
-import LandTLogo from '../assets/l_and_t_logo.png';
-import TataLogo from '../assets/tata_logo.png';
+import LandTLogo from '../assets/l_and_t_logo.webp';
+import TataLogo from '../assets/tata_logo.webp';
 
 // Tool Logos
-import MiroLogo from '../assets/miro_logo.png';
+import MiroLogo from '../assets/miro_logo.webp';
 import NotionLogo from '../assets/notion_logo.svg';
-import ConfluenceLogo from '../assets/confluence_logo.png';
-import ZoomLogo from '../assets/zoom_logo.jpg';
+import ConfluenceLogo from '../assets/confluence_logo.webp';
+import ZoomLogo from '../assets/zoom_logo.webp';
 
 
 const VisionaryLeaderCourse = () => {

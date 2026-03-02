@@ -3,7 +3,7 @@ import { fadeIn, staggerContainer, float } from '../utils/motion';
 import { BookOpen, GraduationCap, Briefcase, Users } from 'lucide-react';
 import aboutImg from '../assets/about_img.webp';
 import servicesHeroImg from '../assets/Gemini_Generated_Image_2ly66v2ly66v2ly6.webp';
-import collegePartnershipImg from '../assets/steptodown.com436606 (1).jpg';
+import collegePartnershipImg from '../assets/steptodown.com436606 (1).webp';
 
 import { useEffect } from 'react';
 
@@ -12,7 +12,7 @@ const Services = () => {
         document.title = "Professional Training & Certification | Online Skill Development in India";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Elevate your career with Aindhin's specialized training programs. From university degrees to corporate upskilling, we provide industry-ready learning paths.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

@@ -52,6 +52,11 @@ class CommentCreate(BaseModel):
 class CommentStatusUpdate(BaseModel):
     status: str # 'Approved', 'Pending', 'Spam'
 
+class SubscriberCreate(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+
 # --- Auth Routes ---
 @app.post("/api/auth/login")
 async def login(req: LoginRequest):
@@ -329,6 +334,38 @@ async def delete_comment(comment_id: int, current_user: dict = Depends(get_curre
     try:
         execute_query("DELETE FROM comments WHERE id = %s", (comment_id,))
         return {"message": "Comment deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# --- Subscribers Routes ---
+@app.post("/api/subscribers")
+async def create_subscriber(req: SubscriberCreate):
+    try:
+        query = """
+            INSERT INTO subscribers (name, email, phone, created_at)
+            VALUES (%s, %s, %s, NOW())
+            RETURNING id, name, email
+        """
+        result = execute_query(query, (req.name, req.email, req.phone), fetch_all=False)
+        return result
+    except Exception as e:
+        if 'duplicate key' in str(e).lower() or 'unique constraint' in str(e).lower():
+            raise HTTPException(status_code=400, detail="Email is already subscribed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/subscribers")
+async def get_all_subscribers(current_user: dict = Depends(get_current_user)):
+    try:
+        query = "SELECT * FROM subscribers ORDER BY created_at DESC"
+        return execute_query(query)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/subscribers/{sub_id}")
+async def delete_subscriber(sub_id: int, current_user: dict = Depends(get_current_user)):
+    try:
+        execute_query("DELETE FROM subscribers WHERE id = %s", (sub_id,))
+        return {"message": "Subscriber deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

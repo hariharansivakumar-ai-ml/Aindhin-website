@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import './CyberSecurityCourse.css';
 
 // Import local images
-import CyberHeroImg from '../assets/cyber_security_hero.jpg';
+import CyberHeroImg from '../assets/cyber_security_hero.webp';
 
 // Logos
 import IBMLogo from '../assets/ibm_logo.svg';
 import CiscoLogo from '../assets/cisco_logo.svg';
-import PaloAltoLogo from '../assets/palo_alto_logo.png';
+import PaloAltoLogo from '../assets/palo_alto_logo.webp';
 import DeloitteLogo from '../assets/deloitte_logo.svg';
 import EYLogo from '../assets/ey_logo.svg';
 import TCSLogo from '../assets/tcs_logo.svg';
@@ -15,10 +15,10 @@ import WiproLogo from '../assets/wipro_logo.svg';
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
 
 import LinuxLogo from '../assets/linux_logo.svg';
-import WiresharkLogo from '../assets/wireshark_logo.png';
-import NmapLogo from '../assets/nmap_logo.png';
+import WiresharkLogo from '../assets/wireshark_logo.webp';
+import NmapLogo from '../assets/nmap_logo.webp';
 import KaliLogo from '../assets/kali_linux_logo.svg';
-import SplunkLogo from '../assets/splunk_logo.jpg';
+import SplunkLogo from '../assets/splunk_logo.webp';
 import PythonLogo from '../assets/python_logo.svg';
 import MySQLLogo from '../assets/mysql_logo.svg';
 import GitHubLogo from '../assets/github_logo.svg';
@@ -36,7 +36,7 @@ const CyberSecurityCourse = () => {
         document.title = "Cyber Security Course: Become an Ethical Hacker | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Learn to defend against cyber threats. Master network security, ethical hacking, and risk management with our professional Cyber Security course.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

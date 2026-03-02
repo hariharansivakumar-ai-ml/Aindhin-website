@@ -14,11 +14,11 @@ import GoogleLogo from '../assets/google_logo.svg';
 import AmazonLogo from '../assets/amazon_logo.webp';
 import AccentureLogo from '../assets/accenture_logo.svg';
 import EYLogo from '../assets/ey_logo.svg';
-import LandTLogo from '../assets/l_and_t_logo.png';
-import TataLogo from '../assets/tata_logo.png';
+import LandTLogo from '../assets/l_and_t_logo.webp';
+import TataLogo from '../assets/tata_logo.webp';
 
 // Tool Logos
-import OpenAILogo from '../assets/openai_logo.png';
+import OpenAILogo from '../assets/openai_logo.webp';
 import ExcelLogo from '../assets/excel_logo.png';
 import PowerBILogo from '../assets/power_bi_logo.svg';
 
@@ -28,7 +28,7 @@ const AIForBusinessCourse = () => {
         document.title = "AI for Business: Master Practical AI & Automation | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Scale your business with AI. Learn practical prompt engineering, workflow automation, and data-driven decision making in our AI for Business course.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

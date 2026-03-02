@@ -85,7 +85,7 @@ const AdminDrafts = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 font-inter flex">
+        <div className="flex h-screen bg-slate-50 font-inter overflow-hidden">
             <AdminSidebar userEmail={userEmail} />
 
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">

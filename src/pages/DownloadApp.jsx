@@ -2,14 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, CheckCircle, Monitor, Smartphone, BookOpen, BarChart3, Users, Rocket } from 'lucide-react';
 import './DownloadApp.css';
-import downloadAppImg from '../assets/download image.png';
+import downloadAppImg from '../assets/download image.webp';
 
 const DownloadApp = () => {
     React.useEffect(() => {
         document.title = "Aindhin Web App: Learn Smarter Anywhere, Anytime";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Access the Aindhin learning platform from any device. Start your journey with our feature-rich web app while our mobile app is in development.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

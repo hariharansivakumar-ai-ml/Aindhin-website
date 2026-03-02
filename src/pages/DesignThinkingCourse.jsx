@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './DesignThinkingCourse.css';
 
 // Import local images
-import DesignThinkingHeroImg from '../assets/design_thinking.jpg';
+import DesignThinkingHeroImg from '../assets/design_thinking.webp';
 
 // Logos
 // Logos
@@ -14,7 +14,7 @@ import EYLogo from '../assets/courses/logos/ey.svg';
 import InfosysLogo from '../assets/courses/logos/infosys.svg';
 
 import FigmaLogo from '../assets/figma_logo.svg';
-import MiroLogo from '../assets/miro_logo.png';
+import MiroLogo from '../assets/miro_logo.webp';
 import CanvaLogo from '../assets/courses/logos/canva.svg';
 
 

@@ -96,7 +96,7 @@ const AddBlogPost = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 font-inter flex">
+        <div className="flex h-screen bg-slate-50 font-inter overflow-hidden">
             <AdminSidebar userEmail={userEmail} />
 
             {/* Main Content Area */}
@@ -140,7 +140,7 @@ const AddBlogPost = () => {
 
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Left Column: Editor */}
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                             <textarea
                                 placeholder="Enter blog title..."
                                 value={title}

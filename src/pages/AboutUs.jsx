@@ -3,10 +3,11 @@ import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer } from '../utils/motion';
 import { Wallet, Smartphone, GraduationCap, Play, ArrowDown, BookOpen, Lightbulb, Star } from 'lucide-react';
 import aboutHeroImg from '../assets/About1.webp';
-import whyChoose3Img from '../assets/why_choose_3.jpg';
-import whyChoose2Img from '../assets/why_choose_2.jpg';
-import whyChoose1Img from '../assets/why_choose_1.jpg';
-import mobilePicImg from '../assets/mobile pic.png';
+import whyChoose3Img from '../assets/why_choose_3.webp';
+import whyChoose2Img from '../assets/why_choose_2.webp';
+import whyChoose1Img from '../assets/why_choose_1.webp';
+import mobilePicImg from '../assets/mobile pic.webp';
+import FAQSection from '../components/FAQSection';
 
 import { useEffect } from 'react';
 
@@ -17,7 +18,7 @@ const AboutUs = () => {
         document.title = "Our Story & Mission | Aindhin: Empowering Learners Across India";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Discover how Aindhin is revolutionizing education in India. We bridge the gap between learning and careers with professional training and global opportunities.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 
@@ -321,6 +322,28 @@ const AboutUs = () => {
                     </motion.div>
                 </div>
             </section>
+
+            {/* General FAQs */}
+            <FAQSection
+                faqs={[
+                    {
+                        question: "What is Aindhin?",
+                        answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
+                    },
+                    {
+                        question: "How does Aindhin help students?",
+                        answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
+                    },
+                    {
+                        question: "Are the courses industry-recognized?",
+                        answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
+                    },
+                    {
+                        question: "Who can enroll in Aindhin's courses?",
+                        answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
+                    }
+                ]}
+            />
 
             {/* 5. Download App Section - Refined and Added to About Us */}
             <section className="py-12 px-6 lg:px-12 bg-white border-t border-gray-100/50 flex justify-center relative overflow-hidden">

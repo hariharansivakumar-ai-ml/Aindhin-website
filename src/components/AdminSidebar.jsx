@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, PlusCircle, Trash2, LogOut, Clock, BarChart2, Image, Menu, X, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, FileText, PlusCircle, Trash2, LogOut, Clock, BarChart2, Image, Menu, X, MessageSquare, Users, Activity } from 'lucide-react';
 import { apiLogout } from '../utils/apiClient';
 
 const navItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/wp-admin/dashboard' },
     { label: 'All Blogs', icon: FileText, path: '/wp-admin/all-blogs' },
+    { label: 'Analytics', icon: Activity, path: '/wp-admin/analytics' },
     { label: 'Media', icon: Image, path: '/wp-admin/media' },
     { label: 'Comments', icon: MessageSquare, path: '/wp-admin/comments' },
+    { label: 'Subscribers', icon: Users, path: '/wp-admin/subscribers' },
     { label: 'Drafts', icon: Clock, path: '/wp-admin/drafts' },
     { label: 'Add New Blog', icon: PlusCircle, path: '/wp-admin/add-new' },
     { label: 'Trash', icon: Trash2, path: '/wp-admin/trash' },
@@ -49,7 +51,7 @@ const SidebarContent = ({ userEmail, onNavigate }) => {
                         <button
                             key={label}
                             onClick={() => onNavigate(path)}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-left
                                 ${isActive
                                     ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25'
                                     : 'text-white/50 hover:text-white hover:bg-white/8'

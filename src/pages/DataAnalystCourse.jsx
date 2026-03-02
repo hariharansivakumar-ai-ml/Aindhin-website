@@ -7,15 +7,15 @@ import {
 import { motion, useInView } from 'framer-motion';
 
 // Hero Image
-import heroImg from '../assets/courses/data-analyst-hero.jpg';
+import heroImg from '../assets/courses/data-analyst-hero.webp';
 
 // Tool Logos
 import pythonLogo from '../assets/courses/logos/python-tool.svg';
 import rLogo from '../assets/courses/logos/r-logo.svg';
 import rstudioLogo from '../assets/courses/logos/rstudio.svg';
-import excelLogo from '../assets/courses/logos/excel.png';
+import excelLogo from '../assets/courses/logos/excel.webp';
 import powerbiLogo from '../assets/courses/logos/powerbi.svg';
-import tableauLogo from '../assets/courses/logos/tableau.png';
+import tableauLogo from '../assets/courses/logos/tableau.webp';
 import mysqlLogo from '../assets/courses/logos/mysql.svg';
 import jupyterLogo from '../assets/courses/logos/jupyter.svg';
 import githubLogo from '../assets/courses/logos/github.svg';
@@ -52,7 +52,7 @@ const DataAnalystCourse = () => {
     document.title = "Data Analyst Course: Master Data Analytics & Business Intelligence | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Become a job-ready data expert. Master Excel, SQL, Python, and Power BI with our comprehensive Data Analytics course. Learn to turn raw data into actionable insights.");
+      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
     }
   }, []);
 

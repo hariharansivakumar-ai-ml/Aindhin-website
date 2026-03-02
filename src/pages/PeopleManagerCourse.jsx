@@ -3,7 +3,7 @@ import { Clock, Users, Target, Zap, Star, UserPlus, MessageSquare, TrendingUp, C
 import './PeopleManagerCourse.css';
 
 // Import local images
-import PeopleManagerHeroImg from '../assets/people_manager_hero.jpg';
+import PeopleManagerHeroImg from '../assets/people_manager_hero.webp';
 
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
@@ -17,8 +17,8 @@ import LinkedInLogo from '../assets/linkedin_logo.svg';
 
 // Tool Logos
 import TeamsLogo from '../assets/teams_logo.svg';
-import SlackLogo from '../assets/slack_logo.png';
-import GoogleDriveLogo from '../assets/google_drive_logo.png';
+import SlackLogo from '../assets/slack_logo.webp';
+import GoogleDriveLogo from '../assets/google_drive_logo.webp';
 
 
 const PeopleManagerCourse = () => {

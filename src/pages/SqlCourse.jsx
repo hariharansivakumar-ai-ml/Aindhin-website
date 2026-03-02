@@ -3,12 +3,12 @@ import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Database, Terminal, Settings, Rocket, Briefcase, Target, BookOpen, Sigma, GitMerge, Zap } from 'lucide-react';
 
 // Hero Image
-import heroImg from '../assets/courses/sql-hero.jpg';
+import heroImg from '../assets/courses/sql-hero.webp';
 
 // Tool Logos
 import mysqlLogo from '../assets/courses/logos/mysql.svg';
 import postgresqlLogo from '../assets/courses/logos/postgresql.svg';
-import sqlServerLogo from '../assets/courses/logos/sql-server.png';
+import sqlServerLogo from '../assets/courses/logos/sql-server.webp';
 import sqliteLogo from '../assets/courses/logos/sqlite.svg';
 import oracleLogo from '../assets/courses/logos/oracle.svg';
 
@@ -17,7 +17,7 @@ import googleLogo from '../assets/courses/logos/google.svg';
 import microsoftLogo from '../assets/courses/logos/microsoft.svg';
 import awsLogo from '../assets/courses/logos/aws.svg';
 import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.png';
+import metaLogo from '../assets/courses/logos/meta.webp';
 import netflixLogo from '../assets/courses/logos/netflix.svg';
 import infosysLogo from '../assets/courses/logos/infosys.svg';
 import accentureLogo from '../assets/courses/logos/accenture.svg';

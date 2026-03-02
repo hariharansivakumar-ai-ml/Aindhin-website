@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { LayoutGrid, Compass, MessageSquare, TrendingUp } from 'lucide-react';
 import './LeadershipCourses.css';
 
-import StrategicImg from '../assets/strategic_leader.jpg';
-import PeopleManagerImg from '../assets/people_manager.jpg';
-import VisionaryImg from '../assets/visionary_leader.jpg';
-import EffectiveCommImg from '../assets/effective_communicator.jpg';
-import TeamBuilderImg from '../assets/team_builder.jpg';
-import BusinessStratImg from '../assets/business_strategist.jpg';
+import StrategicImg from '../assets/strategic_leader.webp';
+import PeopleManagerImg from '../assets/people_manager.webp';
+import VisionaryImg from '../assets/visionary_leader.webp';
+import EffectiveCommImg from '../assets/effective_communicator.webp';
+import TeamBuilderImg from '../assets/team_builder.webp';
+import BusinessStratImg from '../assets/business_strategist.webp';
 
 
 const courses = [
@@ -77,7 +77,7 @@ const LeadershipCourses = () => {
         document.title = "Executive Leadership & Management Courses | Aindhin Professional";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Develop strategic thinking and managerial excellence. Our leadership courses offer high-impact workshops and mentorship for aspiring and current executives.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

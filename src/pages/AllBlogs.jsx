@@ -89,7 +89,7 @@ const AllBlogs = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 font-inter flex">
+        <div className="flex h-screen bg-slate-50 font-inter overflow-hidden">
             <AdminSidebar userEmail={userEmail} />
 
             {/* Main Content */}

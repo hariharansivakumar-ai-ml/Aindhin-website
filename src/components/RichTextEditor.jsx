@@ -204,9 +204,14 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                     font-family: 'Inter', sans-serif;
                     line-height: 1.8;
                     font-size: 1.125rem; /* 18px */
-                    word-break: normal !important;
-                    overflow-wrap: anywhere !important;
-                    white-space: normal !important;
+                    word-break: break-word !important;
+                    overflow-wrap: break-word !important;
+                    white-space: pre-wrap !important;
+                }
+                .rich-text-editor-container .ql-editor * {
+                    word-break: break-word !important;
+                    overflow-wrap: break-word !important;
+                    white-space: pre-wrap !important;
                 }
                 .rich-text-editor-container .ql-editor.ql-blank::before {
                     color: #9CA3AF;

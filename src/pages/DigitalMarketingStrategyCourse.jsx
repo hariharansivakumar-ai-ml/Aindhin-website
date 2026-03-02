@@ -3,14 +3,14 @@ import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 // Hero Image
-import heroImg from '../assets/courses/digital-marketing-strategy-hero.jpg';
+import heroImg from '../assets/courses/digital-marketing-strategy-hero.webp';
 
 // Tool Logos
 import googleAdsLogo from '../assets/courses/logos/google-ads.svg';
-import googleAnalyticsLogo from '../assets/courses/logos/google-analytics.png';
-import metaAdsLogo from '../assets/courses/logos/meta.png';
-import linkedinLogo from '../assets/courses/logos/linkedin.png';
-import mailchimpLogo from '../assets/courses/logos/mailchimp.png';
+import googleAnalyticsLogo from '../assets/courses/logos/google-analytics.webp';
+import metaAdsLogo from '../assets/courses/logos/meta.webp';
+import linkedinLogo from '../assets/courses/logos/linkedin.webp';
+import mailchimpLogo from '../assets/courses/logos/mailchimp.webp';
 import canvaLogo from '../assets/courses/logos/canva.svg';
 
 // Company Logos
@@ -18,7 +18,7 @@ import googleLogo from '../assets/courses/logos/google.svg';
 import microsoftLogo from '../assets/courses/logos/microsoft.svg';
 import awsLogo from '../assets/courses/logos/aws.svg';
 import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.png';
+import metaLogo from '../assets/courses/logos/meta.webp';
 import netflixLogo from '../assets/courses/logos/netflix.svg';
 import infosysLogo from '../assets/courses/logos/infosys.svg';
 import accentureLogo from '../assets/courses/logos/accenture.svg';
@@ -45,7 +45,7 @@ const DigitalMarketingStrategyCourse = () => {
     document.title = "Digital Marketing Strategy, Ads & Analytics Course | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Master the art of digital growth. Learn advanced strategies in Google Ads, Meta Ads, and Analytics with our expert-led Digital Marketing course.");
+      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
     }
   }, []);
 

@@ -95,9 +95,43 @@ export const apiDeleteBlog = async (id) => {
 };
 
 // --- Image Upload ---
+const convertToWebP = (file) => {
+    return new Promise((resolve, reject) => {
+        if (!file.type.startsWith('image/') || file.type === 'image/webp') {
+            return resolve(file);
+        }
+
+        const img = new Image();
+        const objectUrl = URL.createObjectURL(file);
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            canvas.toBlob((blob) => {
+                URL.revokeObjectURL(objectUrl);
+                if (!blob) {
+                    return resolve(file); // Fallback to original
+                }
+                const newFilename = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                const webpFile = new File([blob], newFilename, { type: 'image/webp', lastModified: Date.now() });
+                resolve(webpFile);
+            }, 'image/webp', 0.85);
+        };
+        img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            resolve(file); // Fallback to original on error
+        };
+        img.src = objectUrl;
+    });
+};
+
 export const apiUploadImage = async (file) => {
+    const finalFile = await convertToWebP(file);
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', finalFile);
     const res = await fetch(`${API_URL}/upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${getToken()}` },
@@ -172,5 +206,35 @@ export const apiDeleteComment = async (commentId) => {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || data.error || 'Failed to delete comment');
+    return data;
+};
+
+// --- Subscribers ---
+export const apiGetAllSubscribers = async () => {
+    const res = await fetch(`${API_URL}/subscribers`, {
+        headers: authHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to fetch subscribers');
+    return res.json();
+};
+
+export const apiDeleteSubscriber = async (subscriberId) => {
+    const res = await fetch(`${API_URL}/subscribers/${subscriberId}`, {
+        method: 'DELETE',
+        headers: authHeaders()
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || data.error || 'Failed to delete subscriber');
+    return data;
+};
+
+export const apiCreateSubscriber = async (subscriberData) => {
+    const res = await fetch(`${API_URL}/subscribers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(subscriberData)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || data.error || 'Failed to submit form');
     return data;
 };

@@ -2,18 +2,19 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
+import FAQSection from '../components/FAQSection';
 
-import aiMlBasicsImg from '../assets/courses/ai-ml-basics.jpg';
-import comingSoonImg from '../assets/courses/coming-soon.jpg';
-import dataAnalystImg from '../assets/courses/data-analyst.jpg';
-import tableauImg from '../assets/courses/tableau.jpg';
-import powerBiImg from '../assets/courses/power-bi.jpg';
-import sqlImg from '../assets/courses/sql.jpg';
+import aiMlBasicsImg from '../assets/courses/ai-ml-basics.webp';
+import comingSoonImg from '../assets/courses/coming-soon.webp';
+import dataAnalystImg from '../assets/courses/data-analyst.webp';
+import tableauImg from '../assets/courses/tableau.webp';
+import powerBiImg from '../assets/courses/power-bi.webp';
+import sqlImg from '../assets/courses/sql.webp';
 
-import fullStackImg from '../assets/courses/full-stack.jpg';
-import javaImg from '../assets/courses/java-certification-hero.jpg';
-import pythonImg from '../assets/courses/python-certification-hero.jpg';
-import digitalMarketingImg from '../assets/courses/digital-marketing-hero.jpg';
+import fullStackImg from '../assets/courses/full-stack.webp';
+import javaImg from '../assets/courses/java-certification-hero.webp';
+import pythonImg from '../assets/courses/python-certification-hero.webp';
+import digitalMarketingImg from '../assets/courses/digital-marketing-hero.webp';
 
 
 const Courses = () => {
@@ -23,7 +24,7 @@ const Courses = () => {
         document.title = "Explore Job-Ready Online Certification Courses in India | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Browse our curated selection of online certification courses. Master AI, Data Science, Marketing, and more with practical, industry-aligned programs.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
     const initialTab = searchParams.get('tab') || 'all';
@@ -33,7 +34,7 @@ const Courses = () => {
         document.title = "Aindhin | Online Certification Courses in India";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin provides high-quality online certification courses in India, offering career-focused training, skill development, and industry-ready learning for students and professionals.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 
@@ -207,13 +208,13 @@ const Courses = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`w-full border-none rounded-2xl px-6 py-3.5 flex items-center gap-4 text-[15px] font-bold cursor-pointer transition-all duration-300 whitespace-nowrap ${activeTab === tab.id ? 'bg-primary text-white shadow-lg' : 'bg-white text-primary hover:bg-blue-50'
+                                className={`w-full border-none rounded-2xl px-6 py-3.5 flex items-center gap-4 text-[15px] font-bold cursor-pointer transition-all duration-300 ${activeTab === tab.id ? 'bg-primary text-white shadow-lg' : 'bg-white text-primary hover:bg-blue-50'
                                     }`}
                             >
                                 <span className={`flex-shrink-0 p-1.5 rounded-lg ${activeTab === tab.id ? 'bg-white/20' : 'bg-blue-50'}`}>
                                     {tab.icon}
                                 </span>
-                                <span className="text-left">{tab.label}</span>
+                                <span className="text-left leading-tight">{tab.label}</span>
                             </button>
                         ))}
                     </div>
@@ -304,6 +305,28 @@ const Courses = () => {
                 </div>
 
             </div>
+
+            {/* General FAQs */}
+            <FAQSection
+                faqs={[
+                    {
+                        question: "What is Aindhin?",
+                        answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
+                    },
+                    {
+                        question: "How does Aindhin help students?",
+                        answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
+                    },
+                    {
+                        question: "Are the courses industry-recognized?",
+                        answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
+                    },
+                    {
+                        question: "Who can enroll in Aindhin's courses?",
+                        answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
+                    }
+                ]}
+            />
         </section>
     );
 };

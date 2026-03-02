@@ -6,7 +6,7 @@ import {
 import './AutomationProductivityCourse.css';
 
 // Import local images
-import AutomationHeroImg from '../assets/automation_hero.jpg';
+import AutomationHeroImg from '../assets/automation_hero.webp';
 
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
@@ -15,11 +15,11 @@ import PowerBILogo from '../assets/power_bi_logo.svg';
 import ExcelLogo from '../assets/excel_logo.png';
 
 // New Logos
-import Office365Logo from '../assets/office_365_logo.png';
-import SlackLogo from '../assets/slack_logo.png';
-import PowerpointLogo from '../assets/powerpoint_logo.png';
-import PowerAutomateLogo from '../assets/power_automate_logo.png';
-import GoogleDriveLogo from '../assets/google_drive_logo.png';
+import Office365Logo from '../assets/office_365_logo.webp';
+import SlackLogo from '../assets/slack_logo.webp';
+import PowerpointLogo from '../assets/powerpoint_logo.webp';
+import PowerAutomateLogo from '../assets/power_automate_logo.webp';
+import GoogleDriveLogo from '../assets/google_drive_logo.webp';
 
 const AutomationProductivityCourse = () => {
 

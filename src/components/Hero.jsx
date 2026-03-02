@@ -24,27 +24,45 @@ const Hero = () => {
                     </span>
 
                     <h1 className="text-4xl lg:text-[56px] font-bold text-secondary leading-[1.2] font-inter">
-                        <span className="text-primary block mb-2 lg:whitespace-nowrap">Master In-Demand Skills</span>
-                        Accelerate Your Career with the Best <span className="text-primary">Online Courses in India</span>
+                        <span className="text-primary block mb-2 lg:whitespace-nowrap">Online Learning</span>
+                        Platform in India – <span className="text-primary">Aindhin</span>
                     </h1>
 
                     <p className="text-lg lg:text-[20px] text-gray-600 leading-[1.7] font-inter max-w-xl">
-                        Aindhin is the premier provider of <span className="font-semibold text-gray-900">online courses in India</span>, offering career-focused programs and corporate training that bridge learning with real job opportunities.
+                        We bridge the gap between academic education and industry requirements by providing elite, career-focused certification courses designed to guarantee your professional success.
                     </p>
 
-                    <div className="flex flex-wrap gap-5 mt-6">
+                    <div className="flex flex-wrap gap-4 mt-6">
                         <Link
-                            to="/our-courses/"
-                            className="inline-flex items-center gap-2.5 px-8 py-4 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter"
+                            to="/courses"
+                            className="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-sm"
                         >
-                            Browse Courses <ArrowUpRight className="w-5 h-5" />
+                            Explore Courses <ArrowUpRight className="w-4 h-4" />
                         </Link>
                         <Link
-                            to="/about-us/"
-                            className="inline-flex items-center gap-2.5 px-8 py-4 border-2 border-primary text-primary font-bold rounded-full hover:bg-blue-50 transition-all duration-300 font-inter"
+                            to="/courses"
+                            className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#FF5252] text-white font-bold rounded-full shadow-[0_10px_30px_rgba(255,82,82,0.4)] hover:-translate-y-1 transition-all duration-300 font-inter text-sm"
                         >
-                            About Us <ArrowUpRight className="w-5 h-5" />
+                            Start Learning <ArrowUpRight className="w-4 h-4" />
                         </Link>
+                    </div>
+
+                    {/* Trust Signals Underneath CTAs */}
+                    <div className="flex flex-wrap items-center gap-4 lg:gap-8 mt-6">
+                        <div className="flex items-center gap-2">
+                            <span className="text-2xl">🏆</span>
+                            <span className="text-sm font-semibold text-gray-700 font-inter">Industry<br />Certifications</span>
+                        </div>
+                        <div className="w-px h-8 bg-gray-200"></div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-2xl">🤝</span>
+                            <span className="text-sm font-semibold text-gray-700 font-inter">Top Partner<br />Institutions</span>
+                        </div>
+                        <div className="w-px h-8 bg-gray-200"></div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-2xl">⭐</span>
+                            <span className="text-sm font-semibold text-gray-700 font-inter">100+ Glowing<br />Testimonials</span>
+                        </div>
                     </div>
                 </motion.div>
 

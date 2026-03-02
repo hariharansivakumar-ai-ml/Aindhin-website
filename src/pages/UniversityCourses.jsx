@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutGrid, Monitor, TrendingUp, Briefcase, GraduationCap, BookOpen, Users, Clock, Star } from 'lucide-react';
 import './UniversityCourses.css';
-import BscImg from '../assets/B_sc_scaled.jpg';
-import BBAImg from '../assets/BBA_scaled.jpg';
-import BComImg from '../assets/B_com_scaled.jpg';
-import BAImg from '../assets/B_A_scaled.jpg';
+import BscImg from '../assets/B_sc_scaled.webp';
+import BBAImg from '../assets/BBA_scaled.webp';
+import BComImg from '../assets/B_com_scaled.webp';
+import BAImg from '../assets/B_A_scaled.webp';
 
 const courses = [
     {
@@ -67,7 +67,7 @@ const UniversityCourses = () => {
         document.title = "Top UGC-Approved Online Degree Programs | Aindhin University Partner";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Advance your education with UGC-approved online degree programs from leading universities. Explore Bachelors, Masters, and PG Diplomas designed for flexible learning.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
     const [activeTab, setActiveTab] = useState('all');

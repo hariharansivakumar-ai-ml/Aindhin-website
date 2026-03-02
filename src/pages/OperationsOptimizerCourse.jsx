@@ -3,7 +3,7 @@ import { Clock, Users, Target, Zap, Star, Settings, Activity, TrendingUp, BarCha
 import './OperationsOptimizerCourse.css';
 
 // Import local images
-import OperationsOptimizerHeroImg from '../assets/operations_optimizer_hero.jpg';
+import OperationsOptimizerHeroImg from '../assets/operations_optimizer_hero.webp';
 
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
@@ -11,15 +11,15 @@ import GoogleLogo from '../assets/google_logo.svg';
 import AmazonLogo from '../assets/amazon_logo.webp';
 import AccentureLogo from '../assets/accenture_logo.svg';
 import EYLogo from '../assets/ey_logo.svg';
-import LandTLogo from '../assets/l_and_t_logo.png';
-import TataLogo from '../assets/tata_logo.png';
+import LandTLogo from '../assets/l_and_t_logo.webp';
+import TataLogo from '../assets/tata_logo.webp';
 
 // Tool Logos
-import JiraLogo from '../assets/jira_logo.png';
-import ConfluenceLogo from '../assets/confluence_logo.png';
+import JiraLogo from '../assets/jira_logo.webp';
+import ConfluenceLogo from '../assets/confluence_logo.webp';
 import ExcelLogo from '../assets/excel_logo.png';
 import PowerBILogo from '../assets/power_bi_logo.svg';
-import MiroLogo from '../assets/miro_logo.png';
+import MiroLogo from '../assets/miro_logo.webp';
 
 const OperationsOptimizerCourse = () => {
 

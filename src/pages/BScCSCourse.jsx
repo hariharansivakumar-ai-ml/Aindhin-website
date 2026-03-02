@@ -4,14 +4,14 @@ import {
     Briefcase, CheckCircle, Target, BookOpen, Layers
 } from 'lucide-react';
 import './BScCSCourse.css';
-import BScHeroImg from '../assets/B_sc_scaled.jpg';
+import BScHeroImg from '../assets/B_sc_scaled.webp';
 
 // Import Logos
 import GoogleLogo from '../assets/google_logo.svg';
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
 import AWSLogo from '../assets/aws_logo.svg';
 import IBMLogo from '../assets/ibm_logo.svg';
-import MetaLogo from '../assets/meta_logo.png';
+import MetaLogo from '../assets/meta_logo.webp';
 import NetflixLogo from '../assets/netflix_logo.svg';
 import InfosysLogo from '../assets/infosys_logo.svg';
 import AccentureLogo from '../assets/accenture_logo.svg';
@@ -22,7 +22,7 @@ import ScikitLearnLogo from '../assets/scikit_learn_logo.svg';
 import TensorFlowLogo from '../assets/tensorflow_logo.svg';
 import JupyterLogo from '../assets/jupyter_logo.svg';
 import PostgreSQLLogo from '../assets/postgresql_logo.svg';
-import TableauLogo from '../assets/tableau_logo.png';
+import TableauLogo from '../assets/tableau_logo.webp';
 import GitLogo from '../assets/git_logo.svg';
 
 const BScCSCourse = () => {
@@ -30,7 +30,7 @@ const BScCSCourse = () => {
         document.title = "B.Sc. Computer Science with AI & Data Science | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Build a future-proof career in tech. Our B.Sc. in Computer Science offers specialized training in AI and Data Science with hands-on labs and capstone projects.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

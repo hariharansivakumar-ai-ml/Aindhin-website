@@ -3,7 +3,7 @@ import { Clock, Users, Target, Zap, Star, Compass, PieChart, FlaskConical, Clipb
 import './InnovationStrategyCourse.css';
 
 // Import local images
-import InnovationStrategyHeroImg from '../assets/innovation_strategy_hero.jpg';
+import InnovationStrategyHeroImg from '../assets/innovation_strategy_hero.webp';
 
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
@@ -11,13 +11,13 @@ import GoogleLogo from '../assets/google_logo.svg';
 import AmazonLogo from '../assets/amazon_logo.webp';
 import AccentureLogo from '../assets/accenture_logo.svg';
 import EYLogo from '../assets/ey_logo.svg';
-import LandTLogo from '../assets/l_and_t_logo.png';
-import TataLogo from '../assets/tata_logo.png';
+import LandTLogo from '../assets/l_and_t_logo.webp';
+import TataLogo from '../assets/tata_logo.webp';
 
 // Tool Logos
-import MiroLogo from '../assets/miro_logo.png';
+import MiroLogo from '../assets/miro_logo.webp';
 import NotionLogo from '../assets/notion_logo.svg';
-import JiraLogo from '../assets/jira_logo.png';
+import JiraLogo from '../assets/jira_logo.webp';
 import ExcelLogo from '../assets/excel_logo.png';
 import PowerBILogo from '../assets/power_bi_logo.svg';
 

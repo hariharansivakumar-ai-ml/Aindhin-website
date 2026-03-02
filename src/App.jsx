@@ -4,6 +4,8 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Preloader from './components/Preloader';
 import ScrollToTop from './components/ScrollToTop';
+import SubscribePopup from './components/SubscribePopup';
+import AdminSidebar from './components/AdminSidebar';
 
 // Lazy Load Pages
 const Home = lazy(() => import('./pages/Home'));
@@ -23,6 +25,8 @@ const AdminTrash = lazy(() => import('./pages/AdminTrash'));
 const AdminDrafts = lazy(() => import('./pages/AdminDrafts'));
 const Media = lazy(() => import('./pages/Media'));
 const AdminComments = lazy(() => import('./pages/AdminComments'));
+const AdminSubscribers = lazy(() => import('./pages/AdminSubscribers'));
+const AdminAnalytics = lazy(() => import('./pages/AdminAnalytics'));
 
 // Course Pages
 const AiMlCourse = lazy(() => import('./pages/AiMlCourse'));
@@ -65,14 +69,28 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 function Layout() {
     const location = useLocation();
     const isAdminRoute = location.pathname.startsWith('/wp-admin');
+    const isAdminLogin = location.pathname === '/wp-admin';
+
+    const getFallback = () => {
+        if (!isAdminRoute) return <Preloader />;
+        if (isAdminLogin) return <Preloader />;
+        return (
+            <div className="flex h-screen w-full bg-slate-50 font-inter overflow-hidden">
+                <AdminSidebar userEmail="Loading..." />
+                <main className="flex-1 min-w-0 flex items-center justify-center">
+                    <div className="w-10 h-10 border-[3px] border-violet-500/30 border-t-violet-600 rounded-full animate-spin"></div>
+                </main>
+            </div>
+        );
+    };
 
     return (
-        <div className="min-h-screen bg-white flex flex-col">
+        <div className="min-h-screen bg-white flex flex-col w-full">
             <ScrollToTop />
             {!isAdminRoute && <Preloader />}
             {!isAdminRoute && <Header />}
-            <main className={`flex-grow ${!isAdminRoute ? 'pt-[80px]' : ''}`}>
-                <Suspense fallback={isAdminRoute ? null : <Preloader />}>
+            <main className={`flex-grow w-full ${!isAdminRoute ? 'pt-[80px]' : ''}`}>
+                <Suspense fallback={getFallback()}>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/download-app" element={<DownloadApp />} />
@@ -89,6 +107,8 @@ function Layout() {
                         <Route path="/wp-admin/drafts" element={<AdminDrafts />} />
                         <Route path="/wp-admin/media" element={<Media />} />
                         <Route path="/wp-admin/comments" element={<AdminComments />} />
+                        <Route path="/wp-admin/subscribers" element={<AdminSubscribers />} />
+                        <Route path="/wp-admin/analytics" element={<AdminAnalytics />} />
                         <Route path="/our-courses" element={<Courses />} />
                         <Route path="/university-courses" element={<UniversityCourses />} />
                         <Route path="/corporate-courses" element={<CorporateCourses />} />
@@ -133,6 +153,7 @@ function Layout() {
                 </Suspense>
             </main>
             {!isAdminRoute && <Footer />}
+            {!isAdminRoute && <SubscribePopup />}
         </div>
     );
 }

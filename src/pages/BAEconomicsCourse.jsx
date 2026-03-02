@@ -4,7 +4,7 @@ import {
     TrendingUp, BarChart, PieChart, Globe, BookOpen, Calculator, Landmark
 } from 'lucide-react';
 import './BAEconomicsCourse.css';
-import BAHeroImg from '../assets/B_A_scaled.jpg';
+import BAHeroImg from '../assets/B_A_scaled.webp';
 
 // Import all logos
 import RBILogo from '../assets/rbi_logo.svg';
@@ -20,7 +20,7 @@ import RLogo from '../assets/r_logo.svg';
 import RStudioLogo from '../assets/rstudio_logo.svg';
 import ExcelLogo from '../assets/excel_logo.png';
 import PowerBILogo from '../assets/power_bi_logo.svg';
-import TableauLogo from '../assets/tableau_logo.png';
+import TableauLogo from '../assets/tableau_logo.webp';
 import JupyterLogo from '../assets/jupyter_logo.svg';
 
 const BAEconomicsCourse = () => {
@@ -28,7 +28,7 @@ const BAEconomicsCourse = () => {
         document.title = "B.A. Economics with Data Analytics: Master Economic Science | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Earn your B.A. in Economics with a specialized focus on Data Analytics. Learn to interpret market trends and drive policy decisions with data-backed insights.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

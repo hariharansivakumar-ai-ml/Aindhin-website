@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './CloudComputingCourse.css';
 
 // Import local images
-import CloudHeroImg from '../assets/cloud_computing.jpg';
+import CloudHeroImg from '../assets/cloud_computing.webp';
 
 // Logos
 import AWSLogo from '../assets/aws_logo.svg';
@@ -14,7 +14,7 @@ import DeloitteLogo from '../assets/deloitte_logo.svg';
 import TCSLogo from '../assets/tcs_logo.svg';
 import WiproLogo from '../assets/wipro_logo.svg';
 
-import DockerLogo from '../assets/docker_logo.png';
+import DockerLogo from '../assets/docker_logo.webp';
 import KubernetesLogo from '../assets/kubernetes_logo.svg';
 import LinuxLogo from '../assets/linux_logo.svg';
 import MySQLLogo from '../assets/mysql_logo.svg';
@@ -33,7 +33,7 @@ const CloudComputingCourse = () => {
         document.title = "Cloud Computing Course: Master AWS, Azure & GCP | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Master the world's leading cloud platforms. Learn virtualization, containerization, and cloud architecture with our industry-focused Cloud Computing course.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

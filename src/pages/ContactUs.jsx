@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { fadeIn } from '../utils/motion';
 import { MapPin, Phone, Mail, Monitor, ArrowDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import mobilePicImg from '../assets/mobile pic.png';
+import mobilePicImg from '../assets/mobile pic.webp';
 
 import { useEffect } from 'react';
 
@@ -13,7 +13,7 @@ const ContactUs = () => {
         document.title = "Contact Aindhin | Get Expert Guidance on Your Learning Journey";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Have questions about our courses or partnerships? Contact the Aindhin team today for expert support, career guidance, and technical assistance.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

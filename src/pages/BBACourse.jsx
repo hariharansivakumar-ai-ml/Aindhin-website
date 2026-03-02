@@ -4,7 +4,7 @@ import {
     Target, BarChart, Globe, DollarSign, BookOpen, Layers, Lightbulb, PieChart
 } from 'lucide-react';
 import './BBACourse.css';
-import BBAHeroImg from '../assets/BBA_scaled.jpg';
+import BBAHeroImg from '../assets/BBA_scaled.webp';
 
 // Import Logos
 import HDFCLogo from '../assets/hdfc_logo.svg';
@@ -18,10 +18,10 @@ import IBMLogo from '../assets/ibm_logo.svg';
 import ExcelLogo from '../assets/excel_logo.png';
 import PowerPointLogo from '../assets/powerpoint_logo.svg';
 import PowerBILogo from '../assets/power_bi_logo.svg';
-import TableauLogo from '../assets/tableau_logo.png';
+import TableauLogo from '../assets/tableau_logo.webp';
 import GoogleAnalyticsLogo from '../assets/google_analytics_logo.svg';
 import SalesforceLogo from '../assets/salesforce_logo.svg';
-import SlackLogo from '../assets/slack_logo.png';
+import SlackLogo from '../assets/slack_logo.webp';
 import TrelloLogo from '../assets/trello_logo.svg';
 
 
@@ -30,7 +30,7 @@ const BBACourse = () => {
         document.title = "BBA Degree: Bachelor of Business Administration | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Launch your management career with our BBA degree. Master marketing, finance, and entrepreneurship with case studies and industry-led projects.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

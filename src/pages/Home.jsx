@@ -4,18 +4,19 @@ import CourseCard from '../components/CourseCard';
 import Testimonials from '../components/Testimonials';
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer, zoomIn, float } from '../utils/motion';
+import FAQSection from '../components/FAQSection';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Users, BookOpen, PieChart, EyeOff, ThumbsUp, Code, ArrowDown } from 'lucide-react';
-import blogIdeasImg from '../assets/blog_ideas.png';
-import blogSkillsImg from '../assets/blog_skills.png';
-import blogTechImg from '../assets/blog_tech.png';
+import blogIdeasImg from '../assets/blog_ideas.webp';
+import blogSkillsImg from '../assets/blog_skills.webp';
+import blogTechImg from '../assets/blog_tech.webp';
 import aboutShapeImg from '../assets/about_shape.webp';
-import imageAnimeImg from '../assets/image_anime.png';
-import shape3Img from '../assets/shape_3.png';
-import whyChoose1Img from '../assets/why_choose_1.jpg';
-import whyChoose2Img from '../assets/why_choose_2.jpg';
-import whyChoose3Img from '../assets/why_choose_3.jpg';
-import mobilePicImg from '../assets/mobile pic.png';
+import imageAnimeImg from '../assets/image_anime.webp';
+import shape3Img from '../assets/shape_3.webp';
+import whyChoose1Img from '../assets/why_choose_1.webp';
+import whyChoose2Img from '../assets/why_choose_2.webp';
+import whyChoose3Img from '../assets/why_choose_3.webp';
+import mobilePicImg from '../assets/mobile pic.webp';
 
 const blogPreviews = [
     {
@@ -45,7 +46,7 @@ const Home = () => {
         document.title = "Online Courses in India | Aindhin - Master Job-Ready Skills";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin provides the best online courses in India. Master job-ready skills with expert-led certifications and professional training for your career success.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
     return (
@@ -70,10 +71,10 @@ const Home = () => {
                         <div className="space-y-4">
                             <span className="font-inter text-primary font-bold text-lg tracking-wide uppercase block mb-2">About Aindhin</span>
                             <h2 className="font-inter text-3xl md:text-4xl lg:text-5xl font-bold text-secondary leading-tight">
-                                Best Online Learning Platform in India
+                                What is an Online Learning Platform in India?
                             </h2>
                             <p className="font-inter text-gray-600 text-base lg:text-lg leading-relaxed max-w-lg">
-                                Aindhin is the best provider of <span className="font-semibold text-gray-900">online courses in India</span>, offering career-focused skill development programs and industry-ready training for students and professionals.
+                                Aindhin is the best provider of <span className="font-semibold text-gray-900">online courses in India</span>, offering career-focused skill development programs and industry-ready training for students and professionals. By providing accessible digital education, we help learners build practical skills, earn recognized certifications, and bridge the gap between academic knowledge and real-world employment opportunities.
                             </p>
                         </div>
 
@@ -160,7 +161,7 @@ const Home = () => {
                     viewport={{ once: true }}
                     className="max-w-[1400px] mx-auto text-center mb-16"
                 >
-                    <h2 className="font-inter text-[#644BFF] font-semibold text-xl md:text-2xl tracking-wide uppercase">Mission & Vision: Professional Skill Training Programs in India</h2>
+                    <h2 className="font-inter text-[#644BFF] font-semibold text-xl md:text-2xl tracking-wide uppercase">How Aindhin Supports Career Growth</h2>
                 </motion.div>
                 <motion.div
                     variants={staggerContainer(0.2, 0.2)}
@@ -206,8 +207,11 @@ const Home = () => {
             <section className="py-8 px-6 lg:px-12 bg-white">
                 <div className="max-w-[1400px] mx-auto">
                     <div className="text-center mb-16 space-y-4">
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary font-inter leading-tight">Online Career Development Courses India</h2>
-                        <div className="flex justify-center gap-1">
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary font-inter leading-tight">Benefits of Online Learning in India</h2>
+                        <p className="text-gray-600 max-w-2xl mx-auto font-inter text-lg">
+                            Online learning offers unparalleled flexibility and access to industry-aligned training programs. By focusing on practical application and globally recognized certifications, digital platforms empower students and professionals to learn at their own pace, gain confidence, and thrive in highly competitive job markets across India.
+                        </p>
+                        <div className="flex justify-center gap-1 mt-6">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary opacity-60"></span>
                             <span className="w-1.5 h-1.5 rounded-full bg-primary opacity-80"></span>
                             <span className="w-8 h-1.5 rounded-full bg-primary"></span>
@@ -243,7 +247,30 @@ const Home = () => {
             </section>
 
             <StatsSection />
+
             <Testimonials />
+
+            {/* General FAQs */}
+            <FAQSection
+                faqs={[
+                    {
+                        question: "What is Aindhin?",
+                        answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
+                    },
+                    {
+                        question: "How does Aindhin help students?",
+                        answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
+                    },
+                    {
+                        question: "Are the courses industry-recognized?",
+                        answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
+                    },
+                    {
+                        question: "Who can enroll in Aindhin's courses?",
+                        answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
+                    }
+                ]}
+            />
 
             {/* Download App Section - Refined to match screenshot */}
             <section className="py-6 px-6 lg:px-12 bg-white flex justify-center">

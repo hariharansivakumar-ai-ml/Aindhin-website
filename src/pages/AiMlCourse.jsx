@@ -3,7 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Brain, Code, Rocket, Globe } from 'lucide-react';
 
 // Hero Image
-import heroImg from '../assets/courses/ai-ml-basics.jpg';
+import heroImg from '../assets/courses/ai-ml-basics.webp';
 
 // Tool Logos
 import pythonLogo from '../assets/courses/logos/python-tool.svg';
@@ -22,7 +22,7 @@ import googleLogo from '../assets/courses/logos/google.svg';
 import microsoftLogo from '../assets/courses/logos/microsoft.svg';
 import awsLogo from '../assets/courses/logos/aws.svg';
 import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.png';
+import metaLogo from '../assets/courses/logos/meta.webp';
 import netflixLogo from '../assets/courses/logos/netflix.svg';
 import infosysLogo from '../assets/courses/logos/infosys.svg';
 import accentureLogo from '../assets/courses/logos/accenture.svg';
@@ -49,7 +49,7 @@ const AiMlCourse = () => {
     document.title = "AI & Machine Learning Course: Master Industry-Ready Skills | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Launch your career in AI. Master Machine Learning, Deep Learning, and Python with hands-on projects. Become an industry-ready AI/ML engineer today.");
+      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
     }
   }, []);
 

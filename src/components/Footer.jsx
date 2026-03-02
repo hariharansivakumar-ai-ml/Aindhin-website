@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Linkedin, Send, Youtube } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer } from '../utils/motion';
-import logo from '../assets/logo_aindhin.png';
+import logo from '../assets/logo_aindhin.webp';
 
 const Footer = () => {
     return (

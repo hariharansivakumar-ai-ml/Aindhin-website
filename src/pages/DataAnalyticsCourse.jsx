@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import './DataAnalyticsCourse.css';
 
 // Import local images
-import DataHeroImg from '../assets/data_analytics.jpg';
+import DataHeroImg from '../assets/data_analytics.webp';
 
 // Logos
 import ExcelLogo from '../assets/excel_logo.png';
 import PowerBILogo from '../assets/power_bi_logo.svg';
-import TableauLogo from '../assets/tableau_logo.png';
+import TableauLogo from '../assets/tableau_logo.webp';
 import PythonLogo from '../assets/python_logo.svg';
 import RLogo from '../assets/r_logo.svg';
 import MySQLLogo from '../assets/mysql_logo.svg';
@@ -36,7 +36,7 @@ const DataAnalyticsCourse = () => {
         document.title = "Data Analytics Course: Master Business Intelligence | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Scale your career with data. Master Power BI, Tableau, and SQL with our industry-driven Data Analytics course. Learn to drive business growth through data insights.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

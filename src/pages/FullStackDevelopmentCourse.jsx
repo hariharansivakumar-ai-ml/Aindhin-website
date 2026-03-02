@@ -7,7 +7,7 @@ import {
 import './FullStackDevelopmentCourse.css';
 
 // Import local images
-import FullStackHeroImg from '../assets/full_stack_hero.jpg';
+import FullStackHeroImg from '../assets/full_stack_hero.webp';
 
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
@@ -34,7 +34,7 @@ const FullStackDevelopmentCourse = () => {
         document.title = "Full Stack Development Course: Build Job-Ready Web Apps | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Master both front-end and back-end development. Learn HTML, CSS, JavaScript, React, and Node.js with our project-based Full Stack Development course.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

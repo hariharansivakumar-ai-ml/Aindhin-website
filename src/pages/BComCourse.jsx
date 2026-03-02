@@ -4,7 +4,7 @@ import {
     Briefcase, TrendingUp, DollarSign, Database, Target, BookOpen
 } from 'lucide-react';
 import './BComCourse.css'; // Make sure to save the CSS in this file
-import BComHeroImg from '../assets/B_com_scaled.jpg';
+import BComHeroImg from '../assets/B_com_scaled.webp';
 
 // Import logos
 import HDFCLogo from '../assets/hdfc_logo.svg';
@@ -15,15 +15,15 @@ import DeloitteLogo from '../assets/deloitte_logo.svg';
 import EYLogo from '../assets/ey_logo.svg';
 import HCLLogo from '../assets/hcl_logo.svg';
 
-import TallyLogo from '../assets/tally_logo.png';
+import TallyLogo from '../assets/tally_logo.webp';
 import ExcelLogo from '../assets/excel_logo.png';
-import WordLogo from '../assets/word_logo.png';
+import WordLogo from '../assets/word_logo.webp';
 import PowerPointLogo from '../assets/powerpoint_logo.svg';
 import MySQLLogo from '../assets/mysql_logo.svg';
 import PowerBILogo from '../assets/power_bi_logo.svg';
 import HTML5Logo from '../assets/html5_logo.svg';
 import VSCodeLogo from '../assets/vscode_logo.svg';
-import GoogleDriveLogo from '../assets/google_drive_logo.png';
+import GoogleDriveLogo from '../assets/google_drive_logo.webp';
 
 
 const BComCourse = () => {
@@ -31,7 +31,7 @@ const BComCourse = () => {
         document.title = "B.Com Computer Applications: Commerce & Technology | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Scale your commerce career with advanced technology skills. Our B.Com in Computer Applications covers accounting, taxation, and Tally with hands-on labs.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

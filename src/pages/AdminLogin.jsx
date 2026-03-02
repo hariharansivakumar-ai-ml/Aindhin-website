@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, User } from 'lucide-react';
-import logo from '../assets/logo_aindhin.png';
+import logo from '../assets/logo_aindhin.webp';
 import { apiLogin } from '../utils/apiClient';
 
 const AdminLogin = () => {

@@ -4,23 +4,23 @@ import './CorporateCourses.css';
 import { useLocation, Link } from 'react-router-dom';
 
 // Import images
-import DataAnalyticsImg from '../assets/data_analytics.jpg';
-import CloudComputingImg from '../assets/cloud_computing.jpg';
-import CybersecurityImg from '../assets/cybersecurity.jpg';
-import AiMlImg from '../assets/ai_ml.jpg';
-import FullStackImg from '../assets/full_stack.jpg';
-import AutomationImg from '../assets/automation.jpg';
-import PeopleManagerImg from '../assets/people_manager_corp.jpg';
-import StrategicDecisionImg from '../assets/strategic_decision_corp.jpg';
-import PerformanceDriverImg from '../assets/performance_driver.jpg';
-import ProjectControllerImg from '../assets/project_controller.jpg';
-import BusinessAnalystImg from '../assets/business_analyst.jpg';
-import OperationsOptimizerImg from '../assets/operations_optimizer.jpg';
+import DataAnalyticsImg from '../assets/data_analytics.webp';
+import CloudComputingImg from '../assets/cloud_computing.webp';
+import CybersecurityImg from '../assets/cybersecurity.webp';
+import AiMlImg from '../assets/ai_ml.webp';
+import FullStackImg from '../assets/full_stack.webp';
+import AutomationImg from '../assets/automation.webp';
+import PeopleManagerImg from '../assets/people_manager_corp.webp';
+import StrategicDecisionImg from '../assets/strategic_decision_corp.webp';
+import PerformanceDriverImg from '../assets/performance_driver.webp';
+import ProjectControllerImg from '../assets/project_controller.webp';
+import BusinessAnalystImg from '../assets/business_analyst.webp';
+import OperationsOptimizerImg from '../assets/operations_optimizer.webp';
 import AiBusinessImg from '../assets/ai_business.webp';
-import DesignThinkingImg from '../assets/design_thinking.jpg';
-import InnovationStrategyImg from '../assets/innovation_strategy.jpg';
-import DigitalTransformationImg from '../assets/digital_transformation.jpg';
-import FutureSkillsImg from '../assets/future_skills.jpg';
+import DesignThinkingImg from '../assets/design_thinking.webp';
+import InnovationStrategyImg from '../assets/innovation_strategy.webp';
+import DigitalTransformationImg from '../assets/digital_transformation.webp';
+import FutureSkillsImg from '../assets/future_skills.webp';
 
 const courses = [
     // TECH
@@ -188,7 +188,7 @@ const CorporateCourses = () => {
         document.title = "Enterprise Training & Workforce Upskilling Solutions | Aindhin Corporate";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Empower your team with Aindhin's corporate training programs. Custom industry-relevant courses and professional certifications to drive organizational growth.");
+            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
 

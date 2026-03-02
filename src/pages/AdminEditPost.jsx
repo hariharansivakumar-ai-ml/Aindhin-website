@@ -113,7 +113,7 @@ const AdminEditPost = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 font-inter flex">
+        <div className="flex h-screen bg-slate-50 font-inter overflow-hidden">
             <AdminSidebar userEmail={userEmail} />
 
             {/* Main Content */}
@@ -147,7 +147,7 @@ const AdminEditPost = () => {
                     </div>
 
                     <div className="flex flex-col lg:flex-row gap-8">
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                             <textarea
                                 placeholder="Blog Title"
                                 value={title}

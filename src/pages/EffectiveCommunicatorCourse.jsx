@@ -3,7 +3,7 @@ import { Ear, MessageSquare, MonitorPlay, ClipboardList, Clock, Users, Target, Z
 import './EffectiveCommunicatorCourse.css';
 
 // Import local images
-import EffectiveCommunicatorHeroImg from '../assets/effective_communicator_hero.jpg';
+import EffectiveCommunicatorHeroImg from '../assets/effective_communicator_hero.webp';
 
 // Logos
 import MicrosoftLogo from '../assets/microsoft_logo.svg';
@@ -11,29 +11,29 @@ import GoogleLogo from '../assets/google_logo.svg';
 import AmazonLogo from '../assets/amazon_logo.webp';
 import AccentureLogo from '../assets/accenture_logo.svg';
 import EYLogo from '../assets/ey_logo.svg';
-import LandTLogo from '../assets/l_and_t_logo.png';
-import TataLogo from '../assets/tata_logo.png';
+import LandTLogo from '../assets/l_and_t_logo.webp';
+import TataLogo from '../assets/tata_logo.webp';
 
 // Tool Logos
-// import OutlookLogo from '../assets/outlook_logo.png'; // Assuming not available, using standard text or just the list provided.
+// import OutlookLogo from '../assets/outlook_logo.webp'; // Assuming not available, using standard text or just the list provided.
 // The user provided standard logos. I will try to map them to existing assets or download if missing.
 // Tool logos provided: Microsoft (Teams/Outlook), Google (Gmail/Meet), Excel (PowerPoint/Excel), Zoom, Miro.
 // I have Microsoft, Google, Miro.
-// Do I have Zoom? checking list_dir... I saw zoom_logo.jpg in step 2827 imports (VisionaryLeaderCourse).
+// Do I have Zoom? checking list_dir... I saw zoom_logo.webp in step 2827 imports (VisionaryLeaderCourse).
 // Do I have Excel? Yes (PeopleManagerCourse).
 // Microsoft Office Excel?
 // I will use existing logo variables.
 
-import ZoomLogo from '../assets/zoom_logo.jpg';
-import MiroLogo from '../assets/miro_logo.png';
+import ZoomLogo from '../assets/zoom_logo.webp';
+import MiroLogo from '../assets/miro_logo.webp';
 // For Microsoft and Google tools, reusing the main company logos or checking for specifics.
 // I'll reuse the main logos for the tools section as placeholders if specific tool logos are missing, 
 // or I can check for 'excel_logo.png' etc.
 
 import ExcelLogo from '../assets/excel_logo.png';
 // I don't have PowerPoint logo explicitly loaded in previous steps? 
-// Step 2826 (FinSavvy) imported PowerPointLogo from '../assets/powerpoint_logo.png'. So it exists.
-import PowerPointLogo from '../assets/powerpoint_logo.png';
+// Step 2826 (FinSavvy) imported PowerPointLogo from '../assets/powerpoint_logo.webp'. So it exists.
+import PowerPointLogo from '../assets/powerpoint_logo.webp';
 
 const EffectiveCommunicatorCourse = () => {
 

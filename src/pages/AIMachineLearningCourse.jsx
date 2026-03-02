@@ -6,7 +6,7 @@ import {
 import './AIMachineLearningCourse.css';
 
 // Import local images
-import AIMLHeroImg from '../assets/ai_ml_hero.jpg';
+import AIMLHeroImg from '../assets/ai_ml_hero.webp';
 
 // Logos
 import GoogleLogo from '../assets/google_logo.svg';
@@ -21,7 +21,7 @@ import NumPyLogo from '../assets/numpy_logo.svg';
 import PandasLogo from '../assets/pandas_logo.svg';
 import ScikitLearnLogo from '../assets/scikit_learn_logo.svg';
 import TensorFlowLogo from '../assets/tensorflow_logo.svg';
-import PyTorchLogo from '../assets/pytorch_logo.png';
+import PyTorchLogo from '../assets/pytorch_logo.webp';
 import JupyterLogo from '../assets/jupyter_logo.svg';
 import GitHubLogo from '../assets/github_logo.svg';
 

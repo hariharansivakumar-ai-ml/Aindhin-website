@@ -4,7 +4,7 @@ import { ChevronDown, ChevronRight, Menu, X, LayoutGrid } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import logo from '../assets/logo_aindhin.png';
+import logo from '../assets/logo_aindhin.webp';
 
 function cn(...inputs) {
     return twMerge(clsx(inputs));

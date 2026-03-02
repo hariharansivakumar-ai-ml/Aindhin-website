@@ -3,14 +3,14 @@ import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Brain, Megaphone, Folder, Briefcase, Target, BookOpen, Globe, Mail } from 'lucide-react';
 
 // Hero Image
-import heroImg from '../assets/courses/digital-marketing-hero.jpg';
+import heroImg from '../assets/courses/digital-marketing-hero.webp';
 
 // Tool Logos
 import googleAdsLogo from '../assets/courses/logos/google-ads.svg';
-import googleAnalyticsLogo from '../assets/courses/logos/google-analytics.png';
-import metaAdsLogo from '../assets/courses/logos/meta.png'; // Using existing meta.png as it's the same logo
-import linkedinLogo from '../assets/courses/logos/linkedin.png';
-import mailchimpLogo from '../assets/courses/logos/mailchimp.png';
+import googleAnalyticsLogo from '../assets/courses/logos/google-analytics.webp';
+import metaAdsLogo from '../assets/courses/logos/meta.webp'; // Using existing meta.webp as it's the same logo
+import linkedinLogo from '../assets/courses/logos/linkedin.webp';
+import mailchimpLogo from '../assets/courses/logos/mailchimp.webp';
 import canvaLogo from '../assets/courses/logos/canva.svg';
 
 // Company Logos (Reusing existing ones)
@@ -18,7 +18,7 @@ import googleLogo from '../assets/courses/logos/google.svg';
 import microsoftLogo from '../assets/courses/logos/microsoft.svg';
 import awsLogo from '../assets/courses/logos/aws.svg';
 import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.png';
+import metaLogo from '../assets/courses/logos/meta.webp';
 import netflixLogo from '../assets/courses/logos/netflix.svg';
 import infosysLogo from '../assets/courses/logos/infosys.svg';
 import accentureLogo from '../assets/courses/logos/accenture.svg';
@@ -45,7 +45,7 @@ const DigitalMarketingCourse = () => {
     document.title = "Digital Marketing Course: Master Social Media, SEO & Ads | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Scale your brand with our comprehensive Digital Marketing course. Master SEO, Social Media Marketing, and Paid Ads with hands-on growth campaigns.");
+      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
     }
   }, []);
 
