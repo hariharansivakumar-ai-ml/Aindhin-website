@@ -105,7 +105,7 @@ const Testimonials = () => {
 
                 {/* Carousel Area */}
                 <div
-                    className="w-full overflow-hidden py-12"
+                    className="w-full overflow-hidden pt-12 pb-4"
                     ref={carouselRef}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
@@ -159,7 +159,7 @@ const Testimonials = () => {
                 </div>
 
                 {/* Pagination Dots */}
-                <div className="flex justify-center gap-3 mt-4">
+                <div className="flex justify-center gap-3 mt-2">
                     {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
                         <button
                             key={idx}
