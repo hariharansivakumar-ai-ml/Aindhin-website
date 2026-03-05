@@ -192,9 +192,20 @@ blogs_data = [
 
 for b in blogs_data:
     execute_query(
-        "INSERT INTO blogs (title, slug, author, description, status, image_url, user_id, date) "
-        "VALUES (%s, %s, %s, %s, 'Published', %s, 1, NOW())",
-        (b['title'], b['slug'], b['author'], f"<p><strong>{b['description']}</strong></p>{b['content']}", b['image_url'])
+        """
+        INSERT INTO blogs 
+        (title, slug, author, description, content, status, image_url, user_id, date)
+        VALUES (%s, %s, %s, %s, %s, 'Published', %s, 1, NOW())
+        ON CONFLICT (slug) DO NOTHING
+        """,
+        (
+            b['title'],
+            b['slug'],
+            b['author'],
+            b['description'],
+            b['content'],
+            b['image_url']
+        )
     )
 
 print("Insertion complete")

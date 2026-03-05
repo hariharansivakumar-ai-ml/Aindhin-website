@@ -1,6 +1,7 @@
 import os
 from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from database import execute_query
 from auth_utils import verify_password, get_password_hash, create_access_token, get_current_user
@@ -18,6 +19,21 @@ cloudinary.config(
 )
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://aindhin.org",
+        "https://www.aindhin.org",
+        "https://aindhin.com",
+        "https://www.aindhin.com",
+        "http://localhost:5173",
+        "http://localhost:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- Models ---
 class LoginRequest(BaseModel):

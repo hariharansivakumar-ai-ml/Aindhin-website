@@ -6,6 +6,7 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
+from database import execute_query
 
 load_dotenv()
 
@@ -32,18 +33,38 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+def get_user_from_db(user_id: int):
+    user = execute_query("SELECT id, email FROM users WHERE id = %s", (user_id,), fetch_all=False)
+    if user:
+        return dict(user)
+    return None
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     token = credentials.credentials
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
         user_id: int = payload.get("id")
         if user_id is None:
             raise credentials_exception
-        return payload
+
+        # Validate user exists in DB
+        user = get_user_from_db(user_id)
+        if not user:
+            raise credentials_exception
+
+        return user
+
     except JWTError:
         raise credentials_exception
