@@ -1,4 +1,4 @@
-export const API_URL = 'https://api2.aindhin.com/api';
+export const API_URL = import.meta.env.VITE_API_URL || 'https://api2.aindhin.com/api';
 
 // --- Token Helpers ---
 export const getToken = () => localStorage.getItem('aindhin_token');
