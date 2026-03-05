@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+export const API_URL = 'https://api2.aindhin.com/api';
 
 // --- Token Helpers ---
 export const getToken = () => localStorage.getItem('aindhin_token');

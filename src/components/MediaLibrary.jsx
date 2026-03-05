@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { getToken, apiUploadImage } from '../utils/apiClient';
+import { getToken, apiUploadImage, API_URL } from '../utils/apiClient';
 import { X, Image as ImageIcon, Loader2, Check, Trash2, Upload } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api';
 
 const MediaLibrary = ({ onSelect, onClose }) => {
     const [images, setImages] = useState([]);

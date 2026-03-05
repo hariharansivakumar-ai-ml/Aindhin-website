@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { apiGetSession, apiUpdateBlog, apiUploadImage, apiLogout } from '../utils/apiClient';
+import { apiGetSession, apiUpdateBlog, apiUploadImage, apiLogout, API_URL } from '../utils/apiClient';
 import {
     ArrowLeft, Save, Send, Bell, X,
     Loader2, Upload, Image as ImageIcon
@@ -39,7 +39,7 @@ const AdminEditPost = () => {
 
         const fetchPost = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/blogs/by-id/${id}`, {
+                const res = await fetch(`${API_URL}/blogs/by-id/${id}`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('aindhin_token')}` }
                 });
                 if (!res.ok) throw new Error('Blog not found');
