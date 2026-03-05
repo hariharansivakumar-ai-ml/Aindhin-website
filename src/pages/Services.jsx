@@ -26,10 +26,10 @@ const Services = () => {
 
             {/* Hero Section */}
             <section className="w-full relative z-10 overflow-hidden bg-white">
-                <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-12 lg:gap-0">
+                <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-4 lg:gap-0">
 
                     {/* Left Content */}
-                    <div className="flex flex-col items-start gap-4 lg:gap-2 px-6 lg:pl-12 py-12 lg:py-12 z-20">
+                    <div className="flex flex-col items-start gap-4 lg:gap-2 px-6 lg:pl-12 pt-8 pb-0 lg:py-12 z-20">
                         <motion.h1
                             variants={fadeIn("down", 0.2)}
                             initial="hidden"
@@ -50,14 +50,14 @@ const Services = () => {
                     </div>
 
                     {/* Right Illustration */}
-                    <div className="relative w-full h-full min-h-[500px] lg:min-h-[600px] flex items-center justify-center">
+                    <div className="relative w-full h-full min-h-[300px] lg:min-h-[600px] flex items-center justify-center mt-10 md:mt-12 lg:mt-0">
 
                         {/* Main Image */}
                         <motion.div
                             variants={fadeIn("left", 0.4)}
                             initial="hidden"
                             animate="show"
-                            className="relative z-10 w-full max-w-[600px] lg:mr-[-50px]"
+                            className="relative z-10 w-full max-w-[500px] lg:max-w-[600px] lg:mr-[-50px]"
                         >
                             <div className="relative">
                                 <img
