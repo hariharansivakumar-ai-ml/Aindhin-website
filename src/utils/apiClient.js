@@ -5,16 +5,30 @@ export const getToken = () => localStorage.getItem('aindhin_token');
 export const setToken = (token) => localStorage.setItem('aindhin_token', token);
 export const removeToken = () => localStorage.removeItem('aindhin_token');
 
-const authHeaders = () => ({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${getToken()}`
-});
+// --- Central HTTP Helper ---
+export const apiFetch = async (endpoint, options = {}) => {
+    const token = getToken();
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+    };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_URL}${endpoint}`, {
+        ...options,
+        headers,
+    });
+
+    return response;
+};
 
 // --- Auth ---
 export const apiLogin = async (email, password) => {
-    const res = await fetch(`${API_URL}/auth/login`, {
+    const res = await apiFetch('/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
     });
     const data = await res.json();
@@ -31,9 +45,7 @@ export const apiGetSession = async () => {
     const token = getToken();
     if (!token) return null;
     try {
-        const res = await fetch(`${API_URL}/auth/me`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const res = await apiFetch('/auth/me');
         if (!res.ok) { removeToken(); return null; }
         return await res.json();
     } catch {
@@ -43,29 +55,26 @@ export const apiGetSession = async () => {
 
 // --- Blogs ---
 export const apiGetPublicBlogs = async () => {
-    const res = await fetch(`${API_URL}/blogs`);
+    const res = await apiFetch('/blogs');
     if (!res.ok) throw new Error('Failed to fetch blogs');
     return res.json();
 };
 
 export const apiGetBlogBySlug = async (slug) => {
-    const res = await fetch(`${API_URL}/blogs/${slug}`);
+    const res = await apiFetch(`/blogs/${slug}`);
     if (!res.ok) throw new Error('Blog not found');
     return res.json();
 };
 
 export const apiGetAdminBlogs = async (status = 'all') => {
-    const res = await fetch(`${API_URL}/blogs?status=${status}`, {
-        headers: authHeaders()
-    });
+    const res = await apiFetch(`/blogs?status=${status}`);
     if (!res.ok) throw new Error('Failed to fetch blogs');
     return res.json();
 };
 
 export const apiSaveBlog = async (blogData) => {
-    const res = await fetch(`${API_URL}/blogs`, {
+    const res = await apiFetch('/blogs', {
         method: 'POST',
-        headers: authHeaders(),
         body: JSON.stringify(blogData)
     });
     const data = await res.json();
@@ -74,9 +83,8 @@ export const apiSaveBlog = async (blogData) => {
 };
 
 export const apiUpdateBlog = async (id, blogData) => {
-    const res = await fetch(`${API_URL}/blogs/${id}`, {
+    const res = await apiFetch(`/blogs/${id}`, {
         method: 'PUT',
-        headers: authHeaders(),
         body: JSON.stringify(blogData)
     });
     const data = await res.json();
@@ -85,9 +93,8 @@ export const apiUpdateBlog = async (id, blogData) => {
 };
 
 export const apiDeleteBlog = async (id) => {
-    const res = await fetch(`${API_URL}/blogs/${id}`, {
-        method: 'DELETE',
-        headers: authHeaders()
+    const res = await apiFetch(`/blogs/${id}`, {
+        method: 'DELETE'
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || data.error || 'Failed to delete blog');
@@ -132,6 +139,8 @@ export const apiUploadImage = async (file) => {
     const finalFile = await convertToWebP(file);
     const formData = new FormData();
     formData.append('file', finalFile);
+
+    // For file uploads, we don't set Content-Type so the browser adds the boundary
     const res = await fetch(`${API_URL}/upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${getToken()}` },
@@ -143,17 +152,14 @@ export const apiUploadImage = async (file) => {
 };
 
 export const apiGetMedia = async () => {
-    const res = await fetch(`${API_URL}/upload/list`, {
-        headers: { 'Authorization': `Bearer ${getToken()}` }
-    });
+    const res = await apiFetch('/upload/list');
     if (!res.ok) throw new Error('Failed to fetch media');
     return res.json();
 };
 
 export const apiDeleteMedia = async (public_id) => {
-    const res = await fetch(`${API_URL}/upload/${encodeURIComponent(public_id)}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${getToken()}` }
+    const res = await apiFetch(`/upload/${encodeURIComponent(public_id)}`, {
+        method: 'DELETE'
     });
     if (!res.ok) {
         const data = await res.json();
@@ -164,9 +170,8 @@ export const apiDeleteMedia = async (public_id) => {
 
 // --- Comments ---
 export const apiSubmitComment = async (commentData) => {
-    const res = await fetch(`${API_URL}/comments`, {
+    const res = await apiFetch('/comments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(commentData)
     });
     const data = await res.json();
@@ -175,23 +180,20 @@ export const apiSubmitComment = async (commentData) => {
 };
 
 export const apiGetApprovedComments = async (postId) => {
-    const res = await fetch(`${API_URL}/comments/${postId}`);
+    const res = await apiFetch(`/comments/${postId}`);
     if (!res.ok) throw new Error('Failed to fetch comments');
     return res.json();
 };
 
 export const apiGetAllCommentsAdmin = async () => {
-    const res = await fetch(`${API_URL}/comments/admin`, {
-        headers: authHeaders()
-    });
+    const res = await apiFetch('/comments/admin');
     if (!res.ok) throw new Error('Failed to fetch comments');
     return res.json();
 };
 
 export const apiUpdateCommentStatus = async (commentId, status) => {
-    const res = await fetch(`${API_URL}/comments/${commentId}/status`, {
+    const res = await apiFetch(`/comments/${commentId}/status`, {
         method: 'PUT',
-        headers: authHeaders(),
         body: JSON.stringify({ status })
     });
     const data = await res.json();
@@ -200,9 +202,8 @@ export const apiUpdateCommentStatus = async (commentId, status) => {
 };
 
 export const apiDeleteComment = async (commentId) => {
-    const res = await fetch(`${API_URL}/comments/${commentId}`, {
-        method: 'DELETE',
-        headers: authHeaders()
+    const res = await apiFetch(`/comments/${commentId}`, {
+        method: 'DELETE'
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || data.error || 'Failed to delete comment');
@@ -211,17 +212,14 @@ export const apiDeleteComment = async (commentId) => {
 
 // --- Subscribers ---
 export const apiGetAllSubscribers = async () => {
-    const res = await fetch(`${API_URL}/subscribers`, {
-        headers: authHeaders()
-    });
+    const res = await apiFetch('/subscribers');
     if (!res.ok) throw new Error('Failed to fetch subscribers');
     return res.json();
 };
 
 export const apiDeleteSubscriber = async (subscriberId) => {
-    const res = await fetch(`${API_URL}/subscribers/${subscriberId}`, {
-        method: 'DELETE',
-        headers: authHeaders()
+    const res = await apiFetch(`/subscribers/${subscriberId}`, {
+        method: 'DELETE'
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || data.error || 'Failed to delete subscriber');
@@ -229,9 +227,8 @@ export const apiDeleteSubscriber = async (subscriberId) => {
 };
 
 export const apiCreateSubscriber = async (subscriberData) => {
-    const res = await fetch(`${API_URL}/subscribers`, {
+    const res = await apiFetch('/subscribers', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(subscriberData)
     });
     const data = await res.json();

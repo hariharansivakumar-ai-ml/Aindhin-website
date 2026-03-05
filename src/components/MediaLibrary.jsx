@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { getToken, apiUploadImage, API_URL } from '../utils/apiClient';
+import { getToken, apiUploadImage, apiFetch } from '../utils/apiClient';
 import { X, Image as ImageIcon, Loader2, Check, Trash2, Upload } from 'lucide-react';
 
 const MediaLibrary = ({ onSelect, onClose }) => {
@@ -17,9 +17,7 @@ const MediaLibrary = ({ onSelect, onClose }) => {
     const fetchImages = async () => {
         try {
             setLoading(true);
-            const res = await fetch(`${API_URL}/upload/list`, {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
-            });
+            const res = await apiFetch('/upload/list');
             if (!res.ok) throw new Error('Failed to load images');
             const data = await res.json();
             setImages(data || []);
@@ -53,9 +51,8 @@ const MediaLibrary = ({ onSelect, onClose }) => {
 
         try {
             setDeleting(image.name);
-            const res = await fetch(`${API_URL}/upload/${encodeURIComponent(image.name)}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${getToken()}` }
+            const res = await apiFetch(`/upload/${encodeURIComponent(image.name)}`, {
+                method: 'DELETE'
             });
             if (!res.ok) throw new Error('Delete failed');
             setImages(images.filter(img => img.name !== image.name));
