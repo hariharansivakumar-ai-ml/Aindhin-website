@@ -97,77 +97,79 @@ const Testimonials = () => {
 
     return (
         <section className="py-6 px-4 md:px-8 bg-white relative overflow-hidden">
-            <div className="max-w-[1400px] mx-auto flex flex-col items-center gap-16 relative z-10">
+            <div className="max-w-[1400px] mx-auto flex flex-col items-center gap-8 md:gap-16 relative z-10">
                 <div className="flex flex-col items-center text-center gap-2">
                     <h2 className="text-5xl lg:text-6xl font-bold text-primary font-inter mb-2">Testimonial</h2>
                     <p className="text-gray-500 font-medium tracking-wide">What Our Students Say!!!</p>
                 </div>
 
-                {/* Carousel Area */}
-                <div
-                    className="w-full overflow-hidden pt-12 pb-4"
-                    ref={carouselRef}
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                >
-                    <motion.div
-                        className="flex"
-                        animate={{ x: `-${currentIndex * (100 / itemsPerPage)}%` }}
-                        transition={{ spring: { stiffness: 300, damping: 30 }, duration: 0.8 }}
+                <div className="w-full relative">
+                    {/* Carousel Area */}
+                    <div
+                        className="w-full overflow-hidden pt-12 pb-4"
+                        ref={carouselRef}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
                     >
-                        {testimonials.map((t, idx) => (
-                            <motion.div
-                                key={idx}
-                                className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-3 box-border"
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.5 }}
-                            >
-                                <div className="bg-white p-8 rounded-[20px] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col items-center text-center relative h-full group hover:-translate-y-2 transition-transform duration-300">
-                                    {/* Professional Quote Icon - Top Right */}
-                                    <div className="absolute top-6 right-6">
-                                        <div className="w-12 h-12 bg-blue-50/80 rounded-full flex items-center justify-center">
-                                            <Quote className="w-5 h-5 text-primary fill-current opacity-70" />
+                        <motion.div
+                            className="flex"
+                            animate={{ x: `-${currentIndex * (100 / itemsPerPage)}%` }}
+                            transition={{ spring: { stiffness: 300, damping: 30 }, duration: 0.8 }}
+                        >
+                            {testimonials.map((t, idx) => (
+                                <motion.div
+                                    key={idx}
+                                    className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-3 box-border"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.5 }}
+                                >
+                                    <div className="bg-white p-8 rounded-[20px] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-gray-100 flex flex-col items-center text-center relative h-full group hover:-translate-y-2 transition-transform duration-300">
+                                        {/* Professional Quote Icon - Top Right */}
+                                        <div className="absolute top-6 right-6">
+                                            <div className="w-12 h-12 bg-blue-50/80 rounded-full flex items-center justify-center">
+                                                <Quote className="w-5 h-5 text-primary fill-current opacity-70" />
+                                            </div>
                                         </div>
+
+                                        {/* Professional Icon Placeholder */}
+                                        <div className="w-24 h-24 rounded-full flex items-center justify-center border-4 border-white shadow-lg mb-4 -mt-20 bg-blue-50 z-10">
+                                            <User className="w-12 h-12 text-primary opacity-80" />
+                                        </div>
+
+                                        <h3 className="text-xl font-bold text-secondary font-inter mt-2">{t.author}</h3>
+                                        <span className="text-sm text-gray-500 mb-4 font-inter">{t.role}</span>
+
+                                        {/* Stars */}
+                                        <div className="flex gap-1 mb-6">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star
+                                                    key={i}
+                                                    className={`w-5 h-5 ${i < t.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200 fill-gray-200'}`}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <p className="text-gray-600 leading-relaxed text-[15px] font-inter">
+                                            {t.text}
+                                        </p>
                                     </div>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
 
-                                    {/* Professional Icon Placeholder */}
-                                    <div className="w-24 h-24 rounded-full flex items-center justify-center border-4 border-white shadow-lg mb-4 -mt-20 bg-blue-50 z-10">
-                                        <User className="w-12 h-12 text-primary opacity-80" />
-                                    </div>
-
-                                    <h3 className="text-xl font-bold text-secondary font-inter mt-2">{t.author}</h3>
-                                    <span className="text-sm text-gray-500 mb-4 font-inter">{t.role}</span>
-
-                                    {/* Stars */}
-                                    <div className="flex gap-1 mb-6">
-                                        {[...Array(5)].map((_, i) => (
-                                            <Star
-                                                key={i}
-                                                className={`w-5 h-5 ${i < t.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200 fill-gray-200'}`}
-                                            />
-                                        ))}
-                                    </div>
-
-                                    <p className="text-gray-600 leading-relaxed text-[15px] font-inter">
-                                        {t.text}
-                                    </p>
-                                </div>
-                            </motion.div>
+                    {/* Pagination Dots */}
+                    <div className="flex justify-center gap-3 mt-4">
+                        {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrentIndex(idx)}
+                                className={`w-3 h-3 rounded-full transition-all duration-300 ${idx === currentIndex ? 'bg-primary w-8' : 'bg-gray-200 hover:bg-gray-300'
+                                    }`}
+                            ></button>
                         ))}
-                    </motion.div>
-                </div>
-
-                {/* Pagination Dots */}
-                <div className="flex justify-center gap-3 mt-2">
-                    {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => setCurrentIndex(idx)}
-                            className={`w-3 h-3 rounded-full transition-all duration-300 ${idx === currentIndex ? 'bg-primary w-8' : 'bg-gray-200 hover:bg-gray-300'
-                                }`}
-                        ></button>
-                    ))}
+                    </div>
                 </div>
             </div>
         </section>
