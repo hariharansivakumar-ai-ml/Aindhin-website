@@ -72,7 +72,7 @@ const Services = () => {
             </section>
 
             {/* How Aindhin Works Section */}
-            <section className="w-full px-6 lg:px-12 py-12 lg:py-16 bg-[#F8FAFC]">
+            <section className="w-full px-6 lg:px-12 pt-4 pb-12 lg:pt-8 lg:pb-16 bg-[#F8FAFC]">
                 <div className="max-w-[1400px] mx-auto">
                     {/* Section Header */}
                     <div className="flex flex-col items-center text-center mb-16 lg:mb-20">
