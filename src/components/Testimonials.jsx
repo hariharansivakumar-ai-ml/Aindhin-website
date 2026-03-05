@@ -111,47 +111,14 @@ const Testimonials = () => {
                     onMouseLeave={() => setIsHovered(false)}
                 >
                     <motion.div
-                        className="flex gap-8"
-                        animate={{ x: `calc(-${currentIndex * (100 / itemsPerPage)}% - ${currentIndex * 2}rem)` }} // Adjust for gap-8 (2rem) approx if needed, but percentages usually work best if gap is included in movement or ignored. 
-                        // Actually, with flex gap, the movement needs to exact. 
-                        // Let's try simpler: -currentIndex * 100% of ITEM width.
-                        // But we don't know item width precisely in pixels here without refs.
-                        // A more robust CSS-only movement:
-                        // Move -currentIndex * (100% / itemsPerPage) works if gap is handled in basis.
-                        // The gap is outside the % width in the original CSS (calc(50% - 1rem)).
-                        // So moving 50% + gap adjustment?
-                        // Let's rely on the previous logic: if we move 100% of the container / itemsPerPage, we move one "slot".
-                        // But the gap is constant 32px.
-                        // Ideally: x = -currentIndex * (cardWidth + gap).
-                        // cardWidth + gap = (ContainerWidth - (itemsPerPage-1)*gap) / itemsPerPage + gap
-                        // = (ContainerWidth + gap) / itemsPerPage.
-                        // So TranslateX = -currentIndex * ((100% + 32px) / itemsPerPage).
-                        // Let's try a best-effort calc: `calc(-${currentIndex} * (100% / ${itemsPerPage}) - ${currentIndex > 0 ? '0px' : '0px'})` 
-                        // Actually: `calc(-${currentIndex} * ((100% + 32px) / ${itemsPerPage}))` might be close.
-                        // Let's try `calc(-${currentIndex} * (100% / ${itemsPerPage} + ${32/itemsPerPage}px))`? No.
-                        // Let's stick to a simpler approximation that is usually visually fine, or switch to % based gap if possible? 
-                        // No, let's keep gap-8.
-                        // Correct logic: translateX( -1 * (currentIndex * (100% / itemsPerPage)) ).
-                        // AND we need to account for the GAP.
-                        // If I move 33.33%, I move 1/3 of container. 
-                        // But 1 unit is: card + gap.
-                        // 3 units = (card+gap)*2 + card. 
-                        // It's tricky.
-                        // Simplification for reliability: Use strict percentages for width AND gap? No, gap-8 is rem.
-                        // Let's try: `x: -currentIndex * (100 / itemsPerPage)%` and see if user complains. usually the gap causes a drift.
-                        // BETTER: Use `gap-0` on container and put padding on items?
-                        // Yes! 
-                        // Change: className="flex" (no gap). 
-                        // Item: p-4 to simulate gap? Or just wrapper div with padding.
-
+                        className="flex"
+                        animate={{ x: `-${currentIndex * (100 / itemsPerPage)}%` }}
                         transition={{ spring: { stiffness: 300, damping: 30 }, duration: 0.8 }}
                     >
                         {testimonials.map((t, idx) => (
                             <motion.div
                                 key={idx}
-                                className={`flex-shrink-0 
-                                    w-full md:w-1/2 lg:w-1/3
-                                    p-4 box-border`} // Using Padding to simulate gap
+                                className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-3 box-border"
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 whileInView={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.5 }}
