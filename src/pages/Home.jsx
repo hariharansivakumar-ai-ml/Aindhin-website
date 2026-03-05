@@ -251,30 +251,32 @@ const Home = () => {
             <Testimonials />
 
             {/* General FAQs */}
-            <FAQSection
-                faqs={[
-                    {
-                        question: "What is Aindhin?",
-                        answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
-                    },
-                    {
-                        question: "How does Aindhin help students?",
-                        answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
-                    },
-                    {
-                        question: "Are the courses industry-recognized?",
-                        answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
-                    },
-                    {
-                        question: "Who can enroll in Aindhin's courses?",
-                        answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
-                    }
-                ]}
-            />
+            <div className="mb-6">
+                <FAQSection
+                    faqs={[
+                        {
+                            question: "What is Aindhin?",
+                            answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
+                        },
+                        {
+                            question: "How does Aindhin help students?",
+                            answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
+                        },
+                        {
+                            question: "Are the courses industry-recognized?",
+                            answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
+                        },
+                        {
+                            question: "Who can enroll in Aindhin's courses?",
+                            answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
+                        }
+                    ]}
+                />
+            </div>
 
             {/* Download App Section - Refined to match screenshot */}
-            <section className="py-6 px-6 lg:px-12 bg-white flex justify-center">
-                <div className="max-w-[1000px] w-full bg-gradient-to-br from-[#002FA7] via-[#0051D4] to-[#4FA1FF] rounded-[40px] px-6 py-10 md:px-12 md:py-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
+            <section className="py-2 pb-12 px-6 lg:px-12 bg-white flex justify-center">
+                <div className="max-w-[1000px] w-full bg-gradient-to-br from-[#002FA7] via-[#0051D4] to-[#4FA1FF] rounded-[40px] px-6 py-6 md:px-12 md:py-8 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 shadow-2xl">
 
                     {/* Content */}
                     <motion.div
