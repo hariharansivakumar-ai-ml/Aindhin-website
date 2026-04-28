@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.bubble.css';
-import { Heading1, Heading2, Heading3, Image as ImageIcon, List, Quote, CheckSquare, Code, X, Link as LinkIcon, ExternalLink } from 'lucide-react';
+import { Heading1, Heading2, Heading3, Image as ImageIcon, List, Quote, CheckSquare, Code, X, Link as LinkIcon, ExternalLink, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 
 // --- Custom Link Blot to support target="_blank" ---
 const Link = Quill.import('formats/link');
@@ -177,16 +177,147 @@ const LinkModal = ({ visible, initialText, onCancel, onSubmit }) => {
     );
 };
 
+// --- Image Settings Modal Component ---
+const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, onCancel, onSubmit }) => {
+    const [alt, setAlt] = useState(initialAlt || '');
+    const [width, setWidth] = useState(initialWidth || '100%');
+    const [align, setAlign] = useState(initialAlign || 'center');
+
+    useEffect(() => {
+        if (visible) {
+            setAlt(initialAlt || '');
+            setWidth(initialWidth || '100%');
+            setAlign(initialAlign || 'center');
+        }
+    }, [visible, initialAlt, initialWidth, initialAlign]);
+
+    if (!visible) return null;
+
+    const alignOptions = [
+        { id: 'left', icon: AlignLeft, label: 'Left' },
+        { id: 'center', icon: AlignCenter, label: 'Center' },
+        { id: 'right', icon: AlignRight, label: 'Right' },
+    ];
+
+    return (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-[2px] flex items-center justify-center z-[10001] animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div className="flex items-center gap-2">
+                        <div className="p-2 bg-orange-50 text-orange-600 rounded-lg">
+                            <ImageIcon size={18} />
+                        </div>
+                        <h3 className="text-base font-bold text-gray-900">Image Settings</h3>
+                    </div>
+                    <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 p-1">
+                        <X size={20} />
+                    </button>
+                </div>
+                <div className="p-6 space-y-6">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Alt Text (SEO)</label>
+                        <input 
+                            type="text" 
+                            value={alt}
+                            onChange={(e) => setAlt(e.target.value)}
+                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all bg-gray-50/50 focus:bg-white"
+                            placeholder="Describe this image..."
+                        />
+                    </div>
+                    
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center block">Image Width (Pixels)</label>
+                        <div className="flex items-center gap-3">
+                            <div className="relative flex-1">
+                                <input 
+                                    type="number" 
+                                    value={parseInt(width) || ''}
+                                    onChange={(e) => setWidth(e.target.value ? e.target.value + 'px' : '')}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all bg-gray-50/50 focus:bg-white pr-12"
+                                    placeholder="e.g. 800"
+                                />
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
+                                    px
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setWidth('100%')}
+                                className="px-4 py-3 bg-gray-100 text-gray-600 rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors"
+                            >
+                                Full Width
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Alignment</label>
+                        <div className="grid grid-cols-3 gap-3">
+                            {alignOptions.map((opt) => (
+                                <button
+                                    key={opt.id}
+                                    onClick={() => setAlign(opt.id)}
+                                    className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                        align === opt.id 
+                                            ? 'bg-orange-50 border-orange-200 text-orange-600' 
+                                            : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    <opt.icon size={20} />
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">{opt.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div className="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex justify-end gap-3">
+                    <button onClick={onCancel} className="px-5 py-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">Cancel</button>
+                    <button 
+                        onClick={() => onSubmit({ alt, width, align })}
+                        className="px-8 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-orange-100 transition-all"
+                    >
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // --- Main Editor Component ---
 const RichTextEditor = ({ content, onChange, onImageUpload }) => {
     const quillRef = useRef(null);
     const onImageUploadRef = useRef(onImageUpload);
     const [slashMenu, setSlashMenu] = useState({ visible: false, position: null });
     const [linkModal, setLinkModal] = useState({ visible: false, range: null, initialText: '' });
+    const [imageModal, setImageModal] = useState({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '' });
 
     useEffect(() => {
         onImageUploadRef.current = onImageUpload;
     }, [onImageUpload]);
+
+    // Setup Image Click Listener
+    useEffect(() => {
+        const quill = quillRef.current?.getEditor();
+        if (!quill) return;
+
+        const handleImageClick = (e) => {
+            if (e.target.tagName === 'IMG') {
+                const img = e.target;
+                const style = img.style;
+                setImageModal({
+                    visible: true,
+                    imgNode: img,
+                    initialAlt: img.alt || '',
+                    initialWidth: img.getAttribute('width') || style.width || '100%',
+                    initialAlign: style.float === 'left' ? 'left' : style.float === 'right' ? 'right' : 'center'
+                });
+            }
+        };
+
+        const editorElement = quill.root;
+        editorElement.addEventListener('click', handleImageClick);
+        return () => editorElement.removeEventListener('click', handleImageClick);
+    }, []);
 
     // Custom Key Bindings
     const modules = useMemo(() => ({
@@ -239,6 +370,32 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             }
         }
         setLinkModal({ visible: false, range: null, initialText: '' });
+    };
+
+    const handleImageSubmit = ({ alt, width, align }) => {
+        const img = imageModal.imgNode;
+        if (img) {
+            img.alt = alt;
+            img.style.width = width;
+            img.removeAttribute('width'); // Use style instead
+            
+            // Apply Alignment
+            if (align === 'center') {
+                img.style.display = 'block';
+                img.style.margin = '1rem auto';
+                img.style.float = 'none';
+            } else {
+                img.style.display = 'inline-block';
+                img.style.margin = '1rem';
+                img.style.float = align;
+            }
+
+            // Trigger onChange by manually dispatching an input event or calling quill.update
+            const quill = quillRef.current.getEditor();
+            quill.update();
+            onChange(quill.root.innerHTML);
+        }
+        setImageModal({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '' });
     };
 
     // Handle Slash Command Detection
@@ -334,6 +491,15 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 onSubmit={handleLinkSubmit}
             />
 
+            <ImageSettingsModal
+                visible={imageModal.visible}
+                initialAlt={imageModal.initialAlt}
+                initialWidth={imageModal.initialWidth}
+                initialAlign={imageModal.initialAlign}
+                onCancel={() => setImageModal({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '' })}
+                onSubmit={handleImageSubmit}
+            />
+
             <style>{`
                 .rich-text-editor-container .ql-editor {
                     height: 600px;
@@ -387,7 +553,8 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 .ql-editor h1 { font-size: 2.5em; font-weight: 800; margin-top: 1em; margin-bottom: 0.5em; }
                 .ql-editor h2 { font-size: 2em; font-weight: 700; margin-top: 1em; margin-bottom: 0.5em; }
                 .ql-editor h3 { font-size: 1.75em; font-weight: 600; margin-top: 1em; margin-bottom: 0.5em; }
-                .ql-editor img { border-radius: 0.5rem; margin: 1.5rem 0; max-width: 100%; }
+                .ql-editor img { border-radius: 0.5rem; margin: 1.5rem 0; max-width: 100%; cursor: pointer; transition: outline 0.2s; }
+                .ql-editor img:hover { outline: 3px solid #3B82F6; }
                 .ql-editor blockquote { border-left: 4px solid #E5E7EB; padding-left: 1rem; color: #6B7280; font-style: italic; }
             `}</style>
         </div>
@@ -395,4 +562,3 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
 };
 
 export default RichTextEditor;
-

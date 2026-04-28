@@ -20,6 +20,7 @@ const AdminEditPost = () => {
     const [slug, setSlug] = useState('');
     const [status, setStatus] = useState('Draft');
     const [featuredImage, setFeaturedImage] = useState(null);
+    const [imageAlt, setImageAlt] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -52,36 +53,36 @@ const AdminEditPost = () => {
                 const data = await res.json();
                 setTitle(data.title || '');
                 
-                // Try to find the body in multiple common field names
-                let mainBody = data.content || data.article_body || data.body || '';
-                let rawDescription = data.description || '';
+                // Handle Image and Alt Text
+                setFeaturedImage(data.image_url || data.image || '');
+                let recoveredAlt = data.image_alt || '';
                 
-                // DATA RECOVERY: Handle the JSON metadata format
+                // Content Recovery Logic
+                let mainBody = data.content || data.article_body || data.body || '';
+                let desc = data.description || '';
+
                 try {
-                    const trimmedDesc = rawDescription.trim();
-                    if (trimmedDesc.startsWith('{') && trimmedDesc.endsWith('}')) {
-                        const parsed = JSON.parse(trimmedDesc);
+                    const trimmed = desc.trim();
+                    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                        const parsed = JSON.parse(trimmed);
+                        if (!mainBody) mainBody = parsed.metaDescription || '';
+                        if (!recoveredAlt) recoveredAlt = parsed.featuredImageAlt || '';
+                        
                         setMetaTitle(parsed.metaTitle || '');
                         setMetaDescription(parsed.metaDescription || '');
                         setFocusKeyword(parsed.focusedKeyword || '');
-                        setTags(Array.isArray(parsed.tags) ? parsed.tags : []);
-                        
-                        // If mainBody is empty, use the metaDescription as a starting point
-                        if (!mainBody) {
-                            mainBody = parsed.metaDescription || '';
-                        }
-                    } else if (rawDescription && !mainBody) {
-                        // If description has text and content is empty, use description
-                        mainBody = rawDescription;
+                        if (parsed.tags) setTags(Array.isArray(parsed.tags) ? parsed.tags : parsed.tags.split(','));
+                    } else if (desc && !mainBody) {
+                        mainBody = desc;
                     }
                 } catch (e) {
-                    if (rawDescription && !mainBody) mainBody = rawDescription;
+                    if (desc && !mainBody) mainBody = desc;
                 }
 
+                setImageAlt(recoveredAlt);
                 setContent(mainBody);
                 setSlug(data.slug || '');
-                setFeaturedImage(data.image_url || null);
-                setImagePreview(data.image_url || null);
+                setImagePreview(data.image_url || data.image || null);
                 setStatus(data.status || 'Draft');
 
                 // Final fallbacks for direct API fields
@@ -128,9 +129,10 @@ const AdminEditPost = () => {
                 status: isPublished ? 'Published' : status,
                 author: 'Aindhin',
                 image_url: featuredImage,
+                image_alt: imageAlt,
                 meta_title: metaTitle,
                 meta_description: metaDescription,
-                tags: tags.join(','),
+                tags: Array.isArray(tags) ? tags.join(',') : tags,
                 focus_keyword: focusKeyword,
             });
             alert('Blog updated successfully!');
@@ -257,6 +259,17 @@ const AdminEditPost = () => {
                                     </div>
                                 )}
                                 {uploading && <div className="mt-4 text-center text-xs text-blue-500 animate-pulse">Uploading Image...</div>}
+                                
+                                <div className="mt-4">
+                                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-widest">Image Alt Text (SEO)</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Describe this image..."
+                                        value={imageAlt}
+                                        onChange={(e) => setImageAlt(e.target.value)}
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all"
+                                    />
+                                </div>
                             </div>
 
                             {/* Tags Card */}

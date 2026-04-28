@@ -14,14 +14,14 @@ const AddBlogPost = () => {
     const [slug, setSlug] = useState('');
     const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
     const [status, setStatus] = useState('Draft');
-    const [featuredImage, setFeaturedImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [featuredImage, setFeaturedImage] = useState('');
+    const [imageAlt, setImageAlt] = useState('');
+    const [currentPostId, setCurrentPostId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [showMediaLibrary, setShowMediaLibrary] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
     const [userEmail, setUserEmail] = useState('Administrative User');
-    const [currentPostId, setCurrentPostId] = useState(null);
 
     // SEO & Metadata States
     const [metaTitle, setMetaTitle] = useState('');
@@ -88,6 +88,7 @@ const AddBlogPost = () => {
                 slug,
                 status: isPublished ? 'Published' : 'Draft',
                 image_url: featuredImage,
+                image_alt: imageAlt,
                 author: 'Aindhin',
                 meta_title: metaTitle,
                 meta_description: metaDescription,
@@ -243,12 +244,12 @@ const AddBlogPost = () => {
                                     Featured Image
                                 </h3>
 
-                                {imagePreview ? (
+                                {featuredImage ? (
                                     <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-200 group shadow-sm">
-                                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                        <img src={featuredImage} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                                         <button
-                                            onClick={() => { setImagePreview(null); setFeaturedImage(null); }}
+                                            onClick={() => { setFeaturedImage(''); }}
                                             className="absolute top-2 right-2 bg-white text-red-500 p-2 rounded-lg shadow-md hover:bg-red-50 hover:text-red-600 transition-all opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
                                         >
                                             <span className="sr-only">Remove</span>
@@ -275,6 +276,16 @@ const AddBlogPost = () => {
                                         </button>
                                     </div>
                                 )}
+                                <div className="mt-4">
+                                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-widest">Image Alt Text (SEO)</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Describe this image..."
+                                        value={imageAlt}
+                                        onChange={(e) => setImageAlt(e.target.value)}
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all"
+                                    />
+                                </div>
                                 {uploading && (
                                     <div className="mt-4 flex items-center justify-center gap-2 text-blue-600 bg-blue-50 py-2 rounded-lg animate-pulse">
                                         <Loader2 className="w-4 h-4 animate-spin" />

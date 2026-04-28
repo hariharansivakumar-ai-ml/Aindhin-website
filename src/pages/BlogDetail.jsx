@@ -113,9 +113,22 @@ const BlogDetail = () => {
                             {blog.image_url && (
                                 <div className="overflow-hidden">
                                     <img
-                                        src={blog.image_url}
-                                        alt={blog.title}
-                                        className="w-full object-cover max-h-[440px]"
+                                        src={blog.image_url || blog.image}
+                                        alt={(() => {
+                                            let alt = blog.image_alt || '';
+                                            if (!alt && blog.description) {
+                                                try {
+                                                    const trimmed = blog.description.trim();
+                                                    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                                                        const parsed = JSON.parse(trimmed);
+                                                        alt = parsed.featuredImageAlt || '';
+                                                    }
+                                                } catch (e) { }
+                                            }
+                                            return alt || blog.title;
+                                        })()}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        onError={e => { e.target.style.display = 'none'; }}
                                     />
                                 </div>
                             )}

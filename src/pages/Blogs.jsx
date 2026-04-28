@@ -67,7 +67,19 @@ const BlogCard = ({ post }) => {
                 {(post.image_url || post.image) ? (
                     <img
                         src={post.image_url || post.image}
-                        alt={post.title}
+                        alt={(() => {
+                            let alt = post.image_alt || '';
+                            if (!alt && post.description) {
+                                try {
+                                    const trimmed = post.description.trim();
+                                    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                                        const parsed = JSON.parse(trimmed);
+                                        alt = parsed.featuredImageAlt || '';
+                                    }
+                                } catch (e) { }
+                            }
+                            return alt || post.title;
+                        })()}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         onError={e => { e.target.style.display = 'none'; }}
                     />
