@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Calendar, ArrowRight, BookOpen, Rss } from 'lucide-react';
+import { User, Calendar, ArrowRight, BookOpen, Rss, ChevronLeft, ChevronRight } from 'lucide-react';
 import { apiGetPublicBlogs } from '../utils/apiClient';
 
 /* ── helpers ──────────────────────────────────────────────── */
-const stripHtml = (html) => {
+const stripHtml = (html, post = {}) => {
     if (!html) return '';
     let str = String(html);
     
@@ -13,7 +13,11 @@ const stripHtml = (html) => {
     if (str.trim().startsWith('{') && str.trim().endsWith('}')) {
         try {
             const parsed = JSON.parse(str);
-            str = parsed.metaDescription || parsed.content || str;
+            // Prioritize metaDescription, then fallback to other possible content fields
+            str = parsed.metaDescription || parsed.content || post.content || post.article_body || post.desc || '';
+            
+            // If we still have the original JSON string as a result of a failed fallback, clear it
+            if (str.trim().startsWith('{')) str = '';
         } catch (e) { /* not JSON */ }
     }
 
@@ -105,7 +109,7 @@ const BlogCard = ({ post }) => {
 
                 {/* Excerpt */}
                 <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-6">
-                    {stripHtml(post.description || post.content || post.desc)}
+                    {stripHtml(post.description || post.content || post.desc, post)}
                 </p>
 
                 {/* Footer link style */}
@@ -123,6 +127,10 @@ const Blogs = () => {
     const [blogPosts, setBlogPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const blogsPerPage = 6;
 
     useEffect(() => {
         document.title = 'Blog | Aindhin - Latest Insights & Updates';
@@ -131,6 +139,17 @@ const Blogs = () => {
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
     }, []);
+
+    // Pagination Logic
+    const indexOfLastBlog = currentPage * blogsPerPage;
+    const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
+    const currentBlogs = blogPosts.slice(indexOfFirstBlog, indexOfLastBlog);
+    const totalPages = Math.ceil(blogPosts.length / blogsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 400, behavior: 'smooth' }); // Scroll to top of list
+    };
 
     /* ── Loading skeleton ─────────────── */
     if (loading) {
@@ -212,16 +231,58 @@ const Blogs = () => {
                             <p className="text-gray-500">We're currently crafting some amazing content. Check back soon!</p>
                         </motion.div>
                     ) : (
-                        <motion.div
-                            variants={stagger}
-                            initial="hidden"
-                            animate="show"
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-y-12"
-                        >
-                            {blogPosts.map(post => (
-                                <BlogCard key={post.id} post={post} />
-                            ))}
-                        </motion.div>
+                        <>
+                            <motion.div
+                                variants={stagger}
+                                initial="hidden"
+                                animate="show"
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-y-12"
+                            >
+                                {currentBlogs.map(post => (
+                                    <BlogCard key={post.id} post={post} />
+                                ))}
+                            </motion.div>
+
+                            {/* Pagination UI */}
+                            {totalPages > 1 && (
+                                <div className="mt-20 flex justify-center items-center gap-2">
+                                    <button
+                                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                                        disabled={currentPage === 1}
+                                        className="p-2 rounded-xl border border-gray-200 text-gray-400 hover:bg-white hover:text-blue-600 hover:border-blue-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+                                    >
+                                        <ChevronLeft className="w-5 h-5" />
+                                    </button>
+
+                                    <div className="flex items-center gap-2 mx-4">
+                                        {[...Array(totalPages)].map((_, idx) => {
+                                            const pageNum = idx + 1;
+                                            return (
+                                                <button
+                                                    key={pageNum}
+                                                    onClick={() => handlePageChange(pageNum)}
+                                                    className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
+                                                        currentPage === pageNum
+                                                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-110'
+                                                            : 'bg-white border border-gray-200 text-gray-500 hover:border-blue-400 hover:text-blue-600'
+                                                    }`}
+                                                >
+                                                    {pageNum}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+
+                                    <button
+                                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 rounded-xl border border-gray-200 text-gray-400 hover:bg-white hover:text-blue-600 hover:border-blue-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+                                    >
+                                        <ChevronRight className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>
