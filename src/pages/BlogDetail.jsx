@@ -33,7 +33,9 @@ const BlogDetail = () => {
                 window.scrollTo(0, 0); // Scroll to top on navigation
                 const data = await apiGetBlogBySlug(slug);
                 setBlog(data);
-                document.title = `${data.title} | Aindhin`;
+                
+                // SEO: Use Meta Title if available, otherwise fallback to Title
+                document.title = `${data.meta_title || data.title} | Aindhin`;
 
                 // Fetch real comments for this blog
                 fetchComments(data.id);
@@ -156,9 +158,50 @@ const BlogDetail = () => {
 
                                 {/* Article body */}
                                 <div
-                                    className="blog-content text-gray-700 leading-relaxed"
-                                    dangerouslySetInnerHTML={{ __html: blog.description?.replace(/&nbsp;|\u00A0/g, ' ') }}
+                                    className="blog-content text-gray-700 leading-relaxed mb-10"
+                                    dangerouslySetInnerHTML={{
+                                        __html: (() => {
+                                            // 1. Try to find the main body in multiple fields
+                                            let body = blog.content || blog.article_body || blog.body || '';
+                                            let desc = blog.description || '';
+
+                                            // 2. Handle JSON data recovery
+                                            try {
+                                                const trimmed = desc.trim();
+                                                if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                                                    const parsed = JSON.parse(trimmed);
+                                                    // If main body is empty, use the metaDescription from JSON
+                                                    if (!body) body = parsed.metaDescription || '';
+                                                } else if (desc && !body) {
+                                                    body = desc;
+                                                }
+                                            } catch (e) {
+                                                if (desc && !body) body = desc;
+                                            }
+
+                                            return (body || '').replace(/&nbsp;|\u00A0/g, ' ');
+                                        })()
+                                    }}
                                 />
+
+                                {/* Tags Display Section */}
+                                {blog.tags && (
+                                    <div className="pt-8 border-t border-gray-100">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <Tag className="w-4 h-4 text-gray-400" />
+                                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mr-2">Tags:</span>
+                                            {(Array.isArray(blog.tags) ? blog.tags : blog.tags.split(',')).map((tag, idx) => (
+                                                <Link 
+                                                    key={idx}
+                                                    to={`/blog?tag=${encodeURIComponent(tag.trim())}`}
+                                                    className="px-3 py-1 bg-gray-50 text-gray-500 rounded-lg text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors border border-gray-100"
+                                                >
+                                                    {tag.trim()}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

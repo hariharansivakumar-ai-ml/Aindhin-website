@@ -4,7 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { apiGetSession, apiUpdateBlog, apiUploadImage, apiLogout, apiFetch } from '../utils/apiClient';
 import {
     ArrowLeft, Save, Send, Bell, X,
-    Loader2, Upload, Image as ImageIcon
+    Loader2, Upload, Image as ImageIcon,
+    Tag, Globe, Sparkles
 } from 'lucide-react';
 import AdminSidebar from '../components/AdminSidebar';
 import RichTextEditor from '../components/RichTextEditor';
@@ -26,6 +27,13 @@ const AdminEditPost = () => {
     const [showMediaLibrary, setShowMediaLibrary] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
     const [userEmail, setUserEmail] = useState('Administrative User');
+    
+    // SEO & Metadata States
+    const [metaTitle, setMetaTitle] = useState('');
+    const [metaDescription, setMetaDescription] = useState('');
+    const [focusKeyword, setFocusKeyword] = useState('');
+    const [tags, setTags] = useState([]);
+    const [tagInput, setTagInput] = useState('');
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -43,11 +51,43 @@ const AdminEditPost = () => {
                 if (!res.ok) throw new Error('Blog not found');
                 const data = await res.json();
                 setTitle(data.title || '');
-                setContent(data.description || '');
+                
+                // Try to find the body in multiple common field names
+                let mainBody = data.content || data.article_body || data.body || '';
+                let rawDescription = data.description || '';
+                
+                // DATA RECOVERY: Handle the JSON metadata format
+                try {
+                    const trimmedDesc = rawDescription.trim();
+                    if (trimmedDesc.startsWith('{') && trimmedDesc.endsWith('}')) {
+                        const parsed = JSON.parse(trimmedDesc);
+                        setMetaTitle(parsed.metaTitle || '');
+                        setMetaDescription(parsed.metaDescription || '');
+                        setFocusKeyword(parsed.focusedKeyword || '');
+                        setTags(Array.isArray(parsed.tags) ? parsed.tags : []);
+                        
+                        // If mainBody is empty, use the metaDescription as a starting point
+                        if (!mainBody) {
+                            mainBody = parsed.metaDescription || '';
+                        }
+                    } else if (rawDescription && !mainBody) {
+                        // If description has text and content is empty, use description
+                        mainBody = rawDescription;
+                    }
+                } catch (e) {
+                    if (rawDescription && !mainBody) mainBody = rawDescription;
+                }
+
+                setContent(mainBody);
                 setSlug(data.slug || '');
                 setFeaturedImage(data.image_url || null);
                 setImagePreview(data.image_url || null);
                 setStatus(data.status || 'Draft');
+
+                // Final fallbacks for direct API fields
+                if (data.meta_title) setMetaTitle(data.meta_title);
+                if (data.meta_description) setMetaDescription(data.meta_description);
+                if (data.tags) setTags(Array.isArray(data.tags) ? data.tags : data.tags.split(','));
             } catch (error) {
                 console.error('Error fetching post:', error);
                 alert('Error fetching post');
@@ -88,6 +128,10 @@ const AdminEditPost = () => {
                 status: isPublished ? 'Published' : status,
                 author: 'Aindhin',
                 image_url: featuredImage,
+                meta_title: metaTitle,
+                meta_description: metaDescription,
+                tags: tags.join(','),
+                focus_keyword: focusKeyword,
             });
             alert('Blog updated successfully!');
             if (isPublished) setStatus('Published');
@@ -153,7 +197,7 @@ const AdminEditPost = () => {
                                 className="w-full text-4xl md:text-5xl font-extrabold placeholder-gray-300 border-none outline-none bg-transparent text-gray-900 mb-2 resize-none h-24"
                             />
 
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 h-[600px] overflow-hidden">
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 h-[600px] overflow-visible relative z-10">
                                 <RichTextEditor
                                     content={content}
                                     onChange={setContent}
@@ -213,6 +257,90 @@ const AdminEditPost = () => {
                                     </div>
                                 )}
                                 {uploading && <div className="mt-4 text-center text-xs text-blue-500 animate-pulse">Uploading Image...</div>}
+                            </div>
+
+                            {/* Tags Card */}
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                                <h3 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                    <Tag className="w-4 h-4 text-indigo-500" />
+                                    Tags
+                                </h3>
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    {tags.map((tag, idx) => (
+                                        <span key={idx} className="flex items-center gap-1 px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold border border-indigo-100">
+                                            {tag}
+                                            <button onClick={() => setTags(tags.filter((_, i) => i !== idx))}>
+                                                <X className="w-3 h-3 hover:text-indigo-800" />
+                                            </button>
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Add tag..."
+                                        value={tagInput}
+                                        onChange={(e) => setTagInput(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && tagInput.trim()) {
+                                                e.preventDefault();
+                                                if (!tags.includes(tagInput.trim())) setTags([...tags, tagInput.trim()]);
+                                                setTagInput('');
+                                            }
+                                        }}
+                                        className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-indigo-400 focus:bg-white transition-all"
+                                    />
+                                    <button
+                                        onClick={() => {
+                                            if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+                                                setTags([...tags, tagInput.trim()]);
+                                                setTagInput('');
+                                            }
+                                        }}
+                                        className="p-2 bg-indigo-600 text-white rounded-xl"
+                                    >
+                                        <Sparkles className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* SEO Card */}
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                                <h3 className="text-base font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                    <Globe className="w-4 h-4 text-emerald-500" />
+                                    SEO Settings
+                                </h3>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-widest">Focus Keyword</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. professional mentorship"
+                                            value={focusKeyword}
+                                            onChange={(e) => setFocusKeyword(e.target.value)}
+                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-white transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-widest">Meta Title</label>
+                                        <input
+                                            type="text"
+                                            value={metaTitle}
+                                            onChange={(e) => setMetaTitle(e.target.value)}
+                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-white transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-widest">Meta Description</label>
+                                        <textarea
+                                            rows={4}
+                                            value={metaDescription.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')}
+                                            onChange={(e) => setMetaDescription(e.target.value)}
+                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-white transition-all resize-none text-gray-600 leading-relaxed"
+                                        />
+                                        <p className="mt-2 text-[10px] text-gray-400">Character count: {metaDescription.length} (Recommended: 150-160)</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

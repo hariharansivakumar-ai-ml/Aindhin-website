@@ -7,7 +7,17 @@ import { apiGetPublicBlogs } from '../utils/apiClient';
 /* ── helpers ──────────────────────────────────────────────── */
 const stripHtml = (html) => {
     if (!html) return '';
-    return html.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+    let str = String(html);
+    
+    // JSON Recovery: If content is JSON metadata
+    if (str.trim().startsWith('{') && str.trim().endsWith('}')) {
+        try {
+            const parsed = JSON.parse(str);
+            str = parsed.metaDescription || parsed.content || str;
+        } catch (e) { /* not JSON */ }
+    }
+
+    return str.replace(/<[^>]*>/g, ' ').replace(/&nbsp;|\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
 };
 
 const fmtDate = (raw) => {
@@ -95,7 +105,7 @@ const BlogCard = ({ post }) => {
 
                 {/* Excerpt */}
                 <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-6">
-                    {stripHtml(post.description || post.desc)}
+                    {stripHtml(post.description || post.content || post.desc)}
                 </p>
 
                 {/* Footer link style */}
