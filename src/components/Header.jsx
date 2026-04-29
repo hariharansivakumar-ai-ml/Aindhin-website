@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronRight, Menu, X, LayoutGrid } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import CourseTicker from './CourseTicker';
 
 import logo from '../assets/logo_aindhin.webp';
 
@@ -81,10 +82,12 @@ const Header = () => {
 
     return (
         <header className={cn(
-            "fixed top-0 left-0 right-0 w-full z-[9999] transition-all duration-300 bg-white shadow-sm",
-            isScrolled ? "py-2 shadow-md" : "py-3 px-6 lg:px-12"
+            "fixed top-0 left-0 right-0 w-full z-[9999] transition-all duration-300 bg-white shadow-sm flex flex-col"
         )}>
-            <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+            <div className={cn(
+                "max-w-[1400px] mx-auto w-full flex items-center justify-between",
+                isScrolled ? "py-2" : "py-3 px-6 lg:px-12"
+            )}>
                 {/* Left Section: Logo & Category */}
                 <div className="flex items-center gap-12">
                     <Link to="/">
@@ -114,7 +117,7 @@ const Header = () => {
                         </button>
 
                         {isCategoryOpen && (
-                            <div className="absolute top-[120%] left-0 w-[280px] bg-white rounded-2xl shadow-2xl p-2.5 z-20 animate-in fade-in slide-in-from-top-2">
+                            <div className="absolute top-[120%] left-0 w-[280px] bg-white rounded-2xl shadow-2xl p-2.5 z-50 animate-in fade-in slide-in-from-top-2">
                                 {categories.map((cat, idx) => (
                                     <div key={idx} className="group relative">
                                         <Link
@@ -133,7 +136,7 @@ const Header = () => {
                                         </Link>
 
                                         {cat.submenu && (
-                                            <div className="absolute left-[100%] top-0 mt-[-10px] ml-2 w-[280px] bg-white rounded-2xl shadow-2xl p-2.5 hidden group-hover:block border border-gray-100 before:absolute before:-left-4 before:top-0 before:h-full before:w-4 before:content-['']">
+                                            <div className="absolute left-[100%] top-0 mt-[-10px] ml-2 w-[280px] bg-white rounded-2xl shadow-2xl p-2.5 hidden group-hover:block border border-gray-100 z-50 before:absolute before:-left-4 before:top-0 before:h-full before:w-4 before:content-['']">
                                                 {cat.submenu.map((sub, sIdx) => (
                                                     <Link
                                                         key={sIdx}
@@ -159,6 +162,7 @@ const Header = () => {
 
                 {/* Center Section: Navigation */}
                 <nav className="hidden lg:flex items-center gap-8">
+                    <Link to="/" className="text-sm font-medium text-secondary hover:text-primary transition-colors">Home</Link>
                     <Link to="/about-us" className="text-sm font-medium text-secondary hover:text-primary transition-colors">About us</Link>
                     <Link to="/service" className="text-sm font-medium text-secondary hover:text-primary transition-colors">Services</Link>
 
@@ -166,7 +170,7 @@ const Header = () => {
                         <button className="flex items-center gap-1 text-sm font-medium text-secondary group-hover:text-primary transition-colors">
                             Courses <ChevronDown className="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" />
                         </button>
-                        <div className="absolute top-full left-0 pt-4 hidden group-hover:block">
+                        <div className="absolute top-full left-0 pt-4 hidden group-hover:block z-50">
                             <div className="w-[220px] bg-white rounded-lg shadow-xl py-2 border border-gray-100">
                                 <Link to="/our-courses/" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Certification Courses</Link>
                                 <Link to="/university-courses/" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">University Courses</Link>
@@ -221,6 +225,7 @@ const Header = () => {
                 </button>
 
                 <div className="flex flex-col gap-6 p-8 pt-24 h-full overflow-y-auto">
+                    <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-secondary">Home</Link>
                     <Link to="/about-us" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-secondary">About Us</Link>
                     <Link to="/service" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-secondary">Services</Link>
 
@@ -258,6 +263,9 @@ const Header = () => {
 
                 </div>
             </div>
+
+            {/* Course Ticker rendered exactly below the header navigation */}
+            <CourseTicker />
         </header>
     );
 };

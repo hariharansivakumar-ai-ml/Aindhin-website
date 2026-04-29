@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Clock, BarChart2, Users, Calendar, Award, Brain, Code, Rocket, Globe } from 'lucide-react';
+import { Clock, BarChart2, Users, Calendar, Award, Brain, Code, Rocket, Globe, ArrowUpRight } from 'lucide-react';
 
 // Hero Image
 import heroImg from '../assets/courses/ai-ml-basics.webp';
@@ -46,17 +46,17 @@ const Section = ({ children, className }) => {
 
 const AiMlCourse = () => {
   useEffect(() => {
-    document.title = "AI & Machine Learning Course: Master Industry-Ready Skills | Aindhin";
+    document.title = "Best AI and Machine Learning Course in India | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+      metaDescription.setAttribute("content", "Learn Artificial Intelligence and Machine Learning with live projects, mentorship, certification, and placement support at Aindhin. Enroll online today.");
     }
   }, []);
 
   const [activeModule, setActiveModule] = useState(0);
 
   return (
-    <div className="ai-ml-page font-sans text-slate-900 bg-blue-50 w-full overflow-x-hidden">
+    <div className="ai-ml-page font-sans text-slate-900 bg-blue-50 w-full">
       <style>{`
                 /* ===== AI & ML Course Page (scoped) ===== */
                 .ai-ml-page{
@@ -668,20 +668,32 @@ const AiMlCourse = () => {
 
       {/* HERO */}
       <Section className="ai-ml-hero ai-ml-section">
-        <div className="ai-ml-hero-content">
-          <span className="ai-ml-badge">Artificial Intelligence</span>
-          <h1 className="fs-hero-title">
-            Master AI &amp; Machine Learning: From Fundamentals to Professional Industry Applications
-          </h1>
-          <p className="fs-hero-sub">
-            Learn the foundations of AI, master core machine learning algorithms, and build
-            production‑ready models that solve real business problems. Start from the basics
-            and grow into an industry‑ready AI &amp; ML engineer.
-          </p>
-          <div className="ai-ml-hero-meta">
-            <span>No prior ML experience required</span>
-            <span>Hands‑on projects with real datasets</span>
-            <span>Capstone project for your portfolio</span>
+        <div className="flex flex-col md:flex-row justify-between items-start max-w-[1200px] mx-auto w-full gap-8">
+          <div className="ai-ml-hero-content">
+            <span className="ai-ml-badge">Artificial Intelligence</span>
+            <h1 className="fs-hero-title">
+              Master AI &amp; Machine Learning: From Fundamentals to Professional Industry Applications
+            </h1>
+            <p className="fs-hero-sub">
+              Learn the foundations of AI, master core machine learning algorithms, and build
+              production‑ready models that solve real business problems. Start from the basics
+              and grow into an industry‑ready AI &amp; ML engineer.
+            </p>
+            <div className="ai-ml-hero-meta">
+              <span>No prior ML experience required</span>
+              <span>Hands‑on projects with real datasets</span>
+              <span>Capstone project for your portfolio</span>
+            </div>
+          </div>
+          <div className="flex-shrink-0 w-full md:w-auto mt-6 md:mt-12">
+            <a 
+                href="https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-lg w-full md:w-auto animate-color-blink"
+            >
+                Enroll Now <ArrowUpRight className="w-5 h-5" />
+            </a>
           </div>
         </div>
       </Section>
@@ -697,17 +709,44 @@ const AiMlCourse = () => {
             <Section className="ai-ml-card">
               <h2>About This Course</h2>
               <div className="ai-ml-about-text">
-                <p>
-                  This program takes you from the fundamentals of Python and math for machine learning
-                  to building real‑world AI solutions. You will understand how modern algorithms work,
-                  how to prepare and explore data, and how to evaluate and improve models.
+                <p className="mb-4">
+                  This Artificial Intelligence and Machine Learning course takes you from Python fundamentals and essential math concepts to building real-world AI solutions. You will learn how machine learning algorithms work, how to prepare and analyze data, and how to evaluate, optimize, and improve model performance.
                 </p>
-                <p>
-                  As you progress you will work with supervised and unsupervised learning, deep learning,
-                  computer vision and basic NLP. By the end of the course you will have implemented
-                  several end‑to‑end projects and will be ready to contribute to AI &amp; ML
-                  initiatives in industry.
+                <p className="mb-6">
+                  As you progress, you will work with supervised and unsupervised learning, deep learning, computer vision, and basic NLP applications. By the end of this AI and ML certification course, you will complete several end-to-end projects and be ready for industry-level Artificial Intelligence and Machine Learning roles.
                 </p>
+                
+                <h3 className="text-lg font-bold text-slate-800 mt-6 mb-2">What You Will Achieve in This AI & ML Program</h3>
+                <p className="mb-4">
+                  Build strong AI and Machine Learning skills, work on live industry projects, and become job-ready for top career opportunities in Data Science and Artificial Intelligence.
+                </p>
+
+                <div className="space-y-4 mt-4">
+                  <div>
+                    <strong className="text-slate-800 block">Deep Conceptual Clarity</strong>
+                    Understand Artificial Intelligence and Machine Learning algorithms in depth so you can analyze, optimize, and explain models with confidence in real-world projects.
+                  </div>
+                  
+                  <div>
+                    <strong className="text-slate-800 block">Hands on Coding Skills</strong>
+                    Learn Python programming, use NumPy and Pandas for data analysis, and build Machine Learning models using Scikit-learn, TensorFlow, and industry-standard tools.
+                  </div>
+                  
+                  <div>
+                    <strong className="text-slate-800 block">Real-World Projects</strong>
+                    Work with real-world datasets, build and evaluate Machine Learning models, deploy them as APIs, and create portfolio-ready projects that showcase your AI and Data Science skills.
+                  </div>
+                  
+                  <div>
+                    <strong className="text-slate-800 block">Industry Applications</strong>
+                    Explore how Artificial Intelligence is used in healthcare, finance, e-commerce, digital marketing, automation, and modern business decision-making.
+                  </div>
+                  
+                  <div>
+                    <strong className="text-slate-800 block">Expert Mentorship and Learning Community</strong>
+                    Get live mentor support, doubt-clearing sessions, career guidance, and peer learning to stay motivated and confident throughout your AI learning journey.
+                  </div>
+                </div>
               </div>
             </Section>
 
@@ -830,7 +869,14 @@ const AiMlCourse = () => {
                 </li>
               </ul>
 
-              <a href="#enquiry" className="ai-ml-cta-btn">Enroll Now &amp; Start Learning</a>
+              <a 
+                href="https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="ai-ml-cta-btn"
+              >
+                Enroll Now &amp; Start Learning
+              </a>
             </Section>
           </aside>
 

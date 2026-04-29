@@ -5,9 +5,9 @@ import { apiCreateSubscriber } from '../utils/apiClient';
 
 /* 
  * NOTE: If you uploaded a specific picture to the assets folder, replace 'download image.webp' 
- * below with the exact filename of the image you added (e.g., 'newsletter_popup.png').
+ * below with the exact filename of the image you added (e.g., 'newsletter_popup.webp').
  */
-import popupImage from '../assets/newsletter_popup_1772252090058.png';
+import popupImage from '../assets/newsletter_popup_1772252090058.webp';
 
 const SubscribePopup = () => {
     const [isVisible, setIsVisible] = useState(false);

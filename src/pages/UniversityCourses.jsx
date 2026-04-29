@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutGrid, Monitor, TrendingUp, Briefcase, GraduationCap, BookOpen, Users, Clock, Star } from 'lucide-react';
+import { LayoutGrid, Monitor, TrendingUp, Briefcase, GraduationCap, BookOpen, Users, Clock, Star, Quote, Phone } from 'lucide-react';
 import './UniversityCourses.css';
 import BscImg from '../assets/B_sc_scaled.webp';
 import BBAImg from '../assets/BBA_scaled.webp';
@@ -122,53 +122,27 @@ const UniversityCourses = () => {
                     ))}
                 </div>
 
-                {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredCourses.map((course, index) => (
-                        <article key={index} className="bg-white rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.06)] flex flex-col border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
-                            <div className="relative w-full aspect-[16/7] overflow-hidden">
-                                <img
-                                    src={course.image}
-                                    alt={course.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            </div>
-
-                            <div className="p-5 flex flex-col items-start flex-1">
-                                <h3 className="text-base font-bold text-secondary mb-2 leading-tight">
-                                    {course.title}
-                                </h3>
-
-                                <div className="space-y-2.5 mb-4 flex-1">
-                                    <p className="text-[13px] text-gray-500 leading-relaxed">
-                                        <strong className="text-secondary font-bold">Highlights:</strong> {course.highlights}
-                                    </p>
-
-                                    <div className="flex items-center gap-4 text-sm font-medium text-gray-400">
-                                        <span className="flex items-center gap-1">
-                                            <span className="text-yellow-400 text-lg">★</span>
-                                            <span className="text-secondary font-bold">{course.rating}</span>
-                                            <span className="text-[10px]">({course.ratingText})</span>
-                                        </span>
-                                        <span>•</span>
-                                        <span>{course.duration.split('·')[1]}</span>
-                                    </div>
-
-                                    <div className="text-[13px] font-bold text-primary bg-blue-50 px-4 py-1.5 rounded-full inline-block">
-                                        {course.students.split('·')[1]}
-                                    </div>
-                                </div>
-
-                                <Link
-                                    to={course.link}
-                                    className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
-                                >
-                                    View Program
-                                </Link>
-                            </div>
-                        </article>
-                    ))}
+                {/* Quote Card */}
+                <div className="max-w-3xl mx-auto bg-white rounded-[32px] p-10 md:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col items-center text-center mt-4">
+                    <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-8">
+                        <Quote size={32} className="text-primary" fill="currentColor" />
+                    </div>
+                    
+                    <h2 className="text-2xl md:text-[26px] font-bold text-slate-800 italic mb-6 leading-relaxed">
+                        "The roots of education are bitter, but the fruit is sweet. – Aristotle"
+                    </h2>
+                    
+                    <p className="text-gray-500 text-[15px] md:text-base leading-relaxed mb-10 max-w-2xl">
+                        We are currently bringing you an updated set of industry-leading programs. Please get in touch with our admissions team for immediate details, upcoming schedules, and curriculum brochures.
+                    </p>
+                    
+                    <Link
+                        to="/contact-us"
+                        className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#1d5ed8] text-white text-[15px] font-bold rounded-xl hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200 transition-all duration-300"
+                    >
+                        <Phone size={18} />
+                        Get in Touch for Details
+                    </Link>
                 </div>
             </div>
         </section>

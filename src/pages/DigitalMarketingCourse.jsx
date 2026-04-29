@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Clock, BarChart2, Users, Calendar, Award, Brain, Megaphone, Folder, Briefcase, Target, BookOpen, Globe, Mail } from 'lucide-react';
+import { Clock, BarChart2, Users, Calendar, Award, Brain, Megaphone, Folder, Briefcase, Target, BookOpen, Globe, Mail, ArrowUpRight } from 'lucide-react';
 
 // Hero Image
 import heroImg from '../assets/courses/digital-marketing-hero.webp';
@@ -42,17 +42,17 @@ const Section = ({ children, className }) => {
 
 const DigitalMarketingCourse = () => {
   useEffect(() => {
-    document.title = "Digital Marketing Course: Master Social Media, SEO & Ads | Aindhin";
+    document.title = "Online Digital Marketing Course India | SEO & Ads | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+      metaDescription.setAttribute("content", "Learn Online Digital Marketing with SEO, Google Ads, Social Media, Email Marketing & Analytics. Get certification, live projects & career support at Aindhin.");
     }
   }, []);
 
   const [activeModule, setActiveModule] = useState(0);
 
   return (
-    <div className="dm-course font-sans text-slate-900 bg-blue-50 w-full overflow-x-hidden">
+    <div className="dm-course font-sans text-slate-900 bg-blue-50 w-full">
       <style>{`
             /* ===== DIGITAL MARKETING COURSE PAGE (scoped) ===== */
             .dm-course{
@@ -616,19 +616,31 @@ const DigitalMarketingCourse = () => {
 
         {/* HERO */}
         <Section className="dm-hero dm-section">
-          <div className="dm-hero-content">
-            <span className="dm-badge">Digital Marketing</span>
-            <h1 className="fs-hero-title">
-              Master Digital Marketing: Grow Businesses with Social Media, Ads &amp; SEO
-            </h1>
-            <p className="fs-hero-sub">
-              Learn SEO, paid ads, social media, email and analytics to design and run growth campaigns.
-              Build real‑world marketing assets and a portfolio that showcases measurable results.
-            </p>
-            <div className="dm-hero-meta">
-              <span>Covers SEO, SEM, Social, Email &amp; Analytics</span>
-              <span>Hands‑on with live tools and sample ad accounts</span>
-              <span>Capstone multi‑channel growth campaign</span>
+          <div className="flex flex-col md:flex-row justify-between items-start max-w-[1200px] mx-auto w-full gap-8">
+            <div className="dm-hero-content">
+              <span className="dm-badge">Digital Marketing</span>
+              <h1 className="fs-hero-title">
+                Master Digital Marketing: Grow Businesses with Social Media, Ads &amp; SEO
+              </h1>
+              <p className="fs-hero-sub">
+                Learn SEO, paid ads, social media, email and analytics to design and run growth campaigns.
+                Build real‑world marketing assets and a portfolio that showcases measurable results.
+              </p>
+              <div className="dm-hero-meta">
+                <span>Covers SEO, SEM, Social, Email &amp; Analytics</span>
+                <span>Hands‑on with live tools and sample ad accounts</span>
+                <span>Capstone multi‑channel growth campaign</span>
+              </div>
+            </div>
+            <div className="flex-shrink-0 w-full md:w-auto mt-6 md:mt-12">
+              <a 
+                  href="https://user.aindhin.com/course/AD-944b67c3bbf11c6b037beb11b0c1ada8" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-lg w-full md:w-auto animate-color-blink"
+              >
+                  Enroll Now <ArrowUpRight className="w-5 h-5" />
+              </a>
             </div>
           </div>
         </Section>
@@ -644,16 +656,14 @@ const DigitalMarketingCourse = () => {
               <Section className="dm-card">
                 <h2>About This Course</h2>
                 <div className="dm-about-text">
-                  <p>
-                    This course is designed to take you from marketing basics to planning and executing
-                    performance‑driven digital campaigns. You’ll learn how different channels work together
-                    across the funnel — awareness, acquisition, activation and retention.
+                  <p className="mb-4">
+                    This Digital Marketing Course takes you from marketing basics to planning and executing performance-driven digital marketing campaigns. You will learn how different channels work together across the funnel - awareness, acquisition, activation, and retention.
+                  </p>
+                  <p className="mb-4">
+                    Through hands-on projects, you will work on keyword research, SEO, Google Ads, Social Media Marketing, Email Marketing, and Marketing Analytics. You will also create ad sets, design landing pages, write email sequences, and track results using analytics dashboards.
                   </p>
                   <p>
-                    Through hands‑on projects you will research keywords, create ad sets, design landing pages,
-                    write email sequences and track results in analytics dashboards. By the end, you’ll have
-                    practical experience running growth campaigns and the confidence to contribute to real
-                    marketing teams.
+                    By the end, you will gain practical experience in running real-world digital marketing campaigns and build a complete digital marketing portfolio with job-ready confidence.
                   </p>
                 </div>
               </Section>
@@ -786,7 +796,14 @@ const DigitalMarketingCourse = () => {
                   </li>
                 </ul>
 
-                <a href="#top" className="dm-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a 
+                  href="https://user.aindhin.com/course/AD-944b67c3bbf11c6b037beb11b0c1ada8" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="dm-cta-btn"
+                >
+                  Enroll Now &amp; Start Learning
+                </a>
               </Section>
             </aside>
 

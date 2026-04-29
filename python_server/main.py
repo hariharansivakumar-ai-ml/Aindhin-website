@@ -1,4 +1,5 @@
-import os
+import os, io
+from PIL import Image
 from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -244,21 +245,52 @@ async def delete_blog(id: int, current_user: dict = Depends(get_current_user)):
 @app.post("/api/upload")
 async def upload_image(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
     try:
-        public_id = f"aindhin_{int(datetime.now().timestamp())}_{os.path.splitext(file.filename)[0]}"
+        # Read file content
+        content = await file.read()
+        img = Image.open(io.BytesIO(content))
+        
+        # Handle orientation if present in EXIF
+        try:
+            from PIL import ImageOps
+            img = ImageOps.exif_transpose(img)
+        except Exception:
+            pass
+
+        # Convert to WebP
+        if img.mode in ("RGBA", "P"):
+            img = img.convert("RGBA")
+        else:
+            img = img.convert("RGB")
+            
+        webp_buffer = io.BytesIO()
+        # Use a high quality setting while still getting good compression
+        img.save(webp_buffer, format="WEBP", quality=80, method=6)
+        webp_buffer.seek(0)
+        
+        # Use the original filename without extension + .webp for the DB
+        filename_base = os.path.splitext(file.filename)[0]
+        new_filename = f"{filename_base}.webp"
+        
+        public_id = f"aindhin_{int(datetime.now().timestamp())}_{filename_base}"
         
         upload_result = cloudinary.uploader.upload(
-            file.file,
+            webp_buffer,
             public_id=public_id,
-            folder="blog_images"
+            folder="blog_images",
+            resource_type="image"
         )
 
         full_public_id = upload_result["public_id"]
         secure_url = upload_result["secure_url"]
 
-        # Save to DB for easy listing (works on free Cloudinary tier)
+        # Ensure the URL ends with .webp if Cloudinary didn't already
+        if not secure_url.lower().endswith(".webp"):
+            secure_url = os.path.splitext(secure_url)[0] + ".webp"
+
+        # Save to DB
         execute_query(
             "INSERT INTO media (public_id, url, filename) VALUES (%s, %s, %s) ON CONFLICT (public_id) DO NOTHING",
-            (full_public_id, secure_url, file.filename)
+            (full_public_id, secure_url, new_filename)
         )
 
         return {"url": secure_url, "name": full_public_id}

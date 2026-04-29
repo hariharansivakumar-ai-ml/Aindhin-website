@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Users, Award, BookOpen, Target, Brain, ArrowUpRight } from 'lucide-react';
-import AbacusHeroImg from '../assets/abacus_course.png';
+import AbacusHeroImg from '../assets/abacus_course.webp';
 
 const Section = ({ children, className }) => (
   <motion.div

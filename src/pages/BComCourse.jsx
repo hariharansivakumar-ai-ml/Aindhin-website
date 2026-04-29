@@ -16,7 +16,7 @@ import EYLogo from '../assets/ey_logo.svg';
 import HCLLogo from '../assets/hcl_logo.svg';
 
 import TallyLogo from '../assets/tally_logo.webp';
-import ExcelLogo from '../assets/excel_logo.png';
+import ExcelLogo from '../assets/office_365_logo.webp';
 import WordLogo from '../assets/word_logo.webp';
 import PowerPointLogo from '../assets/powerpoint_logo.svg';
 import MySQLLogo from '../assets/mysql_logo.svg';

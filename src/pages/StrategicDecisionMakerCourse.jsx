@@ -17,7 +17,7 @@ import TataLogo from '../assets/tata_logo.webp';
 
 // Tool Logos
 import ConfluenceLogo from '../assets/confluence_logo.webp';
-import ExcelLogo from '../assets/excel_logo.png';
+import ExcelLogo from '../assets/office_365_logo.webp';
 import MiroLogo from '../assets/miro_logo.webp';
 import PowerBILogo from '../assets/power_bi_logo.svg';
 

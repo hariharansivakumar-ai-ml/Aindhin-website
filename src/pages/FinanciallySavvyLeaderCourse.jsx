@@ -15,7 +15,7 @@ import LandTLogo from '../assets/l_and_t_logo.webp';
 import TataLogo from '../assets/tata_logo.webp';
 
 // Tool Logos
-import ExcelLogo from '../assets/excel_logo.png';
+import ExcelLogo from '../assets/office_365_logo.webp';
 import PowerBILogo from '../assets/power_bi_logo.svg';
 import PowerPointLogo from '../assets/powerpoint_logo.webp';
 import NotionLogo from '../assets/notion_logo.svg';

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Hero from '../components/Hero';
+import HomeCourseSlider from '../components/HomeCourseSlider';
 import CourseCard from '../components/CourseCard';
 import Testimonials from '../components/Testimonials';
 import { motion } from 'framer-motion';
@@ -52,6 +53,7 @@ const Home = () => {
     return (
         <div className="flex flex-col">
             <Hero />
+            <HomeCourseSlider />
 
             {/* About Aindhin Section */}
             <section className="pt-12 md:pt-16 pb-6 px-6 lg:px-12 bg-white relative overflow-hidden">

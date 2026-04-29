@@ -5,7 +5,7 @@ import './DataAnalyticsCourse.css';
 import DataHeroImg from '../assets/data_analytics.webp';
 
 // Logos
-import ExcelLogo from '../assets/excel_logo.png';
+import ExcelLogo from '../assets/office_365_logo.webp';
 import PowerBILogo from '../assets/power_bi_logo.svg';
 import TableauLogo from '../assets/tableau_logo.webp';
 import PythonLogo from '../assets/python_logo.svg';

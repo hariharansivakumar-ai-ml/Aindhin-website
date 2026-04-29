@@ -16,7 +16,7 @@ import TataLogo from '../assets/tata_logo.webp';
 // Tool Logos
 import JiraLogo from '../assets/jira_logo.webp';
 import ConfluenceLogo from '../assets/confluence_logo.webp';
-import ExcelLogo from '../assets/excel_logo.png';
+import Office365Logo from '../assets/office_365_logo.webp';
 import PowerBILogo from '../assets/power_bi_logo.svg';
 import MiroLogo from '../assets/miro_logo.webp';
 
@@ -343,7 +343,7 @@ const DigitalTransformationCourse = () => {
                             <span>Confluence / Wikis &amp; Docs</span>
                         </div>
                         <div className="fs-tools-card">
-                            <img className="fs-tools-logo" src={ExcelLogo} alt="Excel" />
+                            <img className="fs-tools-logo" src={Office365Logo} alt="Excel" />
                             <span>Excel / Sheets (Roadmaps)</span>
                         </div>
                         <div className="fs-tools-card">

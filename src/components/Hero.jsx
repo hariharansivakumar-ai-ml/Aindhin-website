@@ -34,16 +34,16 @@ const Hero = () => {
 
                     <div className="flex flex-wrap gap-4 mt-6">
                         <Link
-                            to="/courses"
-                            className="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-sm"
+                            to="/our-courses"
+                            className="inline-flex items-center gap-2 px-6 py-3.5 bg-secondary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(25,53,45,0.2)] hover:shadow-[0_20px_40px_rgba(25,53,45,0.3)] hover:-translate-y-1 transition-all duration-300 font-inter text-sm"
                         >
-                            Explore Courses <ArrowUpRight className="w-4 h-4" />
+                            Our Courses
                         </Link>
                         <Link
                             to="/courses"
-                            className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#FF5252] text-white font-bold rounded-full shadow-[0_10px_30px_rgba(255,82,82,0.4)] hover:-translate-y-1 transition-all duration-300 font-inter text-sm"
+                            className="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-sm animate-color-blink"
                         >
-                            Start Learning <ArrowUpRight className="w-4 h-4" />
+                            Enroll Now <ArrowUpRight className="w-4 h-4" />
                         </Link>
                     </div>
 

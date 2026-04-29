@@ -25,7 +25,7 @@ import GitHubLogo from '../assets/github_logo.svg';
 
 import {
     Shield, Lock, Eye, AlertTriangle, Terminal, FileText, Globe, Server, UserCheck,
-    Clock, Users, Target, Briefcase, Award, Map, Activity
+    Clock, Users, Target, Briefcase, Award, Map, Activity, ArrowUpRight
 } from 'lucide-react';
 
 const CyberSecurityCourse = () => {
@@ -33,10 +33,10 @@ const CyberSecurityCourse = () => {
     const [openModule, setOpenModule] = useState(1);
 
     useEffect(() => {
-        document.title = "Cyber Security Course: Become an Ethical Hacker | Aindhin";
+        document.title = "Online Cyber Security Course | Ethical Hacking & SOC";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "Learn Cyber Security with Ethical Hacking, Network Security, SOC Operations & Incident Response. Get certification, labs & career support at Aindhin.");
         }
     }, []);
 
@@ -70,20 +70,32 @@ const CyberSecurityCourse = () => {
                     background: `linear-gradient(120deg,rgba(15,23,42,.96),rgba(37,99,235,.7)), url(${CyberHeroImg}) center/cover no-repeat`
                 }}
             >
-                <div className="fs-hero-content">
-                    <span className="fs-badge">Cyber Security Course</span>
-                    <h1 className="fs-hero-title">
-                        Protect the Digital Frontier: Master Cyber Security &amp; Ethical Hacking
-                    </h1>
-                    <p className="fs-hero-sub">
-                        Learn how to protect systems, networks and data from cyber threats. Build skills in
-                        network security, ethical hacking basics, incident response, security operations and
-                        best practices used by modern organisations.
-                    </p>
-                    <div className="fs-hero-meta">
-                        <span>Key topics: Networking, OS Concepts, Ethical Hacking, SOC, Incident Response, Tools</span>
-                        <span>Professional Course · Duration as per institution (often 4–6 months)</span>
-                        <span>Beginner‑friendly · Ideal for students &amp; working professionals · 4.7 / 5 learner feedback</span>
+                <div className="flex flex-col md:flex-row justify-between items-start max-w-[1200px] mx-auto w-full gap-8">
+                    <div className="fs-hero-content">
+                        <span className="fs-badge">Cyber Security Course</span>
+                        <h1 className="fs-hero-title">
+                            Protect the Digital Frontier: Master Cyber Security &amp; Ethical Hacking
+                        </h1>
+                        <p className="fs-hero-sub">
+                            Learn how to protect systems, networks and data from cyber threats. Build skills in
+                            network security, ethical hacking basics, incident response, security operations and
+                            best practices used by modern organisations.
+                        </p>
+                        <div className="fs-hero-meta">
+                            <span>Key topics: Networking, OS Concepts, Ethical Hacking, SOC, Incident Response, Tools</span>
+                            <span>Professional Course · Duration as per institution (often 4–6 months)</span>
+                            <span>Beginner‑friendly · Ideal for students &amp; working professionals · 4.7 / 5 learner feedback</span>
+                        </div>
+                    </div>
+                    <div className="flex-shrink-0 w-full md:w-auto mt-6 md:mt-12">
+                        <a 
+                            href="https://user.aindhin.com/course/AD-944b67c3bbf11c6a037beb11b0c1ada8" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-lg w-full md:w-auto animate-color-blink"
+                        >
+                            Enroll Now <ArrowUpRight className="w-5 h-5" />
+                        </a>
                     </div>
                 </div>
             </section>
@@ -99,18 +111,14 @@ const CyberSecurityCourse = () => {
                         <section className="fs-card">
                             <h2>About This Course</h2>
                             <div className="fs-about-text">
-                                <p>
-                                    This Cyber Security Course is designed to give you a strong foundation in how attacks
-                                    happen and how to defend against them. You start with networking, operating systems
-                                    and security fundamentals, and then move into ethical hacking basics, vulnerability
-                                    assessment, secure configuration and incident response.
+                                <p className="mb-4">
+                                    This Cyber Security Course helps you master the fundamentals of network security, ethical hacking, system protection, SOC operations, and incident response. You will learn how cyber attacks happen and how to defend systems, networks, and data using real-world security practices.
+                                </p>
+                                <p className="mb-4">
+                                    The course starts with networking and operating system basics and progresses into ethical hacking basics, vulnerability assessment, secure configuration and incident response. Through hands-on labs, you will work with real security tools, analyze logs, and simulate attacks in a safe environment.
                                 </p>
                                 <p>
-                                    Through labs and practical exercises, you will work with popular security tools,
-                                    analyse logs, simulate attacks in a safe environment and build a defender’s mindset.
-                                    By the end of the course, you’ll be ready for entry‑level cybersecurity roles like
-                                    security analyst, SOC analyst or IT security engineer – or to pursue advanced
-                                    certifications in the field.
+                                    By the end of this cyber security program, you will gain practical skills and a strong portfolio to apply for entry-level roles like SOC Analyst, Security Analyst, and IT Security Engineer, or pursue advanced cybersecurity certifications.
                                 </p>
                             </div>
                         </section>
@@ -285,7 +293,14 @@ const CyberSecurityCourse = () => {
                                 </li>
                             </ul>
 
-                            <a href="#top" className="fs-cta-btn">View Course Curriculum &amp; Career Path</a>
+                            <a 
+                                href="https://user.aindhin.com/course/AD-944b67c3bbf11c6a037beb11b0c1ada8" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="fs-cta-btn"
+                            >
+                                Enroll Now &amp; Start Learning
+                            </a>
                         </section>
                     </aside>
 

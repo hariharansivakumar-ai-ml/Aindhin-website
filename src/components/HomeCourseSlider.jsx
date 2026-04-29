@@ -6,7 +6,7 @@ import { ChevronRight } from 'lucide-react';
 import aiMlBasicsImg from '../assets/courses/ai-ml-basics.webp';
 import digitalMarketingImg from '../assets/courses/digital-marketing-hero.webp';
 import cybersecurityImg from '../assets/cybersecurity.webp';
-import abacusImg from '../assets/abacus_course.png';
+import abacusImg from '../assets/abacus_course.webp';
 
 import dataAnalyticsImg from '../assets/data_analytics.webp';
 import cloudComputingImg from '../assets/cloud_computing.webp';

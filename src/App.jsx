@@ -6,6 +6,7 @@ import Preloader from './components/Preloader';
 import ScrollToTop from './components/ScrollToTop';
 import SubscribePopup from './components/SubscribePopup';
 import AdminSidebar from './components/AdminSidebar';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy Load Pages
 const Home = lazy(() => import('./pages/Home'));
@@ -64,6 +65,7 @@ const EffectiveCommunicatorCourse = lazy(() => import('./pages/EffectiveCommunic
 const BusinessStrategistCourse = lazy(() => import('./pages/BusinessStrategistCourse'));
 const OperationsOptimizerCourse = lazy(() => import('./pages/OperationsOptimizerCourse'));
 const DesignThinkingCourse = lazy(() => import('./pages/DesignThinkingCourse'));
+const AbacusCourse = lazy(() => import('./pages/AbacusCourse'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Layout() {
@@ -87,12 +89,12 @@ function Layout() {
     return (
         <div className="min-h-screen bg-white flex flex-col w-full">
             <ScrollToTop />
-            {!isAdminRoute && <Preloader />}
             {!isAdminRoute && <Header />}
-            <main className={`flex-grow w-full ${!isAdminRoute ? 'pt-[80px]' : ''}`}>
-                <Suspense fallback={getFallback()}>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
+            <main className={`flex-grow w-full ${!isAdminRoute ? 'pt-[120px]' : ''}`}>
+                <ErrorBoundary>
+                    <Suspense fallback={getFallback()}>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
                         <Route path="/download-app" element={<DownloadApp />} />
                         <Route path="/about-us" element={<AboutUs />} />
                         <Route path="/service" element={<Services />} />
@@ -145,12 +147,14 @@ function Layout() {
                         <Route path="/the-business-strategist" element={<BusinessStrategistCourse />} />
                         <Route path="/the-operations-optimizer" element={<OperationsOptimizerCourse />} />
                         <Route path="/design-thinking" element={<DesignThinkingCourse />} />
+                        <Route path="/abacus-mental-math-masterclass" element={<AbacusCourse />} />
                         <Route path="/contact-us" element={<ContactUs />} />
 
                         {/* Catch-all 404 Route */}
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Suspense>
+                </ErrorBoundary>
             </main>
             {!isAdminRoute && <Footer />}
             {!isAdminRoute && <SubscribePopup />}

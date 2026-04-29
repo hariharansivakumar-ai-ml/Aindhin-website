@@ -28,9 +28,9 @@ import ZoomLogo from '../assets/zoom_logo.webp';
 import MiroLogo from '../assets/miro_logo.webp';
 // For Microsoft and Google tools, reusing the main company logos or checking for specifics.
 // I'll reuse the main logos for the tools section as placeholders if specific tool logos are missing, 
-// or I can check for 'excel_logo.png' etc.
+// or I can check for 'excel_logo.webp' etc.
 
-import ExcelLogo from '../assets/excel_logo.png';
+import ExcelLogo from '../assets/office_365_logo.webp';
 // I don't have PowerPoint logo explicitly loaded in previous steps? 
 // Step 2826 (FinSavvy) imported PowerPointLogo from '../assets/powerpoint_logo.webp'. So it exists.
 import PowerPointLogo from '../assets/powerpoint_logo.webp';

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
@@ -11,10 +11,10 @@ import tableauImg from '../assets/courses/tableau.webp';
 import powerBiImg from '../assets/courses/power-bi.webp';
 import sqlImg from '../assets/courses/sql.webp';
 
-import fullStackImg from '../assets/courses/full-stack.webp';
-import javaImg from '../assets/courses/java-certification-hero.webp';
-import pythonImg from '../assets/courses/python-certification-hero.webp';
 import digitalMarketingImg from '../assets/courses/digital-marketing-hero.webp';
+import cybersecurityImg from '../assets/cybersecurity.webp';
+import abacusImg from '../assets/abacus_course.webp';
+import { Gamepad2 } from 'lucide-react';
 
 
 const Courses = () => {
@@ -38,16 +38,14 @@ const Courses = () => {
         }
     }, []);
 
-    // Categories
     const tabs = [
         { id: 'all', label: 'All Categories', icon: <LayoutGrid size={18} /> },
         { id: 'ai', label: 'AI and Machine Learning', icon: <Brain size={18} /> },
-        { id: 'data', label: 'Data Science and Business Analytics', icon: <BarChart2 size={18} /> },
         { id: 'marketing', label: 'Digital Marketing', icon: <Megaphone size={18} /> },
-        { id: 'software', label: 'Software Development', icon: <Monitor size={18} /> }
+        { id: 'security', label: 'Cybersecurity', icon: <Monitor size={18} /> },
+        { id: 'kids', label: 'Kids Programs', icon: <Gamepad2 size={18} /> }
     ];
 
-    // Course Data based on user provided HTML
     const courses = [
         {
             id: 1,
@@ -60,63 +58,8 @@ const Courses = () => {
             reviews: 180,
             level: "Beginner",
             duration: "12 weeks",
-            link: "/ai-machine-learning-from-basics-to-industry-applications/"
-        },
-        {
-            id: 2,
-            category: 'ai',
-            title: "More AI Courses – Coming Soon",
-            image: comingSoonImg,
-            comingSoon: true
-        },
-        {
-            id: 3,
-            category: 'data',
-            title: "Data Analyst – From Fundamentals to Job‑Ready Skills",
-            image: dataAnalystImg,
-            skills: "Excel, SQL, Power BI/Tableau, Dashboards, Business Reporting",
-            students: 410,
-            rating: 4.7,
-            reviews: 260,
-            level: "Beginner",
-            duration: "16 weeks",
-            link: "/data-analyst-from-fundamentals-to-job‑ready-skills/"
-        },
-        {
-            id: 4,
-            category: 'data',
-            title: "Tableau – Data Visualization & Business Intelligence",
-            image: tableauImg,
-            description: "Master the art of storytelling with data. Create interactive dashboards, connect to various data sources, and share actionable insights that drive business decisions using Tableau's powerful visualization tools.",
-            duration: "8 Weeks",
-            level: "Beginner to Intermediate",
-            link: "/tableau-data-visualization-business-intelligence"
-        },
-        {
-            id: 5,
-            category: 'data',
-            title: "Power BI – Data Visualization & Business Intelligence",
-            image: powerBiImg,
-            skills: "Power BI, DAX, Data Modeling, Interactive Reports, BI Automation",
-            students: 305,
-            rating: 4.7,
-            reviews: 190,
-            level: "Beginner",
-            duration: "10 weeks",
-            link: "/power-bi-data-visualization-business-intelligence"
-        },
-        {
-            id: 6,
-            category: 'data',
-            title: "SQL – Foundations of Data Querying & Databases",
-            image: sqlImg,
-            skills: "SQL Queries, Joins, Aggregations, Data Modeling, Database Design",
-            students: 260,
-            rating: 4.8,
-            reviews: 150,
-            level: "Beginner",
-            duration: "6 weeks",
-            link: "/sql-foundations-of-data-querying-databases/"
+            link: "/ai-machine-learning-from-basics-to-industry-applications",
+            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8"
         },
         {
             id: 8,
@@ -129,61 +72,36 @@ const Courses = () => {
             reviews: 95,
             level: "Beginner",
             duration: "10 weeks",
-            link: "/digital-marketing-from-basics-to-growth-campaigns"
-        },
-
-        {
-            id: 10,
-            category: 'marketing',
-            title: "More Digital Marketing Courses – Coming Soon",
-            image: comingSoonImg,
-            comingSoon: true
+            link: "/digital-marketing-from-basics-to-growth-campaigns",
+            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6b037beb11b0c1ada8"
         },
         {
-            id: 11,
-            category: 'software',
-            title: "Full‑Stack Web Development – From Frontend to Deployment",
-            image: fullStackImg,
-            skills: "HTML, CSS, JavaScript, Backend APIs, Databases, Deployment",
-            students: 350,
-            rating: 4.7,
-            reviews: 210,
-            level: "Beginner",
-            duration: "16 weeks",
-            link: "/full-stack-development"
-        },
-        {
-            id: 12,
-            category: 'software',
-            title: "Java Certification",
-            image: javaImg,
-            skills: "Core Java, OOP, Collections, JDBC, Spring Basics",
-            students: 210,
-            rating: 4.6,
-            reviews: 95,
+            id: 15,
+            category: 'security',
+            title: "Cybersecurity – Protecting the Digital Frontier",
+            image: cybersecurityImg,
+            skills: "Network Security, Ethical Hacking, Threat Intelligence, Cryptography, Security Auditing",
+            students: 280,
+            rating: 4.9,
+            reviews: 140,
             level: "Beginner",
             duration: "14 weeks",
-            link: "/java-certification"
+            link: "/cyber-security",
+            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6a037beb11b0c1ada8"
         },
         {
-            id: 13,
-            category: 'software',
-            title: "Python Certification",
-            image: pythonImg,
-            skills: "Python Programming, Data Structures, APIs, Automation, Basics of Data Science",
-            students: 390,
-            rating: 4.8,
-            reviews: 230,
+            id: 20,
+            category: 'kids',
+            title: "Abacus & Mental Math Masterclass",
+            image: abacusImg,
+            skills: "Mental calculation, Concentration, Memory enhancement, Speed math",
+            students: 150,
+            rating: 4.9,
+            reviews: 110,
             level: "Beginner",
             duration: "12 weeks",
-            link: "/python-certification"
-        },
-        {
-            id: 14,
-            category: 'software',
-            title: "More Software Development Courses – Coming Soon",
-            image: comingSoonImg,
-            comingSoon: true
+            link: "/abacus-mental-math-masterclass",
+            externalLink: "https://user.aindhin.com/course/AD-abacus-mental-math"
         }
     ];
 
@@ -261,7 +179,14 @@ const Courses = () => {
 
                                 <div className="p-5 flex flex-col items-start flex-1">
                                     <h3 className="text-base font-bold text-secondary mb-2 leading-tight">
-                                        {course.title}
+                                        <a 
+                                            href={course.externalLink} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="hover:text-primary transition-colors"
+                                        >
+                                            {course.title}
+                                        </a>
                                     </h3>
 
                                     {!course.comingSoon ? (
@@ -285,13 +210,12 @@ const Courses = () => {
                                                     {course.students} students enrolled
                                                 </div>
                                             </div>
-
-                                            <a
-                                                href={course.link}
+                                            <Link
+                                                to={course.link}
                                                 className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
                                             >
                                                 Explore Course
-                                            </a>
+                                            </Link>
                                         </>
                                     ) : (
                                         <div className="mt-4 px-6 py-3 bg-gray-50 rounded-2xl text-gray-400 font-bold text-sm">

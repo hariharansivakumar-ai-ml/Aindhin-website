@@ -107,6 +107,64 @@ const AddBlogPost = () => {
         }
     };
 
+    const calculateSEOScore = () => {
+        if (!focusKeyword) return 0;
+        let score = 0;
+        const kw = focusKeyword.toLowerCase();
+        const t = title.toLowerCase();
+        const mt = metaTitle.toLowerCase();
+        const md = metaDescription.toLowerCase();
+        const s = slug.toLowerCase();
+        const c = content.toLowerCase();
+
+        // Title length (50-70 chars is ideal)
+        if (title.length >= 50 && title.length <= 70) score += 15;
+        else if (title.length > 30) score += 5;
+
+        // Meta Title length
+        if (metaTitle.length >= 50 && metaTitle.length <= 60) score += 10;
+
+        // Meta Description length (150-160 chars)
+        if (metaDescription.length >= 140 && metaDescription.length <= 165) score += 15;
+        else if (metaDescription.length > 100) score += 5;
+
+        // Keyword in Title
+        if (t.includes(kw)) score += 15;
+
+        // Keyword in Meta Title
+        if (mt.includes(kw)) score += 10;
+
+        // Keyword in Meta Description
+        if (md.includes(kw)) score += 10;
+
+        // Keyword in Slug
+        if (s.includes(kw.replace(/\s+/g, '-'))) score += 10;
+
+        // Keyword in Content
+        if (c.includes(kw)) score += 10;
+
+        // Image Alt Text
+        if (imageAlt.trim().length > 0) score += 5;
+
+        return Math.min(score, 100);
+    };
+
+    const getSEORecommendations = () => {
+        if (!focusKeyword) return ["Enter a focus keyword to see recommendations."];
+        const recs = [];
+        const kw = focusKeyword.toLowerCase();
+
+        if (title.length < 50) recs.push("Title is too short (aim for 50-70 chars).");
+        if (!title.toLowerCase().includes(kw)) recs.push(`Include "${focusKeyword}" in the title.`);
+        if (metaDescription.length < 140) recs.push("Meta description is too short (aim for 150-160 chars).");
+        if (!metaDescription.toLowerCase().includes(kw)) recs.push(`Include "${focusKeyword}" in the meta description.`);
+        if (!slug.includes(kw.replace(/\s+/g, '-'))) recs.push("Include the focus keyword in the slug.");
+        if (imageAlt.trim().length === 0) recs.push("Add alt text to your featured image.");
+        if (!content.toLowerCase().includes(kw)) recs.push("Include the focus keyword in your blog content.");
+
+        return recs;
+    };
+
     return (
         <div className="flex h-screen bg-slate-50 font-inter overflow-hidden">
             <AdminSidebar userEmail={userEmail} />
@@ -356,10 +414,24 @@ const AddBlogPost = () => {
 
                             {/* SEO Card */}
                             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-                                <h3 className="text-base font-bold text-gray-900 mb-6 flex items-center gap-2">
-                                    <Globe className="w-4 h-4 text-emerald-500" />
-                                    SEO Settings
-                                </h3>
+                                <div className="flex items-center justify-between mb-6">
+                                    <h3 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                                        <Globe className="w-4 h-4 text-emerald-500" />
+                                        SEO Settings
+                                    </h3>
+                                    {focusKeyword && (
+                                        <div className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                                            (() => {
+                                                const score = calculateSEOScore();
+                                                if (score >= 80) return 'bg-emerald-50 text-emerald-600 border-emerald-100';
+                                                if (score >= 50) return 'bg-amber-50 text-amber-600 border-amber-100';
+                                                return 'bg-rose-50 text-rose-600 border-rose-100';
+                                            })()
+                                        }`}>
+                                            Score: {calculateSEOScore()}%
+                                        </div>
+                                    )}
+                                </div>
                                 <div className="space-y-4">
                                     <div>
                                         <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-widest">Focus Keyword</label>
@@ -390,6 +462,29 @@ const AddBlogPost = () => {
                                         />
                                         <p className="mt-2 text-[10px] text-gray-400">Character count: {metaDescription.length} (Recommended: 150-160)</p>
                                     </div>
+
+                                    {focusKeyword && (
+                                        <div className="mt-6 pt-6 border-t border-gray-100">
+                                            <h4 className="text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest flex items-center gap-2">
+                                                <Sparkles className="w-3 h-3 text-amber-400" />
+                                                SEO Recommendations
+                                            </h4>
+                                            <ul className="space-y-2">
+                                                {getSEORecommendations().map((rec, idx) => (
+                                                    <li key={idx} className="flex items-start gap-2 text-[11px] text-gray-500 leading-tight">
+                                                        <span className="w-1 h-1 bg-gray-300 rounded-full mt-1.5 shrink-0"></span>
+                                                        {rec}
+                                                    </li>
+                                                ))}
+                                                {getSEORecommendations().length === 0 && (
+                                                    <li className="text-[11px] text-emerald-500 font-bold flex items-center gap-2">
+                                                        <div className="w-1 h-1 bg-emerald-400 rounded-full"></div>
+                                                        Great job! Your SEO is looking good.
+                                                    </li>
+                                                )}
+                                            </ul>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

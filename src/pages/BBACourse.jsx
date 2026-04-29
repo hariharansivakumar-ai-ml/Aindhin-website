@@ -15,7 +15,7 @@ import MicrosoftLogo from '../assets/microsoft_logo.svg';
 import AmazonLogo from '../assets/amazon_logo.webp';
 import AllyFashionLogo from '../assets/allyfashion_logo.webp';
 import IBMLogo from '../assets/ibm_logo.svg';
-import ExcelLogo from '../assets/excel_logo.png';
+import ExcelLogo from '../assets/office_365_logo.webp';
 import PowerPointLogo from '../assets/powerpoint_logo.svg';
 import PowerBILogo from '../assets/power_bi_logo.svg';
 import TableauLogo from '../assets/tableau_logo.webp';
