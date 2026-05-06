@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
 // Imports for Course Images
-import aiMlBasicsImg from '../assets/courses/ai-ml-basics.webp';
+import aiMlBasicsImg from '../assets/aiml.webp';
 import digitalMarketingImg from '../assets/courses/digital-marketing-hero.webp';
 import cybersecurityImg from '../assets/cybersecurity.webp';
 import abacusImg from '../assets/abacus_course.webp';
@@ -14,7 +14,7 @@ import fullStackImg from '../assets/full_stack.webp';
 import automationImg from '../assets/automation.webp';
 import peopleManagerImg from '../assets/people_manager_corp.webp';
 import strategicDecisionImg from '../assets/strategic_decision_corp.webp';
-import aiBusinessImg from '../assets/ai_business.webp';
+import aiBusinessImg from '../assets/aibiz.webp';
 import designThinkingImg from '../assets/design_thinking.webp';
 import innovationStrategyImg from '../assets/innovation_strategy.webp';
 import digitalTransformationImg from '../assets/digital_transformation.webp';

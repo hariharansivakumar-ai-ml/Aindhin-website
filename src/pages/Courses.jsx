@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
 
-import aiMlBasicsImg from '../assets/courses/ai-ml-basics.webp';
+import aiMlBasicsImg from '../assets/aiml.webp';
 import comingSoonImg from '../assets/courses/coming-soon.webp';
 import dataAnalystImg from '../assets/courses/data-analyst.webp';
 import tableauImg from '../assets/courses/tableau.webp';
