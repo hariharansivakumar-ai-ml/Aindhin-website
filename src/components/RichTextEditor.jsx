@@ -180,13 +180,13 @@ const LinkModal = ({ visible, initialText, onCancel, onSubmit }) => {
 // --- Image Settings Modal Component ---
 const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, onCancel, onSubmit }) => {
     const [alt, setAlt] = useState(initialAlt || '');
-    const [width, setWidth] = useState(initialWidth || '100%');
+    const [width, setWidth] = useState(initialWidth || '550px');
     const [align, setAlign] = useState(initialAlign || 'center');
 
     useEffect(() => {
         if (visible) {
             setAlt(initialAlt || '');
-            setWidth(initialWidth || '100%');
+            setWidth(initialWidth || '550px');
             setAlign(initialAlign || 'center');
         }
     }, [visible, initialAlt, initialWidth, initialAlign]);
