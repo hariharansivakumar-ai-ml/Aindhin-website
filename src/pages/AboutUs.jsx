@@ -238,8 +238,7 @@ const AboutUs = () => {
 
                         {/* Stats Row */}
                         <div className="flex flex-wrap gap-8 lg:gap-12 mt-8 justify-center lg:justify-start">
-                            <div className="flex flex-col gap-1 relative pl-2">
-                                <span className="absolute top-1 left-[-10px] w-3 h-3 rounded-full bg-[#1A1A1A]"></span>
+                            <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-1">
                                     <span className="text-4xl font-bold text-secondary font-inter">10</span>
                                     <span className="text-3xl font-bold text-[#FF5252]">+</span>
@@ -247,8 +246,7 @@ const AboutUs = () => {
                                 <span className="text-gray-500 font-medium font-inter">Courses</span>
                             </div>
 
-                            <div className="flex flex-col gap-1 relative pl-2">
-                                <span className="absolute top-1 left-[-10px] w-3 h-3 rounded-full bg-[#1A1A1A]"></span>
+                            <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-1">
                                     <span className="text-4xl font-bold text-secondary font-inter">2 k</span>
                                     <span className="text-3xl font-bold text-[#448AFF]">+</span>
@@ -256,8 +254,7 @@ const AboutUs = () => {
                                 <span className="text-gray-500 font-medium font-inter">Students Trained</span>
                             </div>
 
-                            <div className="flex flex-col gap-1 relative pl-2">
-                                <span className="absolute top-1 left-[-10px] w-3 h-3 rounded-full bg-[#1A1A1A]"></span>
+                            <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-1">
                                     <span className="text-4xl font-bold text-secondary font-inter">100</span>
                                     <span className="text-3xl font-bold text-[#00C853]">+</span>
@@ -327,20 +324,20 @@ const AboutUs = () => {
             <FAQSection
                 faqs={[
                     {
-                        question: "What is Aindhin?",
-                        answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
+                        question: "What is the mission of Aindhin?",
+                        answer: "Our mission is to democratize high-quality, job-ready education in India by making it accessible, affordable, and aligned with real-world industry needs."
                     },
                     {
-                        question: "How does Aindhin help students?",
-                        answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
+                        question: "How does Aindhin ensure the quality of its instructors?",
+                        answer: "We only collaborate with industry practitioners and seasoned educators who have proven expertise in their respective fields and a passion for mentoring."
                     },
                     {
-                        question: "Are the courses industry-recognized?",
-                        answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
+                        question: "What makes Aindhin different from other EdTech platforms?",
+                        answer: "Aindhin focuses on 'Learn and Live,' emphasizing the practical application of knowledge and direct career outcomes rather than just theoretical learning."
                     },
                     {
-                        question: "Who can enroll in Aindhin's courses?",
-                        answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
+                        question: "Where are Aindhin's offices located?",
+                        answer: "Our Head Office is in Bengaluru, and our Operation center is located in Erode, Tamil Nadu. We serve a global community of learners through our digital platform."
                     }
                 ]}
             />

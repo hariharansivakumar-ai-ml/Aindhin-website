@@ -85,10 +85,21 @@ const AdminEditPost = () => {
                 setImagePreview(data.image_url || data.image || null);
                 setStatus(data.status || 'Draft');
 
-                // Final fallbacks for direct API fields
-                if (data.meta_title) setMetaTitle(data.meta_title);
-                if (data.meta_description) setMetaDescription(data.meta_description);
-                if (data.tags) setTags(Array.isArray(data.tags) ? data.tags : data.tags.split(','));
+                // Final priorities for direct API fields (overwriting legacy recovery if present)
+                if (data.meta_title !== undefined) setMetaTitle(data.meta_title || '');
+                if (data.meta_description !== undefined) setMetaDescription(data.meta_description || '');
+                if (data.focus_keyword !== undefined) setFocusKeyword(data.focus_keyword || '');
+                
+                // Handle Tags (stored as string in DB, need array in UI)
+                if (data.tags !== undefined) {
+                    if (Array.isArray(data.tags)) {
+                        setTags(data.tags);
+                    } else if (typeof data.tags === 'string') {
+                        setTags(data.tags.trim() ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : []);
+                    } else {
+                        setTags([]);
+                    }
+                }
             } catch (error) {
                 console.error('Error fetching post:', error);
                 alert('Error fetching post');

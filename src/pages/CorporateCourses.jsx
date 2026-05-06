@@ -226,20 +226,20 @@ const CorporateCourses = () => {
             <FAQSection
                 faqs={[
                     {
-                        question: "What is Aindhin?",
-                        answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
+                        question: "Does Aindhin offer customized training programs for large teams?",
+                        answer: "Absolutely. We partner with organizations to design bespoke training modules that align with their specific business objectives and technology stacks."
                     },
                     {
-                        question: "How does Aindhin help students?",
-                        answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
+                        question: "How can businesses measure the ROI of Aindhin's corporate training?",
+                        answer: "We provide comprehensive analytics dashboards that allow managers to track employee progress, assessment scores, and skill acquisition in real-time."
                     },
                     {
-                        question: "Are the courses industry-recognized?",
-                        answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
+                        question: "Are there specialized leadership programs for senior management?",
+                        answer: "Yes, our Leadership and Management category features courses specifically designed for executives, focusing on strategic decision-making and visionary leadership."
                     },
                     {
-                        question: "Who can enroll in Aindhin's courses?",
-                        answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
+                        question: "What are the group enrollment benefits for businesses?",
+                        answer: "Companies enrolling multiple employees can benefit from tiered pricing, dedicated account management, and exclusive live workshops led by industry experts."
                     }
                 ]}
             />

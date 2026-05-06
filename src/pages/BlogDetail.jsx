@@ -481,7 +481,14 @@ const BlogDetail = () => {
                 .blog-content h2 { font-size: 1.75rem; }
                 .blog-content h3 { font-size: 1.25rem; }
 
-                .blog-content ul, .blog-content ol {
+                .blog-content ul {
+                    list-style-type: disc;
+                    margin-bottom: 1.5rem;
+                    padding-left: 1.5rem;
+                }
+
+                .blog-content ol {
+                    list-style-type: decimal;
                     margin-bottom: 1.5rem;
                     padding-left: 1.5rem;
                 }

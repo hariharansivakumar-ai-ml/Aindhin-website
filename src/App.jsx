@@ -62,7 +62,6 @@ const TeamBuilderCourse = lazy(() => import('./pages/TeamBuilderCourse'));
 const VisionaryLeaderCourse = lazy(() => import('./pages/VisionaryLeaderCourse'));
 const FinanciallySavvyLeaderCourse = lazy(() => import('./pages/FinanciallySavvyLeaderCourse'));
 const EffectiveCommunicatorCourse = lazy(() => import('./pages/EffectiveCommunicatorCourse'));
-const BusinessStrategistCourse = lazy(() => import('./pages/BusinessStrategistCourse'));
 const OperationsOptimizerCourse = lazy(() => import('./pages/OperationsOptimizerCourse'));
 const DesignThinkingCourse = lazy(() => import('./pages/DesignThinkingCourse'));
 const AbacusCourse = lazy(() => import('./pages/AbacusCourse'));
@@ -144,7 +143,6 @@ function Layout() {
                         <Route path="/the-visionary-leader" element={<VisionaryLeaderCourse />} />
                         <Route path="/financially-savvy-leader" element={<FinanciallySavvyLeaderCourse />} />
                         <Route path="/the-effective-communicator" element={<EffectiveCommunicatorCourse />} />
-                        <Route path="/the-business-strategist" element={<BusinessStrategistCourse />} />
                         <Route path="/the-operations-optimizer" element={<OperationsOptimizerCourse />} />
                         <Route path="/design-thinking" element={<DesignThinkingCourse />} />
                         <Route path="/abacus-mental-math-masterclass" element={<AbacusCourse />} />

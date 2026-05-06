@@ -63,7 +63,7 @@ const BlogCard = ({ post }) => {
                        transition-all duration-300 flex flex-col h-full cursor-pointer"
         >
             {/* Image section */}
-            <div className="relative h-56 overflow-hidden bg-gray-100 shrink-0">
+            <div className="relative h-auto sm:h-56 overflow-hidden bg-gray-50 shrink-0">
                 {(post.image_url || post.image) ? (
                     <img
                         src={post.image_url || post.image}
@@ -80,7 +80,7 @@ const BlogCard = ({ post }) => {
                             }
                             return alt || post.title;
                         })()}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        className="w-full h-auto sm:h-full object-contain sm:object-cover group-hover:scale-105 transition-transform duration-700"
                         onError={e => { e.target.style.display = 'none'; }}
                     />
                 ) : (
@@ -142,7 +142,19 @@ const Blogs = () => {
     
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const blogsPerPage = 6;
+    const [blogsPerPage, setBlogsPerPage] = useState(window.innerWidth < 768 ? 4 : 6);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const newLimit = window.innerWidth < 768 ? 4 : 6;
+            setBlogsPerPage(prev => {
+                if (prev !== newLimit) setCurrentPage(1);
+                return newLimit;
+            });
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         document.title = 'Blog | Aindhin - Latest Insights & Updates';

@@ -67,6 +67,7 @@ const ContactUs = () => {
                                 </>
                             }
                             linkText="Find Location"
+                            href="https://www.google.com/maps/search/?api=1&query=139,+Old+Airport+Road,+Kodihalli,+Bengaluru,+Karnataka+-+560008"
                             delay={0.2}
                         />
                         <ContactCard
@@ -81,6 +82,7 @@ const ContactUs = () => {
                                 </>
                             }
                             linkText="Find Location"
+                            href="https://www.google.com/maps/search/?api=1&query=No.+8,+Manickavasagar+Colony,+Eraniyan+Street,+Karur+Bypass+Road,+Erode,+Tamil+Nadu+-+638002"
                             delay={0.4}
                         />
                         <ContactCard
@@ -88,6 +90,7 @@ const ContactUs = () => {
                             title="Email Address"
                             content="connect@aindhin.com"
                             linkText="Get In Touch"
+                            href="mailto:connect@aindhin.com"
                             delay={0.6}
                         />
                         <ContactCard
@@ -95,6 +98,7 @@ const ContactUs = () => {
                             title="Phone Number"
                             content="+91 8807100669"
                             linkText="Contact Us Today!"
+                            href="tel:+918807100669"
                             delay={0.8}
                         />
                     </div>
@@ -270,7 +274,7 @@ const ContactUs = () => {
 };
 
 // Helper Component for Contact Cards
-const ContactCard = ({ icon, title, content, linkText, delay }) => {
+const ContactCard = ({ icon, title, content, linkText, href, delay }) => {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -292,9 +296,20 @@ const ContactCard = ({ icon, title, content, linkText, delay }) => {
                 {content}
             </p>
 
-            <span className="text-primary text-sm font-medium border-b border-primary pb-0.5 cursor-pointer hover:opacity-80 transition-opacity">
-                {linkText}
-            </span>
+            {href ? (
+                <a 
+                    href={href}
+                    target={href.startsWith('http') ? "_blank" : undefined}
+                    rel={href.startsWith('http') ? "noopener noreferrer" : undefined}
+                    className="text-primary text-sm font-medium border-b border-primary pb-0.5 cursor-pointer hover:opacity-80 transition-opacity no-underline"
+                >
+                    {linkText}
+                </a>
+            ) : (
+                <span className="text-primary text-sm font-medium border-b border-primary pb-0.5 cursor-pointer hover:opacity-80 transition-opacity">
+                    {linkText}
+                </span>
+            )}
         </motion.div>
     );
 };

@@ -15,6 +15,7 @@ const AddBlogPost = () => {
     const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
     const [status, setStatus] = useState('Draft');
     const [featuredImage, setFeaturedImage] = useState('');
+    const [imagePreview, setImagePreview] = useState('');
     const [imageAlt, setImageAlt] = useState('');
     const [currentPostId, setCurrentPostId] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -302,12 +303,12 @@ const AddBlogPost = () => {
                                     Featured Image
                                 </h3>
 
-                                {featuredImage ? (
+                                {imagePreview ? (
                                     <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-200 group shadow-sm">
-                                        <img src={featuredImage} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
                                         <button
-                                            onClick={() => { setFeaturedImage(''); }}
+                                            onClick={() => { setFeaturedImage(''); setImagePreview(''); }}
                                             className="absolute top-2 right-2 bg-white text-red-500 p-2 rounded-lg shadow-md hover:bg-red-50 hover:text-red-600 transition-all opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
                                         >
                                             <span className="sr-only">Remove</span>

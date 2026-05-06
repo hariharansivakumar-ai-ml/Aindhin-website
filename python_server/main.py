@@ -4,7 +4,7 @@ from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from database import execute_query
+from database import execute_query, init_db
 from auth_utils import verify_password, get_password_hash, create_access_token, get_current_user
 from datetime import datetime
 import cloudinary
@@ -20,6 +20,10 @@ cloudinary.config(
 )
 
 app = FastAPI()
+
+@app.on_event("startup")
+def startup_event():
+    init_db()
 
 app.add_middleware(
     CORSMiddleware,
@@ -48,6 +52,11 @@ class BlogCreate(BaseModel):
     status: str = "Draft"
     image_url: Optional[str] = None
     author: str = "Aindhin"
+    meta_title: Optional[str] = None
+    meta_description: Optional[str] = None
+    tags: Optional[str] = None
+    focus_keyword: Optional[str] = None
+    image_alt: Optional[str] = None
 
 class CommentCreate(BaseModel):
     post_id: int
@@ -160,11 +169,15 @@ async def save_blog(req: BlogCreate, current_user: dict = Depends(get_current_us
             counter += 1
 
         query = """
-            INSERT INTO blogs (title, slug, description, status, image_url, author, user_id, date)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, NOW())
+            INSERT INTO blogs (title, slug, description, status, image_url, author, user_id, meta_title, meta_description, tags, focus_keyword, image_alt, date)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
             RETURNING *
         """
-        params = (req.title, final_slug, req.description, req.status, req.image_url, req.author, current_user['id'])
+        params = (
+            req.title, final_slug, req.description, req.status, req.image_url, 
+            req.author, current_user['id'], req.meta_title, req.meta_description, 
+            req.tags, req.focus_keyword, req.image_alt
+        )
         result = execute_query(query, params, fetch_all=False)
         return result
     except Exception as e:
@@ -177,7 +190,11 @@ async def update_blog(id: int, req: dict, current_user: dict = Depends(get_curre
         fields = []
         params = []
         
-        updatable_fields = ['title', 'slug', 'description', 'status', 'image_url', 'author', 'previous_status']
+        updatable_fields = [
+            'title', 'slug', 'description', 'status', 'image_url', 'author', 
+            'previous_status', 'meta_title', 'meta_description', 'tags', 
+            'focus_keyword', 'image_alt'
+        ]
         
         for field in updatable_fields:
             if field in req:
@@ -205,25 +222,17 @@ async def delete_blog(id: int, current_user: dict = Depends(get_current_user)):
     if blog and blog['image_url']:
         try:
             # Extract public_id from URL
-            # Cloudinary URL format: https://res.cloudinary.com/cloud_name/image/upload/[version]/[folder]/public_id.ext
             image_url = blog['image_url']
             if 'res.cloudinary.com' in image_url:
                 path_parts = image_url.split('/')
-                # Find the 'upload' segment
                 upload_index = -1
                 try:
                     upload_index = path_parts.index('upload')
                 except ValueError:
-                    # 'upload' not found, not a standard Cloudinary URL
                     print(f"Warning: 'upload' segment not found in Cloudinary URL: {image_url}")
                     pass
 
                 if upload_index != -1:
-                    # The public_id (including folder) starts after 'upload' and optionally 'vXXXXX'
-                    # If there's a version number (e.g., v12345), it's at upload_index + 1
-                    # The actual path starts at upload_index + 1 or upload_index + 2
-                    
-                    # Check if the next part is a version number (starts with 'v' and is digits)
                     if len(path_parts) > upload_index + 1 and path_parts[upload_index + 1].startswith('v') and path_parts[upload_index + 1][1:].isdigit():
                         public_id_start_index = upload_index + 2
                     else:
@@ -263,11 +272,9 @@ async def upload_image(file: UploadFile = File(...), current_user: dict = Depend
             img = img.convert("RGB")
             
         webp_buffer = io.BytesIO()
-        # Use a high quality setting while still getting good compression
         img.save(webp_buffer, format="WEBP", quality=80, method=6)
         webp_buffer.seek(0)
         
-        # Use the original filename without extension + .webp for the DB
         filename_base = os.path.splitext(file.filename)[0]
         new_filename = f"{filename_base}.webp"
         
@@ -283,7 +290,6 @@ async def upload_image(file: UploadFile = File(...), current_user: dict = Depend
         full_public_id = upload_result["public_id"]
         secure_url = upload_result["secure_url"]
 
-        # Ensure the URL ends with .webp if Cloudinary didn't already
         if not secure_url.lower().endswith(".webp"):
             secure_url = os.path.splitext(secure_url)[0] + ".webp"
 
@@ -300,7 +306,6 @@ async def upload_image(file: UploadFile = File(...), current_user: dict = Depend
 @app.get("/api/upload/list")
 async def list_uploads(current_user: dict = Depends(get_current_user)):
     try:
-        # Read from our DB — free, fast, no Admin API needed
         rows = execute_query("SELECT public_id, url, filename, created_at FROM media ORDER BY created_at DESC")
         return [{"name": r["public_id"], "url": r["url"], "filename": r["filename"]} for r in (rows or [])]
     except Exception as e:
@@ -310,9 +315,7 @@ async def list_uploads(current_user: dict = Depends(get_current_user)):
 @app.delete("/api/upload/{public_id:path}")
 async def delete_upload(public_id: str, current_user: dict = Depends(get_current_user)):
     try:
-        # Delete from Cloudinary
         result = cloudinary.uploader.destroy(public_id)
-        # Delete from DB regardless of Cloudinary result
         execute_query("DELETE FROM media WHERE public_id = %s", (public_id,))
         return {"message": "Image deleted", "cloudinary": result.get("result", "unknown")}
     except Exception as e:
@@ -337,7 +340,6 @@ async def add_comment(req: CommentCreate):
 @app.get("/api/comments/admin")
 async def get_all_comments_admin(current_user: dict = Depends(get_current_user)):
     try:
-        # Join with blogs to show which post the comment belongs to
         query = """
             SELECT c.*, b.title as post_title 
             FROM comments c

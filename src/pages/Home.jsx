@@ -257,20 +257,20 @@ const Home = () => {
                 <FAQSection
                     faqs={[
                         {
-                            question: "What is Aindhin?",
-                            answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
+                            question: "What is Aindhin and how does it support career growth?",
+                            answer: "Aindhin is a premier EdTech platform in India focused on bridging the gap between academic learning and industry requirements through career-oriented certification courses."
                         },
                         {
-                            question: "How does Aindhin help students?",
-                            answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
+                            question: "How do Aindhin's online courses benefit working professionals?",
+                            answer: "Our courses are designed for flexibility, allowing professionals to upskill at their own pace while gaining industry-recognized credentials that enhance their career prospects."
                         },
                         {
-                            question: "Are the courses industry-recognized?",
-                            answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
+                            question: "Are the certifications from Aindhin globally recognized?",
+                            answer: "Yes, our certifications are valued by top employers and institutions, focusing on practical skills that meet international industry standards."
                         },
                         {
-                            question: "Who can enroll in Aindhin's courses?",
-                            answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
+                            question: "Does Aindhin provide support for placement after course completion?",
+                            answer: "We offer dedicated career guidance, portfolio building sessions, and connections to our industry partners to help our graduates secure rewarding positions."
                         }
                     ]}
                 />

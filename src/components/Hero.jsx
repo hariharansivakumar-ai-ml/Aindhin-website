@@ -39,12 +39,14 @@ const Hero = () => {
                         >
                             Our Courses
                         </Link>
-                        <Link
-                            to="/courses"
+                        <a
+                            href="https://user.aindhin.com/course"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-sm animate-color-blink"
                         >
                             Enroll Now <ArrowUpRight className="w-4 h-4" />
-                        </Link>
+                        </a>
                     </div>
 
                     {/* Trust Signals Underneath CTAs */}

@@ -234,20 +234,20 @@ const Courses = () => {
             <FAQSection
                 faqs={[
                     {
-                        question: "What is Aindhin?",
-                        answer: "Aindhin is an online learning platform in India offering skill-based and career-oriented courses designed to help students and professionals excel in the modern workforce."
+                        question: "Which certification courses are currently trending at Aindhin?",
+                        answer: "Our AI & Machine Learning, Data Analytics, and Digital Marketing certifications are highly popular due to the increasing demand for these skills in the global job market."
                     },
                     {
-                        question: "How does Aindhin help students?",
-                        answer: "Aindhin provides structured courses, expert mentorship, and industry-focused training, empowering learners to secure jobs and grow their careers with confidence."
+                        question: "Are there any prerequisites for enrolling in advanced courses like AI/ML?",
+                        answer: "While some courses are beginner-friendly, others may benefit from a basic understanding of mathematics or programming. Detailed prerequisites are listed on each course page."
                     },
                     {
-                        question: "Are the courses industry-recognized?",
-                        answer: "Yes, our programs focus on practical, job-ready skills and offer recognized certificates that help you stand out to employers worldwide."
+                        question: "How does the hands-on project component work?",
+                        answer: "Every course includes real-world projects where you apply what you've learned to actual industry datasets, ensuring you build a portfolio that showcases your practical expertise."
                     },
                     {
-                        question: "Who can enroll in Aindhin's courses?",
-                        answer: "Our courses cover a wide range of levels and topics. Whether you are a college student, a fresh graduate, or a professional looking to upskill, Aindhin has a program tailored for you."
+                        question: "Can I switch between courses if my interests change?",
+                        answer: "Yes, we offer flexibility to our learners. If you feel another course better aligns with your career goals, our academic advisors can help you transition smoothly."
                     }
                 ]}
             />

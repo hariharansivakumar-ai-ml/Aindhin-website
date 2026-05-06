@@ -8,7 +8,6 @@ import PeopleManagerImg from '../assets/people_manager.webp';
 import VisionaryImg from '../assets/visionary_leader.webp';
 import EffectiveCommImg from '../assets/effective_communicator.webp';
 import TeamBuilderImg from '../assets/team_builder.webp';
-import BusinessStratImg from '../assets/business_strategist.webp';
 
 
 const courses = [
@@ -51,14 +50,6 @@ const courses = [
         skills: 'Hiring basics, Collaboration, Delegation, Team rituals',
         duration: 'Beginner · 6 weeks',
         link: '/the-team-builder/'
-    },
-    {
-        category: 'executive',
-        title: 'The Business Strategist',
-        image: BusinessStratImg,
-        skills: 'Market thinking, Strategy tools, Execution plans, Metrics',
-        duration: 'Intermediate · 10 weeks',
-        link: '/the-business-strategist/'
     },
 
 ];
