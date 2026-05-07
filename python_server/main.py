@@ -111,27 +111,54 @@ async def create_admin(req: LoginRequest):
 
 # --- Blog Routes ---
 @app.get("/api/blogs")
-async def get_blogs(status: Optional[str] = None):
+async def get_blogs(status: Optional[str] = None, page: int = 1):
+
     print(f"DEBUG: get_blogs called with status={status}")
-    query = "SELECT * FROM blogs"
+
+    limit = 12
+    offset = (page - 1) * limit
+
+    query = """
+        SELECT
+            id,
+            title,
+            slug,
+            image_url,
+            author,
+            date,
+            status,
+            tags,
+            meta_title,
+            meta_description,
+            image_alt,
+            focus_keyword
+        FROM blogs
+    """
+
     params = []
-    
+
     if status == 'all':
         query += " WHERE (status != 'Trash' OR status IS NULL)"
+
     elif status == 'Trash':
         query += " WHERE status = 'Trash'"
+
     elif status == 'Draft':
         query += " WHERE (status = 'Draft' OR status IS NULL)"
+
     elif status:
         query += " WHERE status = %s"
         params.append(status)
+
     else:
         # Public: only published
         query += " WHERE status = 'Published'"
-    
-    query += " ORDER BY date DESC"
-    return execute_query(query, tuple(params))
 
+    query += " ORDER BY date DESC LIMIT %s OFFSET %s"
+
+    params.extend([limit, offset])
+
+    return execute_query(query, tuple(params))
 @app.get("/api/blogs/by-id/{id}")
 async def get_blog_by_id(id: int, current_user: dict = Depends(get_current_user)):
     blog = execute_query("SELECT * FROM blogs WHERE id = %s", (id,), fetch_all=False)
@@ -141,15 +168,17 @@ async def get_blog_by_id(id: int, current_user: dict = Depends(get_current_user)
 
 @app.get("/api/blogs/{slug}")
 async def get_blog_by_slug(slug: str):
+
     blog = execute_query(
-        "SELECT * FROM blogs WHERE slug = %s AND (status = 'Published' OR status IS NULL)",
+        "SELECT * FROM blogs WHERE slug = %s",
         (slug,),
         fetch_all=False
     )
+
     if not blog:
         raise HTTPException(status_code=404, detail="Blog not found")
-    return blog
 
+    return blog
 @app.post("/api/blogs")
 async def save_blog(req: BlogCreate, current_user: dict = Depends(get_current_user)):
     try:
