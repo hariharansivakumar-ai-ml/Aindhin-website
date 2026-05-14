@@ -126,11 +126,19 @@ async def get_blogs(status: Optional[str] = None):
         query += " WHERE status = %s"
         params.append(status)
     else:
-        # Public: only published
-        query += " WHERE status = 'Published'"
+        # Public: only published (or NULL if we want to be safe against data issues)
+        query += " WHERE (status = 'Published' OR status IS NULL)"
     
     query += " ORDER BY date DESC"
     return execute_query(query, tuple(params))
+
+@app.get("/api/blogs/count/total")
+async def get_blogs_count():
+    try:
+        result = execute_query("SELECT count(*) as total FROM blogs", fetch_all=False)
+        return {"total": result['total']}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/blogs/by-id/{id}")
 async def get_blog_by_id(id: int, current_user: dict = Depends(get_current_user)):
