@@ -6,16 +6,16 @@ import DesignThinkingHeroImg from '../assets/design_thinking.webp';
 
 // Logos
 // Logos
-import IBMDesignLogo from '../assets/courses/logos/ibm.svg';
-import GoogleDesignLogo from '../assets/courses/logos/google.svg';
-import MicrosoftLogo from '../assets/courses/logos/microsoft.svg';
-import AccentureLogo from '../assets/courses/logos/accenture.svg';
-import EYLogo from '../assets/courses/logos/ey.svg';
-import InfosysLogo from '../assets/courses/logos/infosys.svg';
+import IBMDesignLogo from '../assets/ibm_logo.svg';
+import GoogleDesignLogo from '../assets/google_logo.svg';
+import MicrosoftLogo from '../assets/microsoft_logo.svg';
+import AccentureLogo from '../assets/accenture_logo.svg';
+import EYLogo from '../assets/ey_logo.svg';
+import InfosysLogo from '../assets/infosys_logo.svg';
 
 import FigmaLogo from '../assets/figma_logo.svg';
 import MiroLogo from '../assets/miro_logo.webp';
-import CanvaLogo from '../assets/courses/logos/canva.svg';
+import CanvaLogo from '../assets/canva.svg';
 
 
 import {

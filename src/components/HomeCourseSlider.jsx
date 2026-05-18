@@ -4,7 +4,7 @@ import { ChevronRight } from 'lucide-react';
 
 // Imports for Course Images
 import aiMlBasicsImg from '../assets/aiml.webp';
-import digitalMarketingImg from '../assets/courses/digital-marketing-hero.webp';
+import digitalMarketingImg from '../assets/digital_marketing_hero.webp';
 import cybersecurityImg from '../assets/cybersecurity.webp';
 import abacusImg from '../assets/abacus_course.webp';
 

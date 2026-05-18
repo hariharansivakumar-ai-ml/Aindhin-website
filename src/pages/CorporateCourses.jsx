@@ -4,14 +4,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
 
-import aiMlBasicsImg from '../assets/courses/ai-ml-basics.webp';
-import comingSoonImg from '../assets/courses/coming-soon.webp';
-import dataAnalystImg from '../assets/courses/data-analyst.webp';
-import tableauImg from '../assets/courses/tableau.webp';
-import powerBiImg from '../assets/courses/power-bi.webp';
-import sqlImg from '../assets/courses/sql.webp';
+import aiMlBasicsImg from '../assets/aiml.webp';
+import comingSoonImg from '../assets/coming_soon.webp';
+import dataAnalystImg from '../assets/data_analyst.webp';
+import tableauImg from '../assets/tableau.webp';
+import powerBiImg from '../assets/power_bi.webp';
+import sqlImg from '../assets/sql.webp';
 
-import digitalMarketingImg from '../assets/courses/digital-marketing-hero.webp';
+import digitalMarketingImg from '../assets/digital_marketing_hero.webp';
 import cybersecurityImg from '../assets/cybersecurity.webp';
 import abacusImg from '../assets/abacus_course.webp';
 import { Gamepad2 } from 'lucide-react';

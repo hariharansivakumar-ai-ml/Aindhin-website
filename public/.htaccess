@@ -1,8 +1,32 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  
+  # If the request is for the assets folder and it doesn't exist, return 404
+  RewriteCond %{REQUEST_URI} ^/assets/
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^assets/.*$ - [R=404,L]
+
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
 </IfModule>
+
+# Force correct MIME type for JavaScript modules
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/javascript .js
+  AddType application/javascript .mjs
+  AddType text/javascript .mjs
+</IfModule>
+
+# Prevent the server from being confused by missing assets
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|otf|json)$">
+    Header set Cache-Control "max-age=31536000, public"
+    Header set X-Content-Type-Options "nosniff"
+  </FilesMatch>
+</IfModule>
+
+ErrorDocument 404 default

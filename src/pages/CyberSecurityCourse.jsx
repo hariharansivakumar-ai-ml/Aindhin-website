@@ -25,7 +25,7 @@ import GitHubLogo from '../assets/github_logo.svg';
 
 import {
     Shield, Lock, Eye, AlertTriangle, Terminal, FileText, Globe, Server, UserCheck,
-    Clock, Users, Target, Briefcase, Award, Map, Activity, ArrowUpRight
+    Clock, Users, Target, Briefcase, Award, Map, Activity, ArrowUpRight, Calendar
 } from 'lucide-react';
 
 const CyberSecurityCourse = () => {
@@ -261,6 +261,13 @@ const CyberSecurityCourse = () => {
                                     <div className="fs-detail-text">
                                         <strong>Course Type &amp; Duration</strong>
                                         <span>Cyber Security Course · Duration as per institution (commonly 4–6 months, classroom / online / blended).</span>
+                                    </div>
+                                </li>
+                                <li className="fs-detail-item">
+                                    <div className="fs-detail-icon"><Calendar size={20} /></div>
+                                    <div className="fs-detail-text">
+                                        <strong>Course Starts</strong>
+                                        <span>Batch Completed - Next Batch Coming Soon</span>
                                     </div>
                                 </li>
                                 <li className="fs-detail-item">

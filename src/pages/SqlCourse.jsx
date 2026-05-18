@@ -3,24 +3,24 @@ import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Database, Terminal, Settings, Rocket, Briefcase, Target, BookOpen, Sigma, GitMerge, Zap } from 'lucide-react';
 
 // Hero Image
-import heroImg from '../assets/courses/sql-hero.webp';
+import heroImg from '../assets/sql_hero.webp';
 
 // Tool Logos
-import mysqlLogo from '../assets/courses/logos/mysql.svg';
-import postgresqlLogo from '../assets/courses/logos/postgresql.svg';
-import sqlServerLogo from '../assets/courses/logos/sql-server.webp';
-import sqliteLogo from '../assets/courses/logos/sqlite.svg';
-import oracleLogo from '../assets/courses/logos/oracle.svg';
+import mysqlLogo from '../assets/mysql.svg';
+import postgresqlLogo from '../assets/postgresql.svg';
+import sqlServerLogo from '../assets/sql_server.webp';
+import sqliteLogo from '../assets/sqlite.svg';
+import oracleLogo from '../assets/oracle.svg';
 
 // Company Logos
-import googleLogo from '../assets/courses/logos/google.svg';
-import microsoftLogo from '../assets/courses/logos/microsoft.svg';
-import awsLogo from '../assets/courses/logos/aws.svg';
-import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.webp';
-import netflixLogo from '../assets/courses/logos/netflix.svg';
-import infosysLogo from '../assets/courses/logos/infosys.svg';
-import accentureLogo from '../assets/courses/logos/accenture.svg';
+import googleLogo from '../assets/google.svg';
+import microsoftLogo from '../assets/microsoft.svg';
+import awsLogo from '../assets/aws.svg';
+import ibmLogo from '../assets/ibm.svg';
+import metaLogo from '../assets/meta.webp';
+import netflixLogo from '../assets/netflix.svg';
+import infosysLogo from '../assets/infosys.svg';
+import accentureLogo from '../assets/accenture.svg';
 
 const Section = ({ children, className }) => {
   const ref = useRef(null);
@@ -764,7 +764,7 @@ const SqlCourse = () => {
                     <div className="sql-detail-icon"><Calendar size={20} /></div>
                     <div className="sql-detail-text">
                       <strong>Next Batch</strong>
-                      <span>23 Dec 2025 (new SQL batches every month)</span>
+                      <span>Coming Soon</span>
                     </div>
                   </li>
                   <li className="sql-detail-item">

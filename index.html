@@ -4,6 +4,7 @@
 <head>
   <!-- Google Tag Manager -->
   <script>(function (w, d, s, l, i) {
+      if (w.location.hostname === 'localhost' || w.location.hostname === '127.0.0.1') return;
       w[l] = w[l] || []; w[l].push({
         'gtm.start':
           new Date().getTime(), event: 'gtm.js'
@@ -13,8 +14,8 @@
     })(window, document, 'script', 'dataLayer', 'GTM-P9GQTKT3');</script>
   <!-- End Google Tag Manager -->
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/src/assets/favicon.webp" />
-  <link rel="apple-touch-icon" href="/src/assets/favicon.webp" />
+  <link rel="icon" type="image/webp" href="/logo_aindhin.webp" />
+  <link rel="apple-touch-icon" href="/logo_aindhin.webp" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Online Courses in India | Aindhin - Master Job-Ready Skills</title>
   <meta name="description"
@@ -98,6 +99,7 @@
       document.head.appendChild(link);
     })();
   </script>
+  <script type="module" src="/src/main.jsx"></script>
 </head>
 
 <body>
@@ -189,7 +191,6 @@
       </article>
     </main>
   </div>
-  <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>

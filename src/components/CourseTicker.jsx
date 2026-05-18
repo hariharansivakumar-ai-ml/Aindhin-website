@@ -5,10 +5,10 @@ const CourseTicker = () => {
     const [isHovered, setIsHovered] = useState(false);
 
     const courses = [
-        { title: "Digital Marketing", date: "Starts: 3 May 2026" },
-        { title: "Artificial Intelligence", date: "Starts: Coming Soon" },
-        { title: "Cyber Security", date: "Starts: Coming Soon" },
-        { title: "Online Classes for KID'S", date: "Starts: 27 Apr 2026" }
+        { title: "Digital Marketing", date: "Starts: 06.06.2026" },
+        { title: "Artificial Intelligence", date: "Batch Completed - Next Batch Coming Soon" },
+        { title: "Cyber Security", date: "Batch Completed - Next Batch Coming Soon" },
+        { title: "Online Classes for KID'S", date: "Batch Completed - Next Batch Coming Soon" }
     ];
 
     // Duplicate courses to create seamless infinite scroll

@@ -3,24 +3,24 @@ import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Database, Calculator, LayoutDashboard, Lock, Rocket, Briefcase, Target, BookOpen } from 'lucide-react';
 
 // Hero Image
-import heroImg from '../assets/courses/power-bi-hero.webp';
+import heroImg from '../assets/power_bi_hero.webp';
 
 // Tool Logos
-import powerBiLogo from '../assets/courses/logos/powerbi.svg';
-import excelLogo from '../assets/courses/logos/excel.svg'; // Using the new SVG
-import mysqlLogo from '../assets/courses/logos/mysql.svg';
-import azureLogo from '../assets/courses/logos/azure.svg';
-import pythonLogo from '../assets/courses/logos/python-tool.svg';
+import powerBiLogo from '../assets/powerbi.svg';
+import excelLogo from '../assets/excel.svg'; // Using the new SVG
+import mysqlLogo from '../assets/mysql.svg';
+import azureLogo from '../assets/azure.svg';
+import pythonLogo from '../assets/python_tool.svg';
 
 // Company Logos
-import googleLogo from '../assets/courses/logos/google.svg';
-import microsoftLogo from '../assets/courses/logos/microsoft.svg';
-import awsLogo from '../assets/courses/logos/aws.svg';
-import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.webp';
-import netflixLogo from '../assets/courses/logos/netflix.svg';
-import infosysLogo from '../assets/courses/logos/infosys.svg';
-import accentureLogo from '../assets/courses/logos/accenture.svg';
+import googleLogo from '../assets/google_logo.svg';
+import microsoftLogo from '../assets/microsoft_logo.svg';
+import awsLogo from '../assets/aws_logo.svg';
+import ibmLogo from '../assets/ibm_logo.svg';
+import metaLogo from '../assets/meta_logo.webp';
+import netflixLogo from '../assets/netflix_logo.svg';
+import infosysLogo from '../assets/infosys_logo.svg';
+import accentureLogo from '../assets/accenture_logo.svg';
 
 const Section = ({ children, className }) => {
   const ref = useRef(null);
@@ -759,7 +759,7 @@ const PowerBiCourse = () => {
                     <div className="pb-detail-icon"><Calendar size={20} /></div>
                     <div className="pb-detail-text">
                       <strong>Next Batch</strong>
-                      <span>23 Dec 2025 (new Power BI batches every month)</span>
+                      <span>Coming Soon</span>
                     </div>
                   </li>
                   <li className="pb-detail-item">

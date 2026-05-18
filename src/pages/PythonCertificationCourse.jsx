@@ -6,27 +6,27 @@ import {
 import { motion, useInView } from 'framer-motion';
 
 // Hero Image
-import heroImg from '../assets/courses/python-certification-hero.webp';
+import heroImg from '../assets/python_hero.webp';
 
 // Tool Logos
-import pythonLogo from '../assets/courses/logos/python.svg';
-import jupyterLogo from '../assets/courses/logos/jupyter.svg';
-import vscodeLogo from '../assets/courses/logos/vscode.svg';
-import numpyLogo from '../assets/courses/logos/numpy.svg';
-import pandasLogo from '../assets/courses/logos/pandas.svg';
-import pytestLogo from '../assets/courses/logos/pytest.svg';
-import gitLogo from '../assets/courses/logos/git.svg';
+import pythonLogo from '../assets/python.svg';
+import jupyterLogo from '../assets/jupyter.svg';
+import vscodeLogo from '../assets/vscode.svg';
+import numpyLogo from '../assets/numpy.svg';
+import pandasLogo from '../assets/pandas.svg';
+import pytestLogo from '../assets/pytest.svg';
+import gitLogo from '../assets/git.svg';
 
 
 // Company Logos (Reusing existing ones)
-import googleLogo from '../assets/courses/logos/google.svg';
-import microsoftLogo from '../assets/courses/logos/microsoft.svg';
-import awsLogo from '../assets/courses/logos/aws.svg';
-import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.webp';
-import netflixLogo from '../assets/courses/logos/netflix.svg';
-import infosysLogo from '../assets/courses/logos/infosys.svg';
-import accentureLogo from '../assets/courses/logos/accenture.svg';
+import googleLogo from '../assets/google.svg';
+import microsoftLogo from '../assets/microsoft.svg';
+import awsLogo from '../assets/aws.svg';
+import ibmLogo from '../assets/ibm.svg';
+import metaLogo from '../assets/meta.webp';
+import netflixLogo from '../assets/netflix.svg';
+import infosysLogo from '../assets/infosys.svg';
+import accentureLogo from '../assets/accenture.svg';
 
 const Section = ({ children, className }) => {
   const ref = useRef(null);
@@ -832,7 +832,7 @@ const PythonCertificationCourse = () => {
                     <div className="py-detail-icon"><Calendar size={20} /></div>
                     <div className="py-detail-text">
                       <strong>Next Batch</strong>
-                      <span>Start Date: Rolling Admissions</span>
+                      <span>Coming Soon</span>
                     </div>
                   </li>
                   <li className="py-detail-item">

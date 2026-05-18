@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy as reactLazy, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -7,6 +7,20 @@ import ScrollToTop from './components/ScrollToTop';
 import SubscribePopup from './components/SubscribePopup';
 import AdminSidebar from './components/AdminSidebar';
 import ErrorBoundary from './components/ErrorBoundary';
+import AbacusCourse from './pages/AbacusCourse';
+
+// Helper to retry dynamic imports if they fail due to fresh production deployments
+const lazy = (componentImport) =>
+  reactLazy(() =>
+    componentImport().catch((error) => {
+      const hasReloaded = window.sessionStorage.getItem('chunk-failed-reloaded');
+      if (!hasReloaded) {
+        window.sessionStorage.setItem('chunk-failed-reloaded', 'true');
+        window.location.reload(true);
+      }
+      return Promise.reject(error);
+    })
+  );
 
 // Lazy Load Pages
 const Home = lazy(() => import('./pages/Home'));
@@ -34,7 +48,7 @@ const AiMlCourse = lazy(() => import('./pages/AiMlCourse'));
 const UniversityCourses = lazy(() => import('./pages/UniversityCourses'));
 const LeadershipCourses = lazy(() => import('./pages/LeadershipCourses'));
 const CorporateCourses = lazy(() => import('./pages/CorporateCourses'));
-const DataAnalystCourse = lazy(() => import('./pages/DataAnalystCourse'));
+// const DataAnalystCourse = lazy(() => import('./pages/DataAnalystCourse'));
 const TableauCourse = lazy(() => import('./pages/TableauCourse'));
 const SqlCourse = lazy(() => import('./pages/SqlCourse'));
 const PowerBiCourse = lazy(() => import('./pages/PowerBiCourse'));
@@ -64,13 +78,17 @@ const FinanciallySavvyLeaderCourse = lazy(() => import('./pages/FinanciallySavvy
 const EffectiveCommunicatorCourse = lazy(() => import('./pages/EffectiveCommunicatorCourse'));
 const OperationsOptimizerCourse = lazy(() => import('./pages/OperationsOptimizerCourse'));
 const DesignThinkingCourse = lazy(() => import('./pages/DesignThinkingCourse'));
-const AbacusCourse = lazy(() => import('./pages/AbacusCourse'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Layout() {
     const location = useLocation();
     const isAdminRoute = location.pathname.startsWith('/wp-admin');
     const isAdminLogin = location.pathname === '/wp-admin';
+
+    useEffect(() => {
+        // Reset the chunk failure reload flag on successful navigation/load
+        window.sessionStorage.removeItem('chunk-failed-reloaded');
+    }, [location.pathname]);
 
     const getFallback = () => {
         if (!isAdminRoute) return <Preloader />;
@@ -115,7 +133,7 @@ function Layout() {
                         <Route path="/corporate-courses" element={<CorporateCourses />} />
                         <Route path="/leadership-courses" element={<LeadershipCourses />} />
                         <Route path="/ai-machine-learning-from-basics-to-industry-applications" element={<AiMlCourse />} />
-                        <Route path="/data-analyst-from-fundamentals-to-job‑ready-skills" element={<DataAnalystCourse />} />
+{/* <Route path="/data-analyst-from-fundamentals-to-job‑ready-skills" element={<DataAnalystCourse />} /> */}
                         <Route path="/tableau-data-visualization-business-intelligence" element={<TableauCourse />} />
                         <Route path="/sql-foundations-of-data-querying-databases" element={<SqlCourse />} />
                         <Route path="/power-bi-data-visualization-business-intelligence" element={<PowerBiCourse />} />

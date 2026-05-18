@@ -73,7 +73,7 @@ const Services = () => {
 
             {/* How Aindhin Works Section */}
             <section className="w-full px-6 lg:px-12 pt-4 pb-12 lg:pt-8 lg:pb-16 bg-[#F8FAFC]">
-                <div className="max-w-[1400px] mx-auto">
+                <div className="max-w-[1200px] mx-auto">
                     {/* Section Header */}
                     <div className="flex flex-col items-center text-center mb-16 lg:mb-20">
                         <motion.h2
@@ -112,7 +112,7 @@ const Services = () => {
                         initial="hidden"
                         whileInView="show"
                         viewport={{ once: true }}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12"
+                        className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8"
                     >
                         {/* Card 1: Certification Courses */}
                         <ServiceCard
@@ -269,7 +269,7 @@ const ServiceCard = ({ icon, title, description, delay }) => {
             whileHover={{ y: -10 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay }}
-            className="bg-white rounded-[24px] p-6 lg:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all flex flex-col items-center text-center group max-w-[400px] mx-auto w-full"
+            className="bg-white rounded-[24px] p-6 lg:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all flex flex-col items-center text-center group max-w-[550px] mx-auto w-full"
         >
             <div className="w-16 h-16 bg-[#9333EA] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <div className="scale-75 origin-center">{icon}</div>

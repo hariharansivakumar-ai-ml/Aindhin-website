@@ -192,7 +192,10 @@ const BlogDetail = () => {
                                                 if (desc && !body) body = desc;
                                             }
 
-                                            return (body || '').replace(/&nbsp;|\u00A0/g, ' ');
+                                            return (body || '')
+                                                .replace(/&nbsp;|\u00A0/g, ' ')
+                                                // Strip manual bullets from list items even if wrapped in tags like <p> or <span>
+                                                .replace(/(<li\b[^>]*>((\s*<[^>]+>\s*)*))\s*[•\-\*\u2022\u2023\u2043\u2219\u25CB\u25CF\u25E6\u25A0\u25A1]\s*/g, '$1');
                                         })()
                                     }}
                                 />
@@ -482,26 +485,45 @@ const BlogDetail = () => {
                 .blog-content h3 { font-size: 1.25rem; }
 
                 .blog-content ul {
-                    list-style-type: disc;
+                    list-style: none !important;
+                    list-style-type: none !important;
                     margin-bottom: 1.5rem;
-                    padding-left: 1.5rem;
+                    padding-left: 0 !important;
                 }
 
                 .blog-content ol {
-                    list-style-type: decimal;
+                    list-style-type: decimal !important;
                     margin-bottom: 1.5rem;
-                    padding-left: 1.5rem;
+                    padding-left: 1.5rem !important;
                 }
 
                 .blog-content li {
-                    margin-bottom: 0.5rem;
+                    list-style-type: none !important;
+                    display: block !important;
+                    margin-bottom: 0.6rem;
+                    position: relative;
+                    padding-left: 1.5rem;
                 }
+
+
+                .blog-content ul li::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 0.65em;
+                    width: 6px;
+                    height: 6px;
+                    background-color: #155BAC; /* Primary blue */
+                    border-radius: 50%;
+                }
+
+
 
                 .blog-content img {
                     max-width: 100%;
                     height: auto;
                     border-radius: 1rem;
-                    margin: 2.5rem 0;
+                    margin: 2.5rem auto;
                     display: block;
                 }
 

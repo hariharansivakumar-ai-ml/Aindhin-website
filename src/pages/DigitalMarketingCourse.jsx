@@ -3,25 +3,25 @@ import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Brain, Megaphone, Folder, Briefcase, Target, BookOpen, Globe, Mail, ArrowUpRight } from 'lucide-react';
 
 // Hero Image
-import heroImg from '../assets/courses/digital-marketing-hero.webp';
+import heroImg from '../assets/digital_marketing_hero.webp';
 
 // Tool Logos
-import googleAdsLogo from '../assets/courses/logos/google-ads.svg';
-import googleAnalyticsLogo from '../assets/courses/logos/google-analytics.webp';
-import metaAdsLogo from '../assets/courses/logos/meta.webp'; // Using existing meta.webp as it's the same logo
-import linkedinLogo from '../assets/courses/logos/linkedin.webp';
-import mailchimpLogo from '../assets/courses/logos/mailchimp.webp';
-import canvaLogo from '../assets/courses/logos/canva.svg';
+import googleAdsLogo from '../assets/google_ads_logo.svg';
+import googleAnalyticsLogo from '../assets/google_analytics_logo.svg';
+import metaAdsLogo from '../assets/meta_logo.webp'; // Using existing meta.webp as it's the same logo
+import linkedinLogo from '../assets/linkedin_logo.svg';
+import mailchimpLogo from '../assets/mailchimp.webp';
+import canvaLogo from '../assets/canva.svg';
 
 // Company Logos (Reusing existing ones)
-import googleLogo from '../assets/courses/logos/google.svg';
-import microsoftLogo from '../assets/courses/logos/microsoft.svg';
-import awsLogo from '../assets/courses/logos/aws.svg';
-import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.webp';
-import netflixLogo from '../assets/courses/logos/netflix.svg';
-import infosysLogo from '../assets/courses/logos/infosys.svg';
-import accentureLogo from '../assets/courses/logos/accenture.svg';
+import googleLogo from '../assets/google_logo.svg';
+import microsoftLogo from '../assets/microsoft_logo.svg';
+import awsLogo from '../assets/aws_logo.svg';
+import ibmLogo from '../assets/ibm_logo.svg';
+import metaLogo from '../assets/meta_logo.webp';
+import netflixLogo from '../assets/netflix_logo.svg';
+import infosysLogo from '../assets/infosys_logo.svg';
+import accentureLogo from '../assets/accenture_logo.svg';
 
 const Section = ({ children, className }) => {
   const ref = useRef(null);
@@ -784,7 +784,7 @@ const DigitalMarketingCourse = () => {
                     <div className="dm-detail-icon"><Calendar size={20} /></div>
                     <div className="dm-detail-text">
                       <strong>Next Batch</strong>
-                      <span>23 Dec 2025 (new digital marketing batches every month)</span>
+                      <span>06.06.2026</span>
                     </div>
                   </li>
                   <li className="dm-detail-item">

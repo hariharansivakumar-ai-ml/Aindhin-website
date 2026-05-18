@@ -17,7 +17,7 @@ const courses = [
         image: StrategicImg,
         skills: 'Decision frameworks, Risk thinking, Prioritisation, Stakeholder alignment',
         duration: 'All levels · 6 weeks',
-        link: '/strategic-decision-maker/'
+        link: '/strategic-decision-maker'
     },
     {
         category: 'core',
@@ -25,7 +25,7 @@ const courses = [
         image: PeopleManagerImg,
         skills: 'Coaching, Feedback, Performance management, Team culture',
         duration: 'Beginner · 8 weeks',
-        link: '/the-people-manager/'
+        link: '/the-people-manager'
     },
     {
         category: 'core',
@@ -33,7 +33,7 @@ const courses = [
         image: VisionaryImg,
         skills: 'Vision building, Influence, Change leadership, Long-term planning',
         duration: 'Intermediate · 8 weeks',
-        link: '/the-visionary-leader/'
+        link: '/the-visionary-leader'
     },
     {
         category: 'skills',
@@ -41,7 +41,7 @@ const courses = [
         image: EffectiveCommImg,
         skills: 'Executive communication, Clarity, Conflict handling, Presentations',
         duration: 'All levels · 6 weeks',
-        link: '/the-effective-communicator/'
+        link: '/the-effective-communicator'
     },
     {
         category: 'skills',
@@ -49,7 +49,7 @@ const courses = [
         image: TeamBuilderImg,
         skills: 'Hiring basics, Collaboration, Delegation, Team rituals',
         duration: 'Beginner · 6 weeks',
-        link: '/the-team-builder/'
+        link: '/the-team-builder'
     },
 
 ];

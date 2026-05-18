@@ -3,23 +3,23 @@ import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, PieChart, Calculator, LayoutDashboard, BookOpen, Rocket, Briefcase, Target, Database, Lock } from 'lucide-react';
 
 // Hero Image
-import heroImg from '../assets/courses/tableau-hero.webp';
+import heroImg from '../assets/tableau_hero.webp';
 
 // Tool Logos
-import tableauLogo from '../assets/courses/logos/tableau.webp';
-import excelLogo from '../assets/courses/logos/excel.webp';
-import mysqlLogo from '../assets/courses/logos/mysql.svg';
-import pythonLogo from '../assets/courses/logos/python-tool.svg';
+import tableauLogo from '../assets/tableau.webp';
+import excelLogo from '../assets/excel.webp';
+import mysqlLogo from '../assets/mysql_logo.svg';
+import pythonLogo from '../assets/python_tool.svg';
 
 // Company Logos
-import googleLogo from '../assets/courses/logos/google.svg';
-import microsoftLogo from '../assets/courses/logos/microsoft.svg';
-import awsLogo from '../assets/courses/logos/aws.svg';
-import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.webp';
-import netflixLogo from '../assets/courses/logos/netflix.svg';
-import infosysLogo from '../assets/courses/logos/infosys.svg';
-import accentureLogo from '../assets/courses/logos/accenture.svg';
+import googleLogo from '../assets/google_logo.svg';
+import microsoftLogo from '../assets/microsoft_logo.svg';
+import awsLogo from '../assets/aws_logo.svg';
+import ibmLogo from '../assets/ibm_logo.svg';
+import metaLogo from '../assets/meta_logo.webp';
+import netflixLogo from '../assets/netflix_logo.svg';
+import infosysLogo from '../assets/infosys_logo.svg';
+import accentureLogo from '../assets/accenture_logo.svg';
 
 const Section = ({ children, className }) => {
   const ref = useRef(null);
@@ -761,7 +761,7 @@ const TableauCourse = () => {
                     <div className="tab-detail-icon"><Calendar size={20} /></div>
                     <div className="tab-detail-text">
                       <strong>Next Batch</strong>
-                      <span>23 Dec 2025 (new Tableau batches every month)</span>
+                      <span>Coming Soon</span>
                     </div>
                   </li>
                   <li className="tab-detail-item">

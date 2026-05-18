@@ -75,9 +75,9 @@ const Header = () => {
                 { icon: '📣', title: 'Digital Marketing', sub: 'SEO, social media, paid campaigns', path: '/our-courses/?tab=marketing' },
             ]
         },
-        { icon: '🎓', title: 'University Courses', sub: 'UG & PG programs, degrees', path: '/university-courses/' },
-        { icon: '🏢', title: 'Corporate Courses', sub: 'Team training, L&D, corporate upskilling', path: '/corporate-courses/' },
-        { icon: '🧭', title: 'Leadership Courses', sub: 'Leadership, management, communication', path: '/leadership-courses/' },
+        { icon: '🎓', title: 'University Courses', sub: 'UG & PG programs, degrees', path: '/university-courses' },
+        { icon: '🏢', title: 'Corporate Courses', sub: 'Team training, L&D, corporate upskilling', path: '/corporate-courses' },
+        { icon: '🧭', title: 'Leadership Courses', sub: 'Leadership, management, communication', path: '/leadership-courses' },
     ];
 
     return (
@@ -172,10 +172,10 @@ const Header = () => {
                         </button>
                         <div className="absolute top-full left-0 pt-4 hidden group-hover:block z-50">
                             <div className="w-[220px] bg-white rounded-lg shadow-xl py-2 border border-gray-100">
-                                <Link to="/our-courses/" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Certification Courses</Link>
-                                <Link to="/university-courses/" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">University Courses</Link>
-                                <Link to="/corporate-courses/" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Corporate Courses</Link>
-                                <Link to="/leadership-courses/" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Leadership Courses</Link>
+                                <Link to="/our-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Certification Courses</Link>
+                                <Link to="/university-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">University Courses</Link>
+                                <Link to="/corporate-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Corporate Courses</Link>
+                                <Link to="/leadership-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Leadership Courses</Link>
                             </div>
                         </div>
                     </div>
@@ -239,10 +239,10 @@ const Header = () => {
                         </button>
                         {isMobileCoursesOpen && (
                             <div className="flex flex-col gap-2 pl-4 py-2 bg-gray-50 rounded-2xl animate-in fade-in slide-in-from-top-1">
-                                <Link to="/our-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Certification Courses</Link>
-                                <Link to="/university-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">University Courses</Link>
-                                <Link to="/corporate-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Corporate Courses</Link>
-                                <Link to="/leadership-courses/" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Leadership Courses</Link>
+                                <Link to="/our-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Certification Courses</Link>
+                                <Link to="/university-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">University Courses</Link>
+                                <Link to="/corporate-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Corporate Courses</Link>
+                                <Link to="/leadership-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Leadership Courses</Link>
                             </div>
                         )}
                     </div>

@@ -246,6 +246,13 @@ const Blogs = () => {
             {/* ── Content ──────────────────────────────────────────── */}
             <div className="px-6 lg:px-12 py-20">
                 <div className="max-w-[1400px] mx-auto">
+                    
+                    <div className="flex items-center justify-between mb-10">
+                        <div className="flex items-center gap-2 text-slate-500 font-medium text-sm">
+                            <BookOpen className="w-4 h-4 text-blue-500" />
+                            Showing <span className="text-slate-900 font-bold">{indexOfFirstBlog + 1}-{Math.min(indexOfLastBlog, blogPosts.length)}</span> of <span className="text-slate-900 font-bold">{blogPosts.length}</span> articles
+                        </div>
+                    </div>
 
                     {blogPosts.length === 0 ? (
                         <motion.div variants={fadeUp(0)} initial="hidden" animate="show"

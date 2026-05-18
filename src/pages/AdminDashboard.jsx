@@ -26,8 +26,10 @@ const AdminDashboard = () => {
                 const allActive = await apiGetAdminBlogs('all');
                 const total = allActive?.length || 0;
                 const published = allActive?.filter(b => b.status === 'Published').length || 0;
-                const drafts = allActive?.filter(b => b.status === 'Draft').length || 0;
-                setStats({ total, published, drafts });
+                const drafts = allActive?.filter(b => b.status === 'Draft' || !b.status).length || 0;
+                const others = total - published - drafts;
+                
+                setStats({ total, published, drafts, others });
                 setRecentPosts(allActive?.slice(0, 6) || []);
             } catch (e) {
                 console.error(e);
@@ -116,12 +118,11 @@ const AdminDashboard = () => {
                         </div>
 
                         {/* Stat Cards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                             {statCards.map(({ label, value, sub, icon: Icon, gradient, glow, bar, barColor }) => (
                                 <div key={label} className={`relative rounded-2xl p-6 bg-gradient-to-br ${gradient} shadow-xl ${glow} overflow-hidden group`}>
-                                    {/* Ghost icon */}
                                     <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                        <Icon size={110} />
+                                        <Icon size={90} />
                                     </div>
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -130,10 +131,9 @@ const AdminDashboard = () => {
                                         <span className="text-white/70 text-xs font-semibold uppercase tracking-wider">{label}</span>
                                     </div>
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-5xl font-black text-white">{value}</span>
-                                        <span className="text-white/60 text-sm font-medium">{sub}</span>
+                                        <span className="text-4xl font-black text-white">{value}</span>
+                                        <span className="text-white/60 text-[10px] font-medium uppercase tracking-tight">{sub}</span>
                                     </div>
-                                    {/* Progress bar */}
                                     <div className="mt-5 h-1.5 bg-white/20 rounded-full overflow-hidden">
                                         <div
                                             className={`h-full ${barColor} rounded-full transition-all duration-1000`}
@@ -142,6 +142,27 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
                             ))}
+                            
+                            {/* Special Visibility Info Card */}
+                            <div className="rounded-2xl p-6 bg-white border border-slate-100 shadow-sm flex flex-col justify-between group overflow-hidden relative">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:bg-blue-100 transition-colors"></div>
+                                <div>
+                                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <Bell className="w-3.5 h-3.5 text-blue-500" />
+                                        Visibility Note
+                                    </h4>
+                                    <p className="text-[11px] text-slate-500 leading-relaxed relative z-10">
+                                        Only <span className="font-bold text-slate-900">Published</span> blogs are visible to site visitors. 
+                                        Drafts and Unset posts remain hidden.
+                                    </p>
+                                </div>
+                                <button 
+                                    onClick={() => navigate('/wp-admin/all-blogs')}
+                                    className="mt-4 text-[11px] font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 group/btn"
+                                >
+                                    Check all statuses <ChevronRight className="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Recent Blogs Grid */}

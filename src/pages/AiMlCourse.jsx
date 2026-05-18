@@ -3,29 +3,29 @@ import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Brain, Code, Rocket, Globe, ArrowUpRight } from 'lucide-react';
 
 // Hero Image
-import heroImg from '../assets/courses/ai-ml-basics.webp';
+import heroImg from '../assets/ai_ml_hero.webp';
 
 // Tool Logos
-import pythonLogo from '../assets/courses/logos/python-tool.svg';
-import jupyterLogo from '../assets/courses/logos/jupyter.svg';
-import vscodeLogo from '../assets/courses/logos/vscode.svg';
-import gitLogo from '../assets/courses/logos/git.svg';
-import githubLogo from '../assets/courses/logos/github.svg';
-import numpyLogo from '../assets/courses/logos/numpy.svg';
-import pandasLogo from '../assets/courses/logos/pandas.svg';
-import matplotlibLogo from '../assets/courses/logos/matplotlib.svg';
-import scikitLogo from '../assets/courses/logos/scikit.svg';
-import tensorflowLogo from '../assets/courses/logos/tensorflow.svg';
+import pythonLogo from '../assets/python_logo.svg';
+import jupyterLogo from '../assets/jupyter_logo.svg';
+import vscodeLogo from '../assets/vscode_logo.svg';
+import gitLogo from '../assets/git_logo.svg';
+import githubLogo from '../assets/github_logo.svg';
+import numpyLogo from '../assets/numpy_logo.svg';
+import pandasLogo from '../assets/pandas_logo.svg';
+import matplotlibLogo from '../assets/matplotlib.svg';
+import scikitLogo from '../assets/scikit_learn_logo.svg';
+import tensorflowLogo from '../assets/tensorflow_logo.svg';
 
 // Company Logos
-import googleLogo from '../assets/courses/logos/google.svg';
-import microsoftLogo from '../assets/courses/logos/microsoft.svg';
-import awsLogo from '../assets/courses/logos/aws.svg';
-import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.webp';
-import netflixLogo from '../assets/courses/logos/netflix.svg';
-import infosysLogo from '../assets/courses/logos/infosys.svg';
-import accentureLogo from '../assets/courses/logos/accenture.svg';
+import googleLogo from '../assets/google_logo.svg';
+import microsoftLogo from '../assets/microsoft_logo.svg';
+import awsLogo from '../assets/aws_logo.svg';
+import ibmLogo from '../assets/ibm_logo.svg';
+import metaLogo from '../assets/meta_logo.webp';
+import netflixLogo from '../assets/netflix_logo.svg';
+import infosysLogo from '../assets/infosys_logo.svg';
+import accentureLogo from '../assets/accenture_logo.svg';
 
 const Section = ({ children, className }) => {
   const ref = useRef(null);
@@ -857,7 +857,7 @@ const AiMlCourse = () => {
                   <div className="ai-ml-detail-icon"><Calendar size={20} /></div>
                   <div className="ai-ml-detail-text">
                     <strong>Next Batch</strong>
-                    <span>23 Dec 2025 (new batches every month)</span>
+                    <span>Batch Completed - Next Batch Coming Soon</span>
                   </div>
                 </li>
                 <li className="ai-ml-detail-item">

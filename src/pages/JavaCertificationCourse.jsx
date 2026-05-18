@@ -6,25 +6,25 @@ import {
 import { motion, useInView } from 'framer-motion';
 
 // Hero Image
-import heroImg from '../assets/courses/java-certification-hero.webp';
+import heroImg from '../assets/java_hero.webp';
 
 // Tool Logos
-import javaLogo from '../assets/courses/logos/java.svg';
-import intellijLogo from '../assets/courses/logos/intellij.svg';
-import springLogo from '../assets/courses/logos/spring.svg';
-import mavenLogo from '../assets/courses/logos/maven.svg';
-import junitLogo from '../assets/courses/logos/junit.webp';
-import gitLogo from '../assets/courses/logos/git.svg'; // Reuse git logo
+import javaLogo from '../assets/java.svg';
+import intellijLogo from '../assets/intellij.svg';
+import springLogo from '../assets/spring.svg';
+import mavenLogo from '../assets/maven.svg';
+import junitLogo from '../assets/junit.webp';
+import gitLogo from '../assets/git.svg'; // Reuse git logo
 
-// Reuse Company Logos
-import googleLogo from '../assets/courses/logos/google.svg';
-import microsoftLogo from '../assets/courses/logos/microsoft.svg';
-import awsLogo from '../assets/courses/logos/aws.svg';
-import ibmLogo from '../assets/courses/logos/ibm.svg';
-import metaLogo from '../assets/courses/logos/meta.webp';
-import netflixLogo from '../assets/courses/logos/netflix.svg';
-import infosysLogo from '../assets/courses/logos/infosys.svg';
-import accentureLogo from '../assets/courses/logos/accenture.svg';
+// Company Logos
+import googleLogo from '../assets/google.svg';
+import microsoftLogo from '../assets/microsoft.svg';
+import awsLogo from '../assets/aws.svg';
+import ibmLogo from '../assets/ibm.svg';
+import metaLogo from '../assets/meta.webp';
+import netflixLogo from '../assets/netflix.svg';
+import infosysLogo from '../assets/infosys.svg';
+import accentureLogo from '../assets/accenture.svg';
 
 const Section = ({ children, className }) => {
   const ref = useRef(null);
@@ -785,7 +785,7 @@ const JavaCertificationCourse = () => {
                     <div className="jv-detail-icon"><Calendar size={20} /></div>
                     <div className="jv-detail-text">
                       <strong>Next Batch</strong>
-                      <span>Start Date: Rolling Admissions</span>
+                      <span>Coming Soon</span>
                     </div>
                   </li>
                   <li className="jv-detail-item">
