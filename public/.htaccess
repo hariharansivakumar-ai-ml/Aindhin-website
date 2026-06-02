@@ -2,10 +2,13 @@
   RewriteEngine On
   RewriteBase /
   
+  # Redirect sitemap.xml to backend dynamic sitemap
+  RewriteRule ^sitemap\.xml$ https://api2.aindhin.com/api/sitemap.xml [R=301,L]
+  
   # If the request is for the assets folder and it doesn't exist, return 404
-  RewriteCond %{REQUEST_URI} ^/assets/
+  RewriteCond %{REQUEST_URI} ^/assets/ [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule ^assets/.*$ - [R=404,L]
+  RewriteRule ^ - [R=404,L]
 
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
@@ -19,13 +22,21 @@
   AddType text/javascript .js
   AddType application/javascript .mjs
   AddType text/javascript .mjs
+  AddType text/css .css
 </IfModule>
 
 # Prevent the server from being confused by missing assets
 <IfModule mod_headers.c>
   <FilesMatch "\.(js|css|webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|otf|json)$">
-    Header set Cache-Control "max-age=31536000, public"
+    Header set Cache-Control "max-age=31536000, public, immutable"
     Header set X-Content-Type-Options "nosniff"
+  </FilesMatch>
+
+  # NEVER cache HTML files. This is critical for React apps.
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
   </FilesMatch>
 </IfModule>
 
