@@ -1,7 +1,7 @@
 import os, io
 from PIL import Image
 from typing import List, Optional
-from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, Query
+from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from database import execute_query, init_db
@@ -440,6 +440,100 @@ async def delete_subscriber(sub_id: int, current_user: dict = Depends(get_curren
         return {"message": "Subscriber deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+# --- Sitemap Route ---
+@app.get("/api/sitemap.xml")
+async def get_sitemap():
+    try:
+        static_urls = [
+            {"loc": "https://aindhin.com/", "priority": "1.00", "changefreq": "daily"},
+            {"loc": "https://aindhin.com/about-us", "priority": "0.80", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/service", "priority": "0.80", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/our-courses", "priority": "0.90", "changefreq": "daily"},
+            {"loc": "https://aindhin.com/contact-us", "priority": "0.70", "changefreq": "monthly"},
+            {"loc": "https://aindhin.com/download-app", "priority": "0.60", "changefreq": "monthly"},
+            {"loc": "https://aindhin.com/university-courses", "priority": "0.80", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/corporate-courses", "priority": "0.80", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/leadership-courses", "priority": "0.80", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/ai-machine-learning-from-basics-to-industry-applications", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/tableau-data-visualization-business-intelligence", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/sql-foundations-of-data-querying-databases", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/power-bi-data-visualization-business-intelligence", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/digital-marketing-from-basics-to-growth-campaigns", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/digital-marketing-strategy-ads-analytics", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/python-certification", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/java-certification", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/cloud-computing", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/cyber-security", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/data-analytics", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/ai-and-machine-learning", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/automation-and-productivity-tools", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/full-stack-development", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/digital-transformation", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/ai-for-business", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/future-skills-and-automation", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/innovation-strategy", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/the-people-manager", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/strategic-decision-maker", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/the-team-builder", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/the-visionary-leader", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/financially-savvy-leader", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/the-effective-communicator", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/the-business-strategist", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/the-operations-optimizer", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/design-thinking", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/abacus-mental-math-masterclass", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/blog", "priority": "0.80", "changefreq": "daily"},
+            {"loc": "https://aindhin.com/b-a-economics-with-data-analytics", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/b-sc-computer-science-with-ai-data-science", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/bba-bachelor-of-business-administration", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/b-com-computer-applications", "priority": "0.70", "changefreq": "weekly"}
+        ]
+
+        # Fetch published blogs from DB
+        blogs = execute_query(
+            "SELECT slug, date FROM blogs WHERE status = 'Published' OR status IS NULL ORDER BY date DESC"
+        )
+
+        current_date = datetime.now().strftime("%Y-%m-%d")
+
+        xml_lines = []
+        xml_lines.append('<?xml version="1.0" encoding="UTF-8"?>')
+        xml_lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+
+        # Add static URLs
+        for url in static_urls:
+            xml_lines.append('  <url>')
+            xml_lines.append(f'    <loc>{url["loc"]}</loc>')
+            xml_lines.append(f'    <lastmod>{current_date}</lastmod>')
+            xml_lines.append(f'    <changefreq>{url["changefreq"]}</changefreq>')
+            xml_lines.append(f'    <priority>{url["priority"]}</priority>')
+            xml_lines.append('  </url>')
+
+        # Add dynamic blog URLs
+        for blog in (blogs or []):
+            slug = blog.get('slug')
+            if not slug:
+                continue
+            blog_date = blog.get('date')
+            if isinstance(blog_date, datetime):
+                lastmod = blog_date.strftime("%Y-%m-%d")
+            else:
+                lastmod = current_date
+
+            xml_lines.append('  <url>')
+            xml_lines.append(f'    <loc>https://aindhin.com/blog/{slug}</loc>')
+            xml_lines.append(f'    <lastmod>{lastmod}</lastmod>')
+            xml_lines.append('    <changefreq>monthly</changefreq>')
+            xml_lines.append('    <priority>0.60</priority>')
+            xml_lines.append('  </url>')
+
+        xml_lines.append('</urlset>')
+        xml_content = "\n".join(xml_lines)
+
+        return Response(content=xml_content, media_type="application/xml")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Sitemap generation error: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
