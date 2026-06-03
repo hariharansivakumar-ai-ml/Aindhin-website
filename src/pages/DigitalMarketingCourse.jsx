@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Clock, BarChart2, Users, Calendar, Award, Brain, Megaphone, Folder, Briefcase, Target, BookOpen, Globe, Mail, ArrowUpRight } from 'lucide-react';
+import { Clock, BarChart2, Users, Calendar, Award, Brain, Megaphone, Folder, Briefcase, Target, BookOpen, Globe, Mail, ArrowUpRight, Search, Layout, MessageSquare, Cpu, CheckCircle } from 'lucide-react';
+import FAQSection from '../components/FAQSection';
 
 // Hero Image
 import heroImg from '../assets/digital_marketing_hero.webp';
@@ -42,10 +43,10 @@ const Section = ({ children, className }) => {
 
 const DigitalMarketingCourse = () => {
   useEffect(() => {
-    document.title = "Online Digital Marketing Course India | SEO & Ads | Aindhin";
+    document.title = "Online Digital Marketing Course with Certificate | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Learn Online Digital Marketing with SEO, Google Ads, Social Media, Email Marketing & Analytics. Get certification, live projects & career support at Aindhin.");
+      metaDescription.setAttribute("content", "Become a job-ready digital marketer with hands-on training in SEO, Google Ads, Analytics, AI Marketing, and real-world projects.");
     }
   }, []);
 
@@ -618,18 +619,17 @@ const DigitalMarketingCourse = () => {
         <Section className="dm-hero dm-section">
           <div className="flex flex-col md:flex-row justify-between items-start max-w-[1200px] mx-auto w-full gap-8">
             <div className="dm-hero-content">
-              <span className="dm-badge">Digital Marketing</span>
+              <span className="dm-badge">Online Digital Marketing Certificate Course</span>
               <h1 className="fs-hero-title">
-                Master Digital Marketing: Grow Businesses with Social Media, Ads &amp; SEO
+                Become a Job-Ready Digital Marketer with Industry-Relevant Skills
               </h1>
               <p className="fs-hero-sub">
-                Learn SEO, paid ads, social media, email and analytics to design and run growth campaigns.
-                Build real‑world marketing assets and a portfolio that showcases measurable results.
+                Master SEO, Google Ads, Social Media Marketing, AI-Powered Marketing, Content Strategy, Email Marketing, Analytics, and Marketing Automation through a structured online learning experience.
               </p>
               <div className="dm-hero-meta">
-                <span>Covers SEO, SEM, Social, Email &amp; Analytics</span>
-                <span>Hands‑on with live tools and sample ad accounts</span>
-                <span>Capstone multi‑channel growth campaign</span>
+                <span>Learn SEO, AI-Powered Marketing, Google Ads &amp; Social Media Marketing</span>
+                <span>Hands-On Training with Modern AI Marketing Tools</span>
+                <span>Develop a Portfolio Through Hands-On Campaign Projects</span>
               </div>
             </div>
             <div className="flex-shrink-0 w-full md:w-auto mt-6 md:mt-12">
@@ -654,16 +654,16 @@ const DigitalMarketingCourse = () => {
 
               {/* About */}
               <Section className="dm-card">
-                <h2>About This Course</h2>
+                <h2>Build Future-Ready Digital Marketing Skills</h2>
                 <div className="dm-about-text">
                   <p className="mb-4">
-                    This Digital Marketing Course takes you from marketing basics to planning and executing performance-driven digital marketing campaigns. You will learn how different channels work together across the funnel - awareness, acquisition, activation, and retention.
+                    Digital marketing is one of the most valuable skills in today's business environment. Businesses rely on search engines, social media, paid advertising, content marketing, and data analytics to attract customers and drive growth. As AI-powered search experiences continue to evolve, marketers need practical skills that go beyond traditional marketing concepts.
                   </p>
                   <p className="mb-4">
-                    Through hands-on projects, you will work on keyword research, SEO, Google Ads, Social Media Marketing, Email Marketing, and Marketing Analytics. You will also create ad sets, design landing pages, write email sequences, and track results using analytics dashboards.
+                    The Aindhin Online Digital Marketing Certificate Course is designed to help learners build industry-relevant expertise through structured online training. Over 10 weeks, you'll gain hands-on experience in SEO, AEO, GEO, XEO, Google Ads, Social Media Marketing, Email Marketing, Analytics, Marketing Automation, and AI-powered marketing workflows used by modern businesses.
                   </p>
                   <p>
-                    By the end, you will gain practical experience in running real-world digital marketing campaigns and build a complete digital marketing portfolio with job-ready confidence.
+                    Through interactive learning, practical assignments, and real-world marketing scenarios, you'll gain the ability to create, manage, and improve digital marketing campaigns across multiple platforms.
                   </p>
                 </div>
               </Section>
@@ -677,56 +677,112 @@ const DigitalMarketingCourse = () => {
                     {
                       icon: <Target className="w-5 h-5 text-blue-600" />,
                       label: "Module 1",
-                      title: "Marketing Fundamentals & Customer Journey",
+                      title: "Digital Marketing Fundamentals",
                       content: (
                         <ul>
-                          <li>Introduction to digital marketing & growth mindset</li>
-                          <li>Customer personas, value propositions & funnels</li>
-                          <li>Competitive research & positioning</li>
-                          <li>Overview of key channels: SEO, SEM, Social, Email</li>
-                          <li>Setting measurable goals & KPIs</li>
+                          <li>Understand the digital marketing ecosystem, customer journey, and buyer personas</li>
+                          <li>Identify marketing funnels & customer acquisition pathways</li>
+                          <li>Analyze competitor strategies and define brand positioning</li>
+                          <li>Learn the fundamentals of core digital marketing strategies</li>
                         </ul>
                       )
                     },
                     {
-                      icon: <Globe className="w-5 h-5 text-blue-600" />,
+                      icon: <Layout className="w-5 h-5 text-blue-600" />,
                       label: "Module 2",
-                      title: "Website, Content & SEO Basics",
+                      title: "Website, Landing Pages & Conversion Optimization",
                       content: (
                         <ul>
-                          <li>Landing pages, CTAs and conversion best practices</li>
-                          <li>Keyword research & search intent</li>
-                          <li>On-page SEO: titles, meta, headings & copy</li>
-                          <li>Content planning: blogs, lead magnets & social content</li>
-                          <li>Basic technical SEO & site health checks</li>
+                          <li>Understand website structure and planning layout</li>
+                          <li>Create high-converting landing pages and craft compelling calls-to-action (CTAs)</li>
+                          <li>Apply user experience (UX) and lead generation strategies</li>
+                          <li>Implement conversion rate optimization (CRO) techniques</li>
+                          <li>Follow website performance & optimization best practices</li>
+                        </ul>
+                      )
+                    },
+                    {
+                      icon: <Search className="w-5 h-5 text-blue-600" />,
+                      label: "Module 3",
+                      title: "Modern Search Optimization (SEO, AEO, GEO & XEO)",
+                      content: (
+                        <ul>
+                          <li>Master keyword research and search intent analysis</li>
+                          <li>Implement traditional Search Engine Optimization (SEO) strategies</li>
+                          <li>Master Answer Engine Optimization (AEO) for AI assistants & voice search</li>
+                          <li>Apply Generative Engine Optimization (GEO) concepts for AI search results (SGE)</li>
+                          <li>Develop Search Experience Optimization (XEO) across platforms</li>
+                        </ul>
+                      )
+                    },
+                    {
+                      icon: <MessageSquare className="w-5 h-5 text-blue-600" />,
+                      label: "Module 4",
+                      title: "Content Marketing & Social Media Marketing",
+                      content: (
+                        <ul>
+                          <li>Develop skills in content planning, creation, and distribution strategies</li>
+                          <li>Learn content writing, blogging, and general content strategy</li>
+                          <li>Plan organic social media campaigns and audience engagement</li>
+                          <li>Apply brand positioning, content distribution, and community building</li>
+                          <li>Manage content scheduling and tracking toolsets</li>
                         </ul>
                       )
                     },
                     {
                       icon: <Megaphone className="w-5 h-5 text-blue-600" />,
-                      label: "Module 3",
-                      title: "Paid Ads & Social Media Campaigns",
+                      label: "Module 5",
+                      title: "Google Ads & Performance Marketing",
                       content: (
                         <ul>
-                          <li>Google Ads: account structure, campaigns & ad groups</li>
-                          <li>Creating search ads, extensions & negative keywords</li>
-                          <li>Meta (Facebook/Instagram) ads: audiences & creatives</li>
-                          <li>Understanding CPC, CTR, CPA, ROAS & budgets</li>
-                          <li>Organic social media planning and content calendars</li>
+                          <li>Create and optimize paid search, display, and video advertising campaigns</li>
+                          <li>Master audience targeting, segments, and budget management</li>
+                          <li>Set up conversion tracking and execute campaign analysis</li>
+                          <li>Implement retargeting, remarketing campaigns & bidding strategies</li>
+                          <li>Measure key metrics: CPC, CTR, CPA, and ROAS</li>
                         </ul>
                       )
                     },
                     {
                       icon: <Mail className="w-5 h-5 text-blue-600" />,
-                      label: "Module 4",
-                      title: "Email, Automation & Growth Analytics",
+                      label: "Module 6",
+                      title: "Email Marketing & Marketing Automation",
                       content: (
                         <ul>
-                          <li>Email marketing fundamentals & list building</li>
-                          <li>Segmentation, drip sequences & basic automation</li>
-                          <li>Google Analytics 4, UTM tracking & funnel reports</li>
-                          <li>Experiment design, A/B testing & optimization loops</li>
-                          <li>Capstone: design a full-funnel growth campaign & report</li>
+                          <li>Design and run effective email marketing campaigns</li>
+                          <li>Understand list building, lead nurturing, and audience segmentation</li>
+                          <li>Implement email marketing automation workflows & triggers</li>
+                          <li>Deliver personalized communication and customer retention techniques</li>
+                          <li>Analyze email metrics: open rates, CTR, and list growth</li>
+                        </ul>
+                      )
+                    },
+                    {
+                      icon: <Cpu className="w-5 h-5 text-blue-600" />,
+                      label: "Module 7",
+                      title: "Analytics, Reporting & AI-Powered Marketing",
+                      content: (
+                        <ul>
+                          <li>Measure performance using Google Analytics 4 (GA4) and Google Search Console</li>
+                          <li>Integrate tracking tags via Google Tag Manager (GTM)</li>
+                          <li>Analyze website traffic, user behavior, and campaign reports</li>
+                          <li>Build client-ready reporting dashboards and attribution frameworks</li>
+                          <li>Leverage AI tools for campaign planning, content creation, and workflow automation</li>
+                        </ul>
+                      )
+                    },
+                    {
+                      icon: <Briefcase className="w-5 h-5 text-blue-600" />,
+                      label: "Module 8",
+                      title: "Hands-On Projects & Practical Implementation",
+                      content: (
+                        <ul>
+                          <li>Conduct detailed SEO audits and recommend optimizations</li>
+                          <li>Execute AEO & GEO optimization strategies on web content</li>
+                          <li>Build a multi-channel content strategy plan and content calendar</li>
+                          <li>Set up and plan a simulated Google Ads performance campaign</li>
+                          <li>Configure an automated email nurturing sequence workflow</li>
+                          <li>Compile a complete campaign analytics and performance report</li>
                         </ul>
                       )
                     }
@@ -748,6 +804,67 @@ const DigitalMarketingCourse = () => {
                           {item.content}
                         </div>
                       )}
+                    </div>
+                  ))}
+                </div>
+              </Section>
+
+              {/* Who Is This Course For? */}
+              <Section className="dm-card">
+                <h2>Who Is This Course For?</h2>
+                <p className="mb-4 text-sm text-gray-500">No prior marketing experience is required. This course is suitable for:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                  {[
+                    "Students and graduates",
+                    "Working professionals",
+                    "Business owners",
+                    "Freelancers",
+                    "Career changers",
+                    "Anyone interested in digital marketing"
+                  ].map((role, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-blue-50/50 rounded-2xl border border-blue-100/60 hover:bg-blue-50 transition-all duration-300">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs shrink-0">
+                        <CheckCircle size={14} />
+                      </div>
+                      <span className="text-sm font-semibold text-slate-800">{role}</span>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+
+              {/* Mentors */}
+              <Section className="dm-card">
+                <h2>Learn From Industry-Focused Mentors</h2>
+                <div className="dm-about-text">
+                  <p className="mb-4">
+                    The course is guided by experienced digital marketing professionals who understand current industry practices and evolving trends. The curriculum is regularly updated to reflect changes in search behavior, advertising platforms, analytics tools, and AI-driven marketing workflows.
+                  </p>
+                  <p>
+                    The goal is to help learners build practical knowledge that can be applied in real business environments.
+                  </p>
+                </div>
+              </Section>
+
+              {/* Why Choose Aindhin */}
+              <Section className="dm-card">
+                <h2>Why Choose Aindhin?</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  {[
+                    { title: "Structured online learning", desc: "Step-by-step curriculum built for online engagement." },
+                    { title: "Beginner-friendly curriculum", desc: "No coding or prior marketing experience required." },
+                    { title: "Practical project-based approach", desc: "Apply learning directly through real-world campaign work." },
+                    { title: "Modern SEO, AEO & GEO concepts", desc: "Stay ahead with search optimization for AI engines like ChatGPT & Perplexity." },
+                    { title: "Exposure to industry-relevant tools", desc: "Gain hands-on familiarity with GA4, Google Ads, Meta Ads & more." },
+                    { title: "AI-powered marketing fundamentals", desc: "Learn to use modern AI tools to boost marketing workflows & productivity." },
+                    { title: "Live training & campaign practice", desc: "Interact with instructors and get feedback on live campaigns." },
+                    { title: "Certificate upon successful completion", desc: "Earn a certificate upon successful completion to boost your resume." }
+                  ].map((item, index) => (
+                    <div key={index} className="p-4 bg-white rounded-xl border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-300">
+                      <h3 className="text-sm font-bold text-slate-900 mb-1 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-primary shrink-0"></span>
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -850,39 +967,39 @@ const DigitalMarketingCourse = () => {
             <div>
               <div className="dm-highlights-heading">
                 <h2>What You Will Achieve in This Digital Marketing Program</h2>
-                <p>Combine strategy, execution and analytics to drive measurable growth across channels.</p>
+                <p>Build practical digital marketing skills that help you plan, execute, and measure campaigns across modern marketing channels.</p>
               </div>
 
               <div className="dm-highlight-grid">
                 <div className="dm-highlight-card">
-                  <div className="dm-highlight-icon"><Brain size={24} /></div>
-                  <h3>Strategic Foundations</h3>
-                  <p>Understand funnels, customer journeys and positioning so every campaign has a clear objective.</p>
+                  <div className="dm-highlight-icon"><Globe size={24} /></div>
+                  <h3>Search &amp; Visibility Optimization</h3>
+                  <p>Learn SEO, AEO, GEO, and XEO strategies to improve visibility across search engines and AI-powered search experiences.</p>
                 </div>
                 <div className="dm-highlight-card">
                   <div className="dm-highlight-icon"><Megaphone size={24} /></div>
-                  <h3>Channel Execution</h3>
-                  <p>Plan and launch campaigns across SEO, search ads, social ads and email using best practices.</p>
+                  <h3>Multi-Channel Marketing Skills</h3>
+                  <p>Gain hands-on knowledge in content marketing, social media marketing, Google Ads, email marketing, and performance marketing.</p>
                 </div>
                 <div className="dm-highlight-card">
                   <div className="dm-highlight-icon"><BarChart2 size={24} /></div>
-                  <h3>Analytics &amp; Optimization</h3>
-                  <p>Track performance in GA4 and ad managers, run A/B tests and iterate based on data, not guesses.</p>
+                  <h3>Analytics &amp; Data-Driven Decisions</h3>
+                  <p>Use Google Analytics 4, Google Search Console, and reporting tools to track performance and optimize campaigns with confidence.</p>
+                </div>
+                <div className="dm-highlight-card">
+                  <div className="dm-highlight-icon"><Cpu size={24} /></div>
+                  <h3>AI-Powered Marketing Workflows</h3>
+                  <p>Understand how modern marketers use AI tools for research, content creation, campaign planning, automation, and productivity.</p>
                 </div>
                 <div className="dm-highlight-card">
                   <div className="dm-highlight-icon"><Folder size={24} /></div>
-                  <h3>Campaign Portfolio</h3>
-                  <p>Graduate with multiple documented campaigns and reports you can show to hiring managers.</p>
+                  <h3>Real-World Project Experience</h3>
+                  <p>Apply your learning through practical projects including SEO audits, content strategies, paid advertising campaigns, and analytics reporting.</p>
                 </div>
                 <div className="dm-highlight-card">
                   <div className="dm-highlight-icon"><Briefcase size={24} /></div>
-                  <h3>Tool Confidence</h3>
-                  <p>Be comfortable navigating real dashboards in Google Ads, Meta Ads, GA4 and email tools.</p>
-                </div>
-                <div className="dm-highlight-card">
-                  <div className="dm-highlight-icon"><Users size={24} /></div>
-                  <h3>Mentorship &amp; Feedback</h3>
-                  <p>Get critique on your copy, creatives, landing pages and campaign structures from mentors.</p>
+                  <h3>Career &amp; Business Readiness</h3>
+                  <p>Build a portfolio of work, gain exposure to industry-standard tools, and develop skills valued by businesses, agencies, startups, and entrepreneurs.</p>
                 </div>
               </div>
             </div>
@@ -1017,6 +1134,34 @@ const DigitalMarketingCourse = () => {
             </div>
           </div>
         </Section>
+
+        {/* FAQ SECTION */}
+        <FAQSection 
+          title="Frequently Asked Questions"
+          subtitle="Find answers to some of the most common questions about the course."
+          faqs={[
+            {
+              question: "Is this Digital Marketing Certificate Course suitable for beginners?",
+              answer: "Yes. The course is designed for beginners as well as learners who want to strengthen their digital marketing knowledge. No prior marketing experience is required."
+            },
+            {
+              question: "Will I receive an Digital Marketing Certificate after completing the training?",
+              answer: "Yes. Participants who successfully complete the program will receive an Aindhin Digital Marketing Certificate."
+            },
+            {
+              question: "What topics are covered in this course?",
+              answer: "The curriculum covers landing page designing, SEO, AEO, GEO, XEO, Google Ads, Social Media Marketing, Content Marketing, Email Marketing, Marketing Automation, Analytics, Conversion Optimization, and AI-powered marketing strategies."
+            },
+            {
+              question: "Is this course conducted online?",
+              answer: "Yes. This is a structured online digital marketing course delivered through live sessions, practical activities, and guided learning exercises."
+            },
+            {
+              question: "Do I need coding knowledge to get started with digital marketing?",
+              answer: "No. Coding knowledge is not required. The course focuses on marketing concepts, tools, strategies, analytics, and practical implementation."
+            }
+          ]}
+        />
 
       </div>
     </div>
