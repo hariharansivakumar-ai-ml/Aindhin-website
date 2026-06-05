@@ -1,4 +1,4 @@
-import { Suspense, lazy as reactLazy, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -6,75 +6,67 @@ import Preloader from './components/Preloader';
 import ScrollToTop from './components/ScrollToTop';
 import SubscribePopup from './components/SubscribePopup';
 import AdminSidebar from './components/AdminSidebar';
-import ErrorBoundary from './components/ErrorBoundary';
+import RecoveryBoundary from './components/RecoveryBoundary';
 import AbacusCourse from './pages/AbacusCourse';
-
-// Helper to retry dynamic imports if they fail due to fresh production deployments (cache-busted reload)
-const lazy = (componentImport) =>
-  reactLazy(() =>
-    componentImport().catch((error) => {
-      console.warn('Dynamic import failed. Propagating to ErrorBoundary...', error);
-      return Promise.reject(error);
-    })
-  );
+import safeLazy from './utils/safeLazy';
 
 // Lazy Load Pages
-const Home = lazy(() => import('./pages/Home'));
-const AboutUs = lazy(() => import('./pages/AboutUs'));
-const Services = lazy(() => import('./pages/Services'));
-const Courses = lazy(() => import('./pages/Courses'));
-const ContactUs = lazy(() => import('./pages/ContactUs'));
-const DownloadApp = lazy(() => import('./pages/DownloadApp'));
-const Blogs = lazy(() => import('./pages/Blogs'));
-const AdminLogin = lazy(() => import('./pages/AdminLogin'));
-const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
-const AddBlogPost = lazy(() => import('./pages/AddBlogPost'));
-const AllBlogs = lazy(() => import('./pages/AllBlogs'));
-const BlogDetail = lazy(() => import('./pages/BlogDetail'));
-const AdminEditPost = lazy(() => import('./pages/AdminEditPost'));
-const AdminTrash = lazy(() => import('./pages/AdminTrash'));
-const AdminDrafts = lazy(() => import('./pages/AdminDrafts'));
-const Media = lazy(() => import('./pages/Media'));
-const AdminComments = lazy(() => import('./pages/AdminComments'));
-const AdminSubscribers = lazy(() => import('./pages/AdminSubscribers'));
-const AdminAnalytics = lazy(() => import('./pages/AdminAnalytics'));
+const Home = safeLazy(() => import('./pages/Home'));
+const AboutUs = safeLazy(() => import('./pages/AboutUs'));
+const Services = safeLazy(() => import('./pages/Services'));
+const Courses = safeLazy(() => import('./pages/Courses'));
+const ContactUs = safeLazy(() => import('./pages/ContactUs'));
+const DownloadApp = safeLazy(() => import('./pages/DownloadApp'));
+const Blogs = safeLazy(() => import('./pages/Blogs'));
+const AdminLogin = safeLazy(() => import('./pages/AdminLogin'));
+const AdminDashboard = safeLazy(() => import('./pages/AdminDashboard'));
+const AddBlogPost = safeLazy(() => import('./pages/AddBlogPost'));
+const AllBlogs = safeLazy(() => import('./pages/AllBlogs'));
+const BlogDetail = safeLazy(() => import('./pages/BlogDetail'));
+const AdminEditPost = safeLazy(() => import('./pages/AdminEditPost'));
+const AdminTrash = safeLazy(() => import('./pages/AdminTrash'));
+const AdminDrafts = safeLazy(() => import('./pages/AdminDrafts'));
+const Media = safeLazy(() => import('./pages/Media'));
+const AdminComments = safeLazy(() => import('./pages/AdminComments'));
+const AdminSubscribers = safeLazy(() => import('./pages/AdminSubscribers'));
+const AdminAnalytics = safeLazy(() => import('./pages/AdminAnalytics'));
 
 // Course Pages
-const AiMlCourse = lazy(() => import('./pages/AiMlCourse'));
-const UniversityCourses = lazy(() => import('./pages/UniversityCourses'));
-const LeadershipCourses = lazy(() => import('./pages/LeadershipCourses'));
-const CorporateCourses = lazy(() => import('./pages/CorporateCourses'));
-// const DataAnalystCourse = lazy(() => import('./pages/DataAnalystCourse'));
-const TableauCourse = lazy(() => import('./pages/TableauCourse'));
-const SqlCourse = lazy(() => import('./pages/SqlCourse'));
-const PowerBiCourse = lazy(() => import('./pages/PowerBiCourse'));
-const DigitalMarketingCourse = lazy(() => import('./pages/DigitalMarketingCourse'));
-const DigitalMarketingStrategyCourse = lazy(() => import('./pages/DigitalMarketingStrategyCourse'));
-const PythonCertificationCourse = lazy(() => import('./pages/PythonCertificationCourse'));
-const JavaCertificationCourse = lazy(() => import('./pages/JavaCertificationCourse'));
-const BAEconomicsCourse = lazy(() => import('./pages/BAEconomicsCourse'));
-const BScCSCourse = lazy(() => import('./pages/BScCSCourse'));
-const BBACourse = lazy(() => import('./pages/BBACourse'));
-const BComCourse = lazy(() => import('./pages/BComCourse'));
-const CloudComputingCourse = lazy(() => import('./pages/CloudComputingCourse'));
-const CyberSecurityCourse = lazy(() => import('./pages/CyberSecurityCourse'));
-const DataAnalyticsCourse = lazy(() => import('./pages/DataAnalyticsCourse'));
-const AIMachineLearningCourse = lazy(() => import('./pages/AIMachineLearningCourse'));
-const AutomationProductivityCourse = lazy(() => import('./pages/AutomationProductivityCourse'));
-const FullStackDevelopmentCourse = lazy(() => import('./pages/FullStackDevelopmentCourse'));
-const DigitalTransformationCourse = lazy(() => import('./pages/DigitalTransformationCourse'));
-const AIForBusinessCourse = lazy(() => import('./pages/AIForBusinessCourse'));
-const FutureSkillsCourse = lazy(() => import('./pages/FutureSkillsCourse'));
-const InnovationStrategyCourse = lazy(() => import('./pages/InnovationStrategyCourse'));
-const PeopleManagerCourse = lazy(() => import('./pages/PeopleManagerCourse'));
-const StrategicDecisionMakerCourse = lazy(() => import('./pages/StrategicDecisionMakerCourse'));
-const TeamBuilderCourse = lazy(() => import('./pages/TeamBuilderCourse'));
-const VisionaryLeaderCourse = lazy(() => import('./pages/VisionaryLeaderCourse'));
-const FinanciallySavvyLeaderCourse = lazy(() => import('./pages/FinanciallySavvyLeaderCourse'));
-const EffectiveCommunicatorCourse = lazy(() => import('./pages/EffectiveCommunicatorCourse'));
-const OperationsOptimizerCourse = lazy(() => import('./pages/OperationsOptimizerCourse'));
-const DesignThinkingCourse = lazy(() => import('./pages/DesignThinkingCourse'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+const AiMlCourse = safeLazy(() => import('./pages/AiMlCourse'));
+const UniversityCourses = safeLazy(() => import('./pages/UniversityCourses'));
+const LeadershipCourses = safeLazy(() => import('./pages/LeadershipCourses'));
+const CorporateCourses = safeLazy(() => import('./pages/CorporateCourses'));
+// const DataAnalystCourse = safeLazy(() => import('./pages/DataAnalystCourse'));
+const TableauCourse = safeLazy(() => import('./pages/TableauCourse'));
+const SqlCourse = safeLazy(() => import('./pages/SqlCourse'));
+const PowerBiCourse = safeLazy(() => import('./pages/PowerBiCourse'));
+const DigitalMarketingCourse = safeLazy(() => import('./pages/DigitalMarketingCourse'));
+const DigitalMarketingStrategyCourse = safeLazy(() => import('./pages/DigitalMarketingStrategyCourse'));
+const PythonCertificationCourse = safeLazy(() => import('./pages/PythonCertificationCourse'));
+const JavaCertificationCourse = safeLazy(() => import('./pages/JavaCertificationCourse'));
+const BAEconomicsCourse = safeLazy(() => import('./pages/BAEconomicsCourse'));
+const BScCSCourse = safeLazy(() => import('./pages/BScCSCourse'));
+const BBACourse = safeLazy(() => import('./pages/BBACourse'));
+const BComCourse = safeLazy(() => import('./pages/BComCourse'));
+const CloudComputingCourse = safeLazy(() => import('./pages/CloudComputingCourse'));
+const CyberSecurityCourse = safeLazy(() => import('./pages/CyberSecurityCourse'));
+const DataAnalyticsCourse = safeLazy(() => import('./pages/DataAnalyticsCourse'));
+const AIMachineLearningCourse = safeLazy(() => import('./pages/AIMachineLearningCourse'));
+const AutomationProductivityCourse = safeLazy(() => import('./pages/AutomationProductivityCourse'));
+const FullStackDevelopmentCourse = safeLazy(() => import('./pages/FullStackDevelopmentCourse'));
+const DigitalTransformationCourse = safeLazy(() => import('./pages/DigitalTransformationCourse'));
+const AIForBusinessCourse = safeLazy(() => import('./pages/AIForBusinessCourse'));
+const FutureSkillsCourse = safeLazy(() => import('./pages/FutureSkillsCourse'));
+const InnovationStrategyCourse = safeLazy(() => import('./pages/InnovationStrategyCourse'));
+const PeopleManagerCourse = safeLazy(() => import('./pages/PeopleManagerCourse'));
+const StrategicDecisionMakerCourse = safeLazy(() => import('./pages/StrategicDecisionMakerCourse'));
+const TeamBuilderCourse = safeLazy(() => import('./pages/TeamBuilderCourse'));
+const VisionaryLeaderCourse = safeLazy(() => import('./pages/VisionaryLeaderCourse'));
+const FinanciallySavvyLeaderCourse = safeLazy(() => import('./pages/FinanciallySavvyLeaderCourse'));
+const EffectiveCommunicatorCourse = safeLazy(() => import('./pages/EffectiveCommunicatorCourse'));
+const OperationsOptimizerCourse = safeLazy(() => import('./pages/OperationsOptimizerCourse'));
+const DesignThinkingCourse = safeLazy(() => import('./pages/DesignThinkingCourse'));
+const NotFound = safeLazy(() => import('./pages/NotFound'));
 
 function Layout() {
     const location = useLocation();
@@ -99,7 +91,7 @@ function Layout() {
             <ScrollToTop />
             {!isAdminRoute && <Header />}
             <main className={`flex-grow w-full ${!isAdminRoute ? 'pt-[120px]' : ''}`}>
-                <ErrorBoundary>
+                <RecoveryBoundary>
                     <Suspense fallback={getFallback()}>
                         <Routes>
                             <Route path="/" element={<Home />} />
@@ -161,7 +153,7 @@ function Layout() {
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Suspense>
-                </ErrorBoundary>
+                </RecoveryBoundary>
             </main>
             {!isAdminRoute && <Footer />}
             {!isAdminRoute && <SubscribePopup />}

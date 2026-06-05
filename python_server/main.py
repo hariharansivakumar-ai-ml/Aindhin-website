@@ -487,7 +487,8 @@ async def get_sitemap():
             {"loc": "https://aindhin.com/b-a-economics-with-data-analytics", "priority": "0.70", "changefreq": "weekly"},
             {"loc": "https://aindhin.com/b-sc-computer-science-with-ai-data-science", "priority": "0.70", "changefreq": "weekly"},
             {"loc": "https://aindhin.com/bba-bachelor-of-business-administration", "priority": "0.70", "changefreq": "weekly"},
-            {"loc": "https://aindhin.com/b-com-computer-applications", "priority": "0.70", "changefreq": "weekly"}
+            {"loc": "https://aindhin.com/b-com-computer-applications", "priority": "0.70", "changefreq": "weekly"},
+            {"loc": "https://aindhin.com/api/sitemap.xml", "priority": "0.50", "changefreq": "monthly"}
         ]
 
         # Fetch published blogs from DB
