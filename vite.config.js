@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import fs from 'fs'
 import path from 'path'
@@ -37,20 +37,49 @@ function buildVersionPlugin() {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [react(), buildVersionPlugin()],
-    base: '/',
-    build: {
-        outDir: 'dist',
-        manifest: true,
-        emptyOutDir: true,
-        sourcemap: false,
-        assetsInlineLimit: 0, // Disable inlining to prevent small SVGs/images from being bundled as JS modules
-        rollupOptions: {
-            output: {
-                manualChunks(id) {
-                    if (id.includes('node_modules')) {
-                        return 'vendor'
+export default defineConfig(({ mode }) => {
+    // Load env variables based on development/production mode
+    const env = loadEnv(mode, process.cwd(), '')
+    const backendUrl = env.VITE_API_URL || 'https://api2.aindhin.com/api'
+    
+    // Extract backend origin (e.g. http://localhost:5000 or https://api2.aindhin.com)
+    let backendOrigin = 'https://api2.aindhin.com'
+    try {
+        backendOrigin = new URL(backendUrl).origin
+    } catch (e) {
+        console.error('[Vite Config] Invalid VITE_API_URL:', backendUrl)
+    }
+
+    return {
+        plugins: [react(), buildVersionPlugin()],
+        base: '/',
+        server: {
+            proxy: {
+                // Proxy all /api requests to the backend server
+                '/api': {
+                    target: backendOrigin,
+                    changeOrigin: true
+                },
+                // Proxy /sitemap.xml request directly to backend /api/sitemap.xml
+                '/sitemap.xml': {
+                    target: `${backendOrigin}/api/sitemap.xml`,
+                    changeOrigin: true,
+                    rewrite: () => ''
+                }
+            }
+        },
+        build: {
+            outDir: 'dist',
+            manifest: true,
+            emptyOutDir: true,
+            sourcemap: false,
+            assetsInlineLimit: 0, // Disable inlining to prevent small SVGs/images from being bundled as JS modules
+            rollupOptions: {
+                output: {
+                    manualChunks(id) {
+                        if (id.includes('node_modules')) {
+                            return 'vendor'
+                        }
                     }
                 }
             }
