@@ -15,14 +15,8 @@
   force = true
 
 [[redirects]]
-  from = "/sitemap.xml"
-  to = "https://api2.aindhin.com/api/sitemap.xml"
-  status = 200
-  force = true
-
-[[redirects]]
   from = "/api/sitemap.xml"
-  to = "https://api2.aindhin.com/api/sitemap.xml"
+  to = "/sitemap.xml"
   status = 200
   force = true
 

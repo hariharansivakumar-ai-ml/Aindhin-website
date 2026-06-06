@@ -2,11 +2,8 @@
   RewriteEngine On
   RewriteBase /
   
-  # Redirect sitemap.xml to frontend sitemap path (for SEO)
-  RewriteRule ^sitemap\.xml$ https://aindhin.com/api/sitemap.xml [R=301,L]
-  
-  # Redirect api/sitemap.xml to backend dynamic sitemap
-  RewriteRule ^api/sitemap\.xml$ https://api2.aindhin.com/api/sitemap.xml [R=301,L]
+  # Serve api/sitemap.xml from the static sitemap.xml file
+  RewriteRule ^api/sitemap\.xml$ sitemap.xml [L]
   
   # If the request is for the assets folder and it doesn't exist, return 404
   RewriteCond %{REQUEST_URI} ^/assets/ [NC]
