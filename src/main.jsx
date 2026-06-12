@@ -29,20 +29,25 @@ initLogger();
                 const url = new URL(window.location.href);
                 url.searchParams.set('t', now.toString());
                 window.location.replace(url.toString());
+                return true;
             } else {
                 logError(new Error('Preload/chunk failure occurred again within 15s. Automatic reload aborted.'), {
                     tags: { type: 'chunk_reload_loop_prevented' }
                 });
+                return false;
             }
         } catch (e) {
             logError(e, { extra: { msg: 'Global interceptor reload failure' } });
+            return false;
         }
     };
 
     // 1. Intercept Vite preload errors
     window.addEventListener('vite:preloadError', (event) => {
-        event.preventDefault(); // Stop default browser console error
-        handleChunkLoadError('vite:preloadError', event);
+        const reloaded = handleChunkLoadError('vite:preloadError', event);
+        if (reloaded) {
+            event.preventDefault(); // Stop default browser console error only if we actually reload the page
+        }
     });
 
     // 2. Intercept unhandled promise rejections (thrown when a dynamic import promise rejects)
@@ -52,11 +57,12 @@ initLogger();
         if (
             message.includes('Failed to fetch dynamically imported module') ||
             message.includes('error loading dynamically imported module') ||
-            message.includes('Loading chunk') ||
-            message.includes('default')
+            message.includes('Loading chunk')
         ) {
-            event.preventDefault();
-            handleChunkLoadError({ type: 'unhandledrejection', message }, error);
+            const reloaded = handleChunkLoadError({ type: 'unhandledrejection', message }, error);
+            if (reloaded) {
+                event.preventDefault();
+            }
         }
     });
 
@@ -66,8 +72,10 @@ initLogger();
         if (target.tagName === 'SCRIPT' || target.tagName === 'LINK') {
             const url = target.src || target.href || '';
             if (url.includes('/assets/')) {
-                event.preventDefault();
-                handleChunkLoadError({ type: 'resourceLoadError', url }, event.error || new Error(`Resource load failed: ${url}`));
+                const reloaded = handleChunkLoadError({ type: 'resourceLoadError', url }, event.error || new Error(`Resource load failed: ${url}`));
+                if (reloaded) {
+                    event.preventDefault();
+                }
             }
         }
     }, true); // Use capture phase to catch resource load events

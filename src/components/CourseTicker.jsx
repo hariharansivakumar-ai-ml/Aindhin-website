@@ -4,12 +4,47 @@ import { motion } from 'framer-motion';
 const CourseTicker = () => {
     const [isHovered, setIsHovered] = useState(false);
 
-    const courses = [
+    const rawCourses = [
         { title: "Digital Marketing", date: "Starts: 06.06.2026" },
         { title: "Artificial Intelligence", date: "Batch Completed - Next Batch Coming Soon" },
         { title: "Cyber Security", date: "Batch Completed - Next Batch Coming Soon" },
         { title: "Online Classes for KID'S", date: "Batch Completed - Next Batch Coming Soon" }
     ];
+
+    const formatCourseDate = (dateStr) => {
+        if (!dateStr || !dateStr.startsWith("Starts: ")) {
+            return dateStr;
+        }
+
+        const datePart = dateStr.replace("Starts: ", "").trim();
+        const parts = datePart.split(".");
+        if (parts.length !== 3) {
+            return dateStr;
+        }
+
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // JS Month is 0-indexed
+        const year = parseInt(parts[2], 10);
+
+        if (isNaN(day) || isNaN(month) || isNaN(year)) {
+            return dateStr;
+        }
+
+        const targetDate = new Date(year, month, day);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (targetDate < today) {
+            return "Batch Completed - Next Batch Coming Soon";
+        }
+
+        return dateStr;
+    };
+
+    const courses = rawCourses.map(course => ({
+        ...course,
+        date: formatCourseDate(course.date)
+    }));
 
     // Duplicate courses to create seamless infinite scroll
     const tickerItems = [...courses, ...courses, ...courses, ...courses];

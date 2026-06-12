@@ -45,7 +45,6 @@ export const safeLazy = (importFn) => {
         errorMessage.includes('Failed to fetch') ||
         errorMessage.includes('Loading chunk') ||
         errorMessage.includes('imported module') ||
-        errorMessage.includes('default') ||
         errorMessage.includes('loading dynamically') ||
         error.name === 'ChunkLoadError';
 

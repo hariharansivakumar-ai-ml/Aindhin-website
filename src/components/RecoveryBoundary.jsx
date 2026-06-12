@@ -31,7 +31,6 @@ class RecoveryBoundary extends React.Component {
       errorMessage.includes('Failed to fetch') ||
       errorMessage.includes('Loading chunk') ||
       errorMessage.includes('imported module') ||
-      errorMessage.includes('default') ||
       errorMessage.includes('loading dynamically') ||
       error.name === 'ChunkLoadError';
 
@@ -66,7 +65,7 @@ class RecoveryBoundary extends React.Component {
       const isChunkError = this.state.error?.message?.includes('Failed to fetch') ||
         this.state.error?.message?.includes('Loading chunk') ||
         this.state.error?.message?.includes('imported module') ||
-        this.state.error?.message?.includes('default');
+        this.state.error?.message?.includes('loading dynamically');
 
       return (
         <div className="min-h-[80vh] w-full flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>

@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import Preloader from './components/Preloader';
 import ScrollToTop from './components/ScrollToTop';
 import SubscribePopup from './components/SubscribePopup';
+import Chatbot from './components/Chatbot';
 import AdminSidebar from './components/AdminSidebar';
 import RecoveryBoundary from './components/RecoveryBoundary';
 import AbacusCourse from './pages/AbacusCourse';
@@ -157,6 +158,7 @@ function Layout() {
             </main>
             {!isAdminRoute && <Footer />}
             {!isAdminRoute && <SubscribePopup />}
+            {!isAdminRoute && <Chatbot />}
         </div>
     );
 }

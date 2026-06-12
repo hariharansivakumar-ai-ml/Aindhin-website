@@ -19,7 +19,6 @@ class ErrorBoundary extends React.Component {
       errorMessage.includes('Failed to fetch') ||
       errorMessage.includes('Loading chunk') ||
       errorMessage.includes('imported module') ||
-      errorMessage.includes('default') ||
       errorMessage.includes('loading dynamically');
 
     if (isChunkLoadError) {

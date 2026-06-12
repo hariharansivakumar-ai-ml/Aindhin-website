@@ -2,7 +2,7 @@
   RewriteEngine On
   RewriteBase /
   
-  # Serve api/sitemap.xml from the static sitemap.xml file
+  # Serve sitemap.xml directly as a static file
   RewriteRule ^api/sitemap\.xml$ sitemap.xml [L]
   
   # If the request is for the assets folder and it doesn't exist, return 404
