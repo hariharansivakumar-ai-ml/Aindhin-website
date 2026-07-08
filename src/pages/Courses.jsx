@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
+import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2 } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
+import { apiGetCourses } from '../utils/apiClient';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import comingSoonImg from '../assets/coming_soon.webp';
@@ -10,15 +11,86 @@ import dataAnalystImg from '../assets/data_analyst.webp';
 import tableauImg from '../assets/tableau.webp';
 import powerBiImg from '../assets/power_bi.webp';
 import sqlImg from '../assets/sql.webp';
-
 import digitalMarketingImg from '../assets/digital_marketing_hero.webp';
 import cybersecurityImg from '../assets/cybersecurity.webp';
 import abacusImg from '../assets/abacus_course.webp';
-import { Gamepad2 } from 'lucide-react';
 
+const staticCourses = [
+    {
+        id: 1,
+        category: 'ai',
+        title: "AI & Machine Learning – From Basics to Industry Applications",
+        image: aiMlBasicsImg,
+        skills: "Machine Learning, Deep Learning, Python, Model Deployment, MLOps",
+        students: 320,
+        rating: 4.8,
+        reviews: 180,
+        level: "Beginner",
+        duration: "12 weeks",
+        link: "/ai-machine-learning-from-basics-to-industry-applications",
+        externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8"
+    },
+    {
+        id: 5,
+        category: 'ai',
+        title: "Data Analytics",
+        image: dataAnalystImg,
+        skills: "Data Analytics, Excel Basics, Data Cleaning, Charts & Visualization, Decision Making",
+        students: 240,
+        rating: 4.8,
+        reviews: 115,
+        level: "Beginner",
+        duration: "12 weeks",
+        link: "/data-analytics",
+        externalLink: "https://user.aindhin.com/course/AD-data-analytics"
+    },
+    {
+        id: 8,
+        category: 'marketing',
+        title: "Digital Marketing – From Basics to Growth Campaigns",
+        image: digitalMarketingImg,
+        skills: "SEO, SEM, Social Media, Email Marketing, Analytics, Growth Strategies",
+        students: 180,
+        rating: 4.6,
+        reviews: 95,
+        level: "Beginner",
+        duration: "10 weeks",
+        link: "/digital-marketing-from-basics-to-growth-campaigns",
+        externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6b037beb11b0c1ada8"
+    },
+    {
+        id: 15,
+        category: 'security',
+        title: "Cybersecurity – Protecting the Digital Frontier",
+        image: cybersecurityImg,
+        skills: "Network Security, Ethical Hacking, Threat Intelligence, Cryptography, Security Auditing",
+        students: 280,
+        rating: 4.9,
+        reviews: 140,
+        level: "Beginner",
+        duration: "14 weeks",
+        link: "/cyber-security",
+        externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6a037beb11b0c1ada8"
+    },
+    {
+        id: 20,
+        category: 'kids',
+        title: "Abacus & Mental Math Masterclass",
+        image: abacusImg,
+        skills: "Mental calculation, Concentration, Memory enhancement, Speed math",
+        students: 150,
+        rating: 4.9,
+        reviews: 110,
+        level: "Beginner",
+        duration: "12 weeks",
+        link: "/abacus-mental-math-masterclass",
+        externalLink: "https://user.aindhin.com/course/AD-abacus-mental-math"
+    }
+];
 
 const Courses = () => {
     const [searchParams] = useSearchParams();
+    const [coursesList, setCoursesList] = useState(staticCourses);
 
     useEffect(() => {
         document.title = "Explore Job-Ready Online Certification Courses in India | Aindhin";
@@ -27,15 +99,49 @@ const Courses = () => {
             metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
+
     const initialTab = searchParams.get('tab') || 'all';
     const [activeTab, setActiveTab] = useState(initialTab);
 
     useEffect(() => {
-        document.title = "Aindhin | Online Certification Courses in India";
-        const metaDescription = document.querySelector('meta[name="description"]');
-        if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
-        }
+        const fetchCourses = async () => {
+            try {
+                const data = await apiGetCourses();
+                if (data && data.length > 0) {
+                    const mapped = data.map(c => {
+                        let reviewsCount = 0;
+                        if (Array.isArray(c.reviews)) {
+                            reviewsCount = c.reviews.length;
+                        } else if (c.reviews && typeof c.reviews === 'object') {
+                            reviewsCount = Object.keys(c.reviews).length;
+                        } else if (typeof c.reviews === 'number') {
+                            reviewsCount = c.reviews;
+                        } else if (typeof c.reviews === 'string') {
+                            reviewsCount = parseInt(c.reviews) || 0;
+                        }
+
+                        return {
+                            id: c.id,
+                            category: c.category || 'all',
+                            title: c.title,
+                            image: c.thumbnail || comingSoonImg,
+                            skills: c.tags || c.short_description || "Skills not specified",
+                            students: c.students_count || 120,
+                            rating: parseFloat(c.rating) || 4.7,
+                            reviews: reviewsCount || 50,
+                            level: c.level || "Beginner",
+                            duration: c.duration || "12 weeks",
+                            link: c.slug ? (c.slug.startsWith('/') ? c.slug : `/${c.slug}`) : '#',
+                            externalLink: c.slug ? (c.slug.startsWith('AD-') ? `https://user.aindhin.com/course/${c.slug}` : `https://user.aindhin.com/course/AD-${c.slug}`) : 'https://user.aindhin.com/our-courses'
+                        };
+                    });
+                    setCoursesList(mapped);
+                }
+            } catch (err) {
+                console.error("Failed to load courses from API:", err);
+            }
+        };
+        fetchCourses();
     }, []);
 
     const tabs = [
@@ -46,68 +152,9 @@ const Courses = () => {
         { id: 'kids', label: 'Kids Programs', icon: <Gamepad2 size={18} /> }
     ];
 
-    const courses = [
-        {
-            id: 1,
-            category: 'ai',
-            title: "AI & Machine Learning – From Basics to Industry Applications",
-            image: aiMlBasicsImg,
-            skills: "Machine Learning, Deep Learning, Python, Model Deployment, MLOps",
-            students: 320,
-            rating: 4.8,
-            reviews: 180,
-            level: "Beginner",
-            duration: "12 weeks",
-            link: "/ai-machine-learning-from-basics-to-industry-applications",
-            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8"
-        },
-        {
-            id: 8,
-            category: 'marketing',
-            title: "Digital Marketing – From Basics to Growth Campaigns",
-            image: digitalMarketingImg,
-            skills: "SEO, SEM, Social Media, Email Marketing, Analytics, Growth Strategies",
-            students: 180,
-            rating: 4.6,
-            reviews: 95,
-            level: "Beginner",
-            duration: "10 weeks",
-            link: "/digital-marketing-from-basics-to-growth-campaigns",
-            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6b037beb11b0c1ada8"
-        },
-        {
-            id: 15,
-            category: 'security',
-            title: "Cybersecurity – Protecting the Digital Frontier",
-            image: cybersecurityImg,
-            skills: "Network Security, Ethical Hacking, Threat Intelligence, Cryptography, Security Auditing",
-            students: 280,
-            rating: 4.9,
-            reviews: 140,
-            level: "Beginner",
-            duration: "14 weeks",
-            link: "/cyber-security",
-            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6a037beb11b0c1ada8"
-        },
-        {
-            id: 20,
-            category: 'kids',
-            title: "Abacus & Mental Math Masterclass",
-            image: abacusImg,
-            skills: "Mental calculation, Concentration, Memory enhancement, Speed math",
-            students: 150,
-            rating: 4.9,
-            reviews: 110,
-            level: "Beginner",
-            duration: "12 weeks",
-            link: "/abacus-mental-math-masterclass",
-            externalLink: "https://user.aindhin.com/course/AD-abacus-mental-math"
-        }
-    ];
-
     const filteredCourses = activeTab === 'all'
-        ? courses.filter(c => !c.comingSoon)
-        : courses.filter(c => c.category === activeTab);
+        ? coursesList.filter(c => !c.comingSoon)
+        : coursesList.filter(c => c.category === activeTab);
 
     return (
         <section className="w-full bg-[#f8faff] pt-12 pb-20 px-6 lg:px-12 font-inter relative min-h-screen">

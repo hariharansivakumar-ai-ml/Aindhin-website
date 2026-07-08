@@ -19,7 +19,7 @@ import AmazonLogo from '../../assets/amazon_logo.webp';
 
 import {
     BarChart, PieChart, Database, TrendingUp, Search, FileText, Globe, Server, CheckCircle,
-    Clock, Users, Target, Briefcase, Award, Map, Brain
+    Clock, Users, Target, Briefcase, Award, Map, Brain, Calendar
 } from 'lucide-react';
 
 export const dataAnalyticsData = {
@@ -37,57 +37,71 @@ export const dataAnalyticsData = {
     },
     about: [
         "This Data Analytics Course takes you from a beginner to a job‑ready analyst. You will start with the fundamentals of data handling using Excel and SQL, move into statistical analysis and programming with Python or R, and finally master data visualisation with Power BI or Tableau.",
-        "The curriculum focuses on solving real business problems. You will work on case studies from retail, finance and marketing, learning how to clean data, uncover patterns and present your findings effectively to stakeholders. By the end, you’ll have a portfolio of dashboards and analysis projects."
+        "The curriculum focuses on solving real business problems. You will work on case studies from retail, finance and marketing, learning how to clean data, uncover patterns and present your findings effectively to stakeholders. By the end, you’ll have a portfolio of dashboards and analysis projects.",
+        "By the end of this course, learners will be able to:\n• Understand the fundamentals of data analytics.\n• Collect and organize data from different sources.\n• Perform basic data cleaning in Excel.\n• Create simple charts and visualizations.\n• Extract basic insights and make data-driven decisions."
     ],
     syllabus: {
         title: "Syllabus Overview",
         modules: [
             {
-                title: "Module 1: Excel & Statistics Fundamentals",
-                icon: BarChart,
+                title: "Module 1: Introduction to Data Analytics",
+                icon: Search,
                 topics: [
-                    "Introduction to Data Analytics – types of analysis, roles & tools",
-                    "Advanced Excel – Pivot Tables, VLOOKUP, XLOOKUP, conditional formatting",
-                    "Data Cleaning & Preparation in Excel",
-                    "Descriptive Statistics – mean, median, mode, variance, standard deviation",
-                    "Inferential Statistics Concepts – hypothesis testing, distributions (intro)",
-                    "Hands‑on: Analysing a sales dataset using Excel"
+                    "Chapter 1.1: What is Data Analytics?",
+                    "• Understanding data",
+                    "• Importance of data analytics",
+                    "• Real-world examples",
+                    "Chapter 1.2: Types of Data",
+                    "• Structured and unstructured data",
+                    "• Quantitative and qualitative data"
                 ]
             },
             {
-                title: "Module 2: SQL & Data Management",
+                title: "Module 2: Data Collection and Data Sources",
                 icon: Database,
                 topics: [
-                    "Relational Database Concepts – tables, keys, relationships",
-                    "SQL Basics – SELECT, FROM, WHERE, ORDER BY, LIMIT",
-                    "SQL Joins – INNER, LEFT, RIGHT, FULL joins explained",
-                    "Aggregations & Grouping – GROUP BY, HAVING, aggregate functions",
-                    "Subqueries & Common Table Expressions (CTEs)",
-                    "Hands‑on: Querying a customer database to answer business questions"
+                    "Chapter 2.1: Where Data Comes From",
+                    "• Surveys, websites, applications, and business records",
+                    "Chapter 2.2: Introduction to Data Formats",
+                    "• Excel files & CSV files",
+                    "• Databases (basic overview)"
                 ]
             },
             {
-                title: "Module 3: Python/R & Visualisation (Power BI / Tableau)",
-                icon: PieChart,
+                title: "Module 3: Working with Data in Excel",
+                icon: FileText,
                 topics: [
-                    "Introduction to Python / R for Data Analysis (basics of Pandas/NumPy)",
-                    "Exploratory Data Analysis (EDA) – identifying trends & outliers",
-                    "Data Visualisation Principles – choosing the right chart",
-                    "Introduction to Power BI or Tableau – loading data & creating visuals",
-                    "Building Interactive Dashboards & Stories",
-                    "Hands‑on: Creating a marketing performance dashboard"
-                ],
-                note: "*Tool focus (Python/R, Power BI/Tableau) may vary as per institution and curriculum."
+                    "Chapter 3.1: Excel Basics for Data Analysis",
+                    "• Rows and columns",
+                    "• Sorting and filtering",
+                    "• Basic formulas",
+                    "Chapter 3.2: Cleaning Data",
+                    "• Removing duplicates",
+                    "• Handling missing values",
+                    "• Formatting data"
+                ]
             },
             {
-                title: "Projects: Case Studies & Capstone",
-                icon: Brain,
+                title: "Module 4: Data Visualization Basics",
+                icon: BarChart,
                 topics: [
-                    "Retail Analysis: Identifying top‑selling products and customer segments",
-                    "Finance: Understanding credit risk (exploratory analysis)",
-                    "Social Media: Analysing engagement metrics",
-                    "Capstone Project: End‑to‑end analysis from raw data to dashboard & insights",
-                    "Portfolio preparation & interview prep"
+                    "Chapter 4.1: Understanding Charts and Graphs",
+                    "• Bar charts, pie charts, and line charts",
+                    "Chapter 4.2: Creating Visual Reports",
+                    "• Choosing the right chart",
+                    "• Presenting insights clearly"
+                ]
+            },
+            {
+                title: "Module 5: Introduction to Data-Driven Decision Making",
+                icon: TrendingUp,
+                topics: [
+                    "Chapter 5.1: Finding Insights from Data",
+                    "• Identifying trends",
+                    "• Understanding patterns",
+                    "Chapter 5.2: Career Opportunities in Data Analytics",
+                    "• Data Analyst role & required skills",
+                    "• Learning roadmap & future steps"
                 ]
             }
         ]
@@ -97,6 +111,16 @@ export const dataAnalyticsData = {
             icon: Clock,
             label: "Course Type & Duration",
             value: "Data Analytics Course · Duration as per institution (often 4–6 months, classroom / online / blended)."
+        },
+        {
+            icon: Calendar,
+            label: "Course Starts",
+            value: "1 July 2026"
+        },
+        {
+            icon: Clock,
+            label: "Class Timing",
+            value: "5.30 PM to 6.30 PM"
         },
         {
             icon: Users,

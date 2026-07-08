@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
 import { initLogger, logError, logWarning } from './utils/logger'
+import { isChunkError } from './utils/versionCheck'
 
 // Initialize the unified telemetry logging system (with Sentry support)
 initLogger();
@@ -53,13 +54,8 @@ initLogger();
     // 2. Intercept unhandled promise rejections (thrown when a dynamic import promise rejects)
     window.addEventListener('unhandledrejection', (event) => {
         const error = event.reason || {};
-        const message = error.message || '';
-        if (
-            message.includes('Failed to fetch dynamically imported module') ||
-            message.includes('error loading dynamically imported module') ||
-            message.includes('Loading chunk')
-        ) {
-            const reloaded = handleChunkLoadError({ type: 'unhandledrejection', message }, error);
+        if (isChunkError(error)) {
+            const reloaded = handleChunkLoadError({ type: 'unhandledrejection', message: error.message }, error);
             if (reloaded) {
                 event.preventDefault();
             }

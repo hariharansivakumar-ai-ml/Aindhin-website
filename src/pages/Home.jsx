@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Hero from '../components/Hero';
+import HomeVideo from '../components/HomeVideo';
 import HomeCourseSlider from '../components/HomeCourseSlider';
 import CourseCard from '../components/CourseCard';
 import Testimonials from '../components/Testimonials';
@@ -53,6 +54,7 @@ const Home = () => {
     return (
         <div className="flex flex-col">
             <Hero />
+            {import.meta.env.VITE_SHOW_VIDEO === 'true' && <HomeVideo />}
             <HomeCourseSlider />
 
             {/* About Aindhin Section */}

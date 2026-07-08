@@ -118,8 +118,7 @@
     overflow: hidden;
 }
 
-.fs-module summary {
-    list-style: none;
+.fs-module-header {
     padding: 10px 14px;
     cursor: pointer;
     display: flex;
@@ -127,21 +126,26 @@
     align-items: center;
     font-size: 14px;
     font-weight: 600;
+    transition: background-color 0.2s;
 }
 
-.fs-module summary::-webkit-details-marker {
-    display: none;
+.fs-module-header:hover {
+    background-color: #f3f4f6;
 }
 
-.fs-module summary::after {
-    content: "▾";
-    font-size: 12px;
+.fs-module-header.active {
+    background-color: #eff6ff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.fs-module-toggle {
+    font-size: 16px;
     color: #9ca3af;
-    transition: transform .2s;
-}
-
-.fs-module[open] summary::after {
-    transform: rotate(-180deg);
+    font-weight: 600;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .fs-module-title {

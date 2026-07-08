@@ -1,9 +1,110 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { User, Tag, Calendar, ArrowLeft, Search, MessageSquare } from 'lucide-react';
+import { User, Tag, Calendar, ArrowLeft, Search, MessageSquare, BookOpen } from 'lucide-react';
 import {
     apiGetBlogBySlug, apiGetPublicBlogs, apiSubmitComment, apiGetApprovedComments
 } from '../utils/apiClient';
+
+const cleanBlogContent = (html) => {
+    if (!html) return '';
+    
+    // 1. Replace non-breaking spaces with standard spaces
+    let cleanHtml = html.replace(/&nbsp;|\u00A0/g, ' ');
+    
+    try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(cleanHtml, 'text/html');
+        
+        // Helper to recursively collect all text nodes under a parent element (excluding nested lists)
+        const getTextNodes = (element) => {
+            const nodes = [];
+            for (let node of element.childNodes) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    nodes.push(node);
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    const tagName = node.tagName.toUpperCase();
+                    if (tagName === 'UL' || tagName === 'OL') {
+                        continue; // Skip nested lists
+                    }
+                    nodes.push(...getTextNodes(node));
+                }
+            }
+            return nodes;
+        };
+
+        const listItems = doc.querySelectorAll('li');
+        listItems.forEach(li => {
+            // Get all text nodes for this list item
+            const textNodes = getTextNodes(li);
+            if (textNodes.length > 0) {
+                // Concatenate the node values to analyze the full text of the list item
+                const fullText = textNodes.map(n => n.nodeValue).join('');
+                
+                // Bullet regex that includes manual bullet point symbols, dashes, asterisks, and middot variants
+                const bulletRegex = /^([\s\t]*)([•\-\*\u2022\u2023\u2043\u2219\u25CB\u25CF\u25E6\u25A0\u25A1\u00B7\u2027])([\s\t]*)/;
+                const match = fullText.match(bulletRegex);
+                
+                if (match) {
+                    // Check if the user had tab/space indentation before or after the manual bullet
+                    const leadingIndentation = match[1] || '';
+                    const trailingSpacing = match[3] || '';
+                    if (leadingIndentation.includes('\t') || leadingIndentation.length >= 2 ||
+                        trailingSpacing.includes('\t') || trailingSpacing.length >= 2) {
+                        // If they indented, apply custom styling to shift this list item right on the frontend
+                        li.style.marginLeft = '2rem';
+                    }
+                    
+                    // We need to strip the prefix (match[0]) from the text nodes
+                    let charsToRemove = match[0].length;
+                    for (let node of textNodes) {
+                        if (charsToRemove <= 0) break;
+                        
+                        const val = node.nodeValue || '';
+                        if (val.length <= charsToRemove) {
+                            charsToRemove -= val.length;
+                            node.nodeValue = '';
+                        } else {
+                            node.nodeValue = val.substring(charsToRemove);
+                            charsToRemove = 0;
+                        }
+                    }
+                } else {
+                    // Fallback to strip any leading whitespace if no bullet was matched but whitespaces exist
+                    const leadingWhitespaceMatch = fullText.match(/^[\s\t]+/);
+                    if (leadingWhitespaceMatch) {
+                        let charsToRemove = leadingWhitespaceMatch[0].length;
+                        for (let node of textNodes) {
+                            if (charsToRemove <= 0) break;
+                            
+                            const val = node.nodeValue || '';
+                            if (val.length <= charsToRemove) {
+                                charsToRemove -= val.length;
+                                node.nodeValue = '';
+                            } else {
+                                node.nodeValue = val.substring(charsToRemove);
+                                charsToRemove = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            const clone = li.cloneNode(true);
+            const nestedLists = clone.querySelectorAll('ul, ol');
+            nestedLists.forEach(nl => nl.remove());
+            const hasDirectContent = clone.textContent.trim().length > 0;
+            
+            if (!hasDirectContent && (li.querySelector('ul') || li.querySelector('ol'))) {
+                li.classList.add('empty-parent-li');
+            }
+        });
+        
+        return doc.body.innerHTML;
+    } catch (e) {
+        console.error('Error cleaning blog content:', e);
+        return cleanHtml;
+    }
+};
 
 const BlogDetail = () => {
     const { slug } = useParams();
@@ -16,6 +117,7 @@ const BlogDetail = () => {
 
     const [commentsList, setCommentsList] = useState([]);
     const [submitting, setSubmitting] = useState(false);
+    const [imgFailed, setImgFailed] = useState(false);
 
     const fetchComments = async (postId) => {
         try {
@@ -110,8 +212,8 @@ const BlogDetail = () => {
                             <div className="h-1 w-full bg-gradient-to-r from-primary via-blue-400 to-indigo-500" />
 
                             {/* Featured Image */}
-                            {blog.image_url && (
-                                <div className="overflow-hidden">
+                            {(blog.image_url || blog.image) && !imgFailed ? (
+                                <div className="overflow-hidden max-h-[460px] flex items-center justify-center bg-gray-50">
                                     <img
                                         src={blog.image_url || blog.image}
                                         alt={(() => {
@@ -128,8 +230,12 @@ const BlogDetail = () => {
                                             return alt || blog.title;
                                         })()}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                        onError={e => { e.target.style.display = 'none'; }}
+                                        onError={() => setImgFailed(true)}
                                     />
+                                </div>
+                            ) : (
+                                <div className="h-64 md:h-[300px] w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 border-b border-gray-100">
+                                    <BookOpen className="w-16 h-16 text-blue-200" />
                                 </div>
                             )}
 
@@ -192,10 +298,7 @@ const BlogDetail = () => {
                                                 if (desc && !body) body = desc;
                                             }
 
-                                            return (body || '')
-                                                .replace(/&nbsp;|\u00A0/g, ' ')
-                                                // Strip manual bullets from list items even if wrapped in tags like <p> or <span>
-                                                .replace(/(<li\b[^>]*>((\s*<[^>]+>\s*)*))\s*[•\-\*\u2022\u2023\u2043\u2219\u25CB\u25CF\u25E6\u25A0\u25A1]\s*/g, '$1');
+                                            return cleanBlogContent(body);
                                         })()
                                     }}
                                 />
@@ -459,13 +562,13 @@ const BlogDetail = () => {
                     color: #1f2937;
                     word-break: normal; 
                     overflow-wrap: break-word;
-                    white-space: normal;
+                    white-space: pre-wrap !important;
                 }
 
                 .blog-content * {
                     word-break: normal;
                     overflow-wrap: break-word;
-                    white-space: normal;
+                    white-space: pre-wrap !important;
                 }
 
                 .blog-content p {
@@ -497,7 +600,7 @@ const BlogDetail = () => {
                     padding-left: 1.5rem !important;
                 }
 
-                .blog-content li {
+                .blog-content ul li {
                     list-style-type: none !important;
                     display: block !important;
                     margin-bottom: 0.6rem;
@@ -505,6 +608,12 @@ const BlogDetail = () => {
                     padding-left: 1.5rem;
                 }
 
+                .blog-content ol li {
+                    display: list-item !important;
+                    list-style-type: decimal !important;
+                    margin-bottom: 0.6rem;
+                    padding-left: 0.5rem;
+                }
 
                 .blog-content ul li::before {
                     content: "";
@@ -515,6 +624,16 @@ const BlogDetail = () => {
                     height: 6px;
                     background-color: #155BAC; /* Primary blue */
                     border-radius: 50%;
+                }
+
+                .blog-content li.empty-parent-li {
+                    padding-left: 0 !important;
+                    margin-bottom: 0 !important;
+                    list-style-type: none !important;
+                }
+
+                .blog-content li.empty-parent-li::before {
+                    content: none !important;
                 }
 
 

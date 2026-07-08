@@ -52,6 +52,8 @@ const cardVariant = {
 
 const BlogCard = ({ post }) => {
     const navigate = useNavigate();
+    const [imgFailed, setImgFailed] = useState(false);
+
     return (
         <motion.article
             variants={cardVariant}
@@ -64,7 +66,7 @@ const BlogCard = ({ post }) => {
         >
             {/* Image section */}
             <div className="relative h-auto sm:h-56 overflow-hidden bg-gray-50 shrink-0">
-                {(post.image_url || post.image) ? (
+                {(post.image_url || post.image) && !imgFailed ? (
                     <img
                         src={post.image_url || post.image}
                         alt={(() => {
@@ -81,10 +83,10 @@ const BlogCard = ({ post }) => {
                             return alt || post.title;
                         })()}
                         className="w-full h-auto sm:h-full object-contain sm:object-cover group-hover:scale-105 transition-transform duration-700"
-                        onError={e => { e.target.style.display = 'none'; }}
+                        onError={() => setImgFailed(true)}
                     />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
+                    <div className="w-full h-56 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
                         <BookOpen className="w-12 h-12 text-blue-200" />
                     </div>
                 )}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { logError, logWarning } from '../utils/logger';
 import { RefreshCw, AlertTriangle, Home } from 'lucide-react';
-import { checkVersionAndRecover } from '../utils/versionCheck';
+import { checkVersionAndRecover, isChunkError } from '../utils/versionCheck';
 
 /**
  * RecoveryBoundary is a high-fidelity Error Boundary component that intercepts
@@ -25,16 +25,8 @@ class RecoveryBoundary extends React.Component {
       extra: { componentStack: errorInfo?.componentStack }
     });
 
-    // Check if the error is a chunk / asset loading failure
-    const errorMessage = error?.message || '';
-    const isChunkLoadError =
-      errorMessage.includes('Failed to fetch') ||
-      errorMessage.includes('Loading chunk') ||
-      errorMessage.includes('imported module') ||
-      errorMessage.includes('loading dynamically') ||
-      error.name === 'ChunkLoadError';
-
-    if (isChunkLoadError) {
+    // Check if the error is a chunk / asset loading failure using the unified helper
+    if (isChunkError(error)) {
       console.warn('[Recovery] Chunk loading failure caught by RecoveryBoundary. Checking for build version updates...');
       checkVersionAndRecover(() => {
         logWarning('Persistent chunk load failure caught, but no version mismatch found. Displaying fallback UI.', {
@@ -62,10 +54,7 @@ class RecoveryBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      const isChunkError = this.state.error?.message?.includes('Failed to fetch') ||
-        this.state.error?.message?.includes('Loading chunk') ||
-        this.state.error?.message?.includes('imported module') ||
-        this.state.error?.message?.includes('loading dynamically');
+      const isChunkLoadError = isChunkError(this.state.error);
 
       return (
         <div className="min-h-[80vh] w-full flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -78,12 +67,12 @@ class RecoveryBoundary extends React.Component {
 
             {/* Error Title */}
             <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
-              {isChunkError ? 'New Update Available!' : 'Something Went Wrong'}
+              {isChunkLoadError ? 'New Update Available!' : 'Something Went Wrong'}
             </h1>
 
             {/* Error Description */}
             <p className="text-slate-500 leading-relaxed mb-8 max-w-md text-sm md:text-base">
-              {isChunkError 
+              {isChunkLoadError 
                 ? 'We launched a new version of the platform! To load the latest content and active campaign features, please refresh the page.'
                 : 'A rendering or state failure occurred while loading this section. Our team has been notified, and we can attempt to restore your session.'
               }

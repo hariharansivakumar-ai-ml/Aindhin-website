@@ -273,7 +273,7 @@ export default function Chatbot() {
             <button
                 id="chatbot-toggle-button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 bg-gradient-to-r from-primary to-main ${
+                className={`fixed bottom-6 right-6 z-[10000] w-14 h-14 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 bg-gradient-to-r from-primary to-main ${
                     isOpen ? 'rotate-90' : ''
                 }`}
                 aria-label="Toggle chat assistant"
@@ -297,7 +297,7 @@ export default function Chatbot() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 50 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="fixed bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[380px] h-[480px] max-h-[calc(100vh-230px)] bg-white rounded-[24px] border border-gray-100 shadow-[0_20px_50px_rgba(21,91,172,0.15)] flex flex-col overflow-hidden font-inter"
+                        className="fixed bottom-24 right-4 sm:right-6 z-[10000] w-[calc(100vw-32px)] sm:w-[380px] h-[480px] max-h-[calc(100vh-260px)] bg-white rounded-[24px] border border-gray-100 shadow-[0_20px_50px_rgba(21,91,172,0.15)] flex flex-col overflow-hidden font-inter"
                     >
                         {/* Header Section */}
                         <div className="bg-gradient-to-r from-primary to-main px-5 py-4 text-white flex items-center justify-between shadow-md">

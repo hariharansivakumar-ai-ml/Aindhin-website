@@ -54,6 +54,20 @@ const CorporateCourses = () => {
             externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8"
         },
         {
+            id: 5,
+            category: 'ai',
+            title: "Data Analytics",
+            image: dataAnalystImg,
+            skills: "Data Analytics, Excel Basics, Data Cleaning, Charts & Visualization, Decision Making",
+            students: 240,
+            rating: 4.8,
+            reviews: 115,
+            level: "Beginner",
+            duration: "12 weeks",
+            link: "/data-analytics",
+            externalLink: "https://user.aindhin.com/course/AD-data-analytics"
+        },
+        {
             id: 8,
             category: 'marketing',
             title: "Digital Marketing – From Basics to Growth Campaigns",

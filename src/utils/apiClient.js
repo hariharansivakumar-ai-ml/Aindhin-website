@@ -101,6 +101,14 @@ export const apiDeleteBlog = async (id) => {
     return data;
 };
 
+// --- Courses ---
+export const apiGetCourses = async (status = null) => {
+    const endpoint = status ? `/courses?status=${status}` : '/courses';
+    const res = await apiFetch(endpoint);
+    if (!res.ok) throw new Error('Failed to fetch courses');
+    return res.json();
+};
+
 // --- Image Upload ---
 const convertToWebP = (file) => {
     return new Promise((resolve, reject) => {

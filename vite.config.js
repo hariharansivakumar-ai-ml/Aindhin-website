@@ -26,12 +26,23 @@ function buildVersionPlugin() {
       if (!fs.existsSync(distDir)) {
         fs.mkdirSync(distDir, { recursive: true })
       }
+      
+      let entryFile = ''
+      const assetsDir = path.join(distDir, 'assets')
+      if (fs.existsSync(assetsDir)) {
+        const files = fs.readdirSync(assetsDir)
+        const indexFile = files.find(f => f.startsWith('index-') && f.endsWith('.js'))
+        if (indexFile) {
+          entryFile = `/assets/${indexFile}`
+        }
+      }
+
       fs.writeFileSync(
         path.join(distDir, 'version.json'),
-        JSON.stringify({ version }, null, 2),
+        JSON.stringify({ version, entry: entryFile }, null, 2),
         'utf-8'
       )
-      console.log(`[Version Plugin] version.json written with version: ${version}`)
+      console.log(`[Version Plugin] version.json written with version: ${version} and entry: ${entryFile}`)
     }
   }
 }
@@ -43,11 +54,13 @@ export default defineConfig(({ mode }) => {
     const backendUrl = env.VITE_API_URL || 'https://api2.aindhin.com/api'
     
     // Extract backend origin (e.g. http://localhost:5000 or https://api2.aindhin.com)
-    let backendOrigin = 'https://api2.aindhin.com'
-    try {
-        backendOrigin = new URL(backendUrl).origin
-    } catch (e) {
-        console.error('[Vite Config] Invalid VITE_API_URL:', backendUrl)
+    let backendOrigin = 'http://localhost:5000'
+    if (backendUrl && backendUrl.startsWith('http')) {
+        try {
+            backendOrigin = new URL(backendUrl).origin
+        } catch (e) {
+            console.error('[Vite Config] Invalid VITE_API_URL:', backendUrl)
+        }
     }
 
     return {

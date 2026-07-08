@@ -27,13 +27,14 @@
 
 # Prevent the server from being confused by missing assets
 <IfModule mod_headers.c>
-  <FilesMatch "\.(js|css|webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|otf|json)$">
+  # Cache static assets for 1 year (immutable) - excluding version.json and HTML files
+  <FilesMatch "\.(js|css|webp|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|otf)$">
     Header set Cache-Control "max-age=31536000, public, immutable"
     Header set X-Content-Type-Options "nosniff"
   </FilesMatch>
 
-  # NEVER cache HTML files. This is critical for React apps.
-  <FilesMatch "\.(html|htm)$">
+  # NEVER cache HTML files or the version manifest. This ensures immediate post-deployment updates.
+  <FilesMatch "\.(html|htm)$|^version\.json$">
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
     Header set Pragma "no-cache"
     Header set Expires "0"

@@ -1,15 +1,48 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { apiGetCourses } from '../utils/apiClient';
+
+const staticRawCourses = [
+    { title: "Digital Marketing", date: "Starts: 06.06.2026" },
+    { title: "Data Analytics", date: "Starts: 01.07.2026" },
+    { title: "Artificial Intelligence", date: "Batch Completed - Next Batch Coming Soon" },
+    { title: "Cyber Security", date: "Batch Completed - Next Batch Coming Soon" },
+    { title: "Online Classes for KID'S", date: "Batch Completed - Next Batch Coming Soon" }
+];
 
 const CourseTicker = () => {
     const [isHovered, setIsHovered] = useState(false);
+    const [tickerCourses, setTickerCourses] = useState(staticRawCourses);
 
-    const rawCourses = [
-        { title: "Digital Marketing", date: "Starts: 06.06.2026" },
-        { title: "Artificial Intelligence", date: "Batch Completed - Next Batch Coming Soon" },
-        { title: "Cyber Security", date: "Batch Completed - Next Batch Coming Soon" },
-        { title: "Online Classes for KID'S", date: "Batch Completed - Next Batch Coming Soon" }
-    ];
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const data = await apiGetCourses();
+                if (data && data.length > 0) {
+                    const mapped = data.map(c => {
+                        let dateText = "Batch Completed - Next Batch Coming Soon";
+                        if (c.batch_status) {
+                            dateText = c.batch_status;
+                        } else if (c.publish_date) {
+                            const dateObj = new Date(c.publish_date);
+                            const day = String(dateObj.getDate()).padStart(2, '0');
+                            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            const year = dateObj.getFullYear();
+                            dateText = `Starts: ${day}.${month}.${year}`;
+                        }
+                        return {
+                            title: c.title,
+                            date: dateText
+                        };
+                    });
+                    setTickerCourses(mapped);
+                }
+            } catch (err) {
+                console.error("Failed to load courses for ticker from API:", err);
+            }
+        };
+        fetchCourses();
+    }, []);
 
     const formatCourseDate = (dateStr) => {
         if (!dateStr || !dateStr.startsWith("Starts: ")) {
@@ -41,7 +74,7 @@ const CourseTicker = () => {
         return dateStr;
     };
 
-    const courses = rawCourses.map(course => ({
+    const courses = tickerCourses.map(course => ({
         ...course,
         date: formatCourseDate(course.date)
     }));

@@ -9,7 +9,8 @@
 }
 
 html,
-body {
+body,
+#root {
   margin: 0;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -37,7 +38,7 @@ body {
 .blog-content * {
   word-break: normal !important;
   overflow-wrap: break-word !important;
-  white-space: normal !important;
+  white-space: pre-wrap !important;
 }
 
 @keyframes colorBlink {

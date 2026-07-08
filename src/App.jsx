@@ -88,7 +88,7 @@ function Layout() {
     };
 
     return (
-        <div className="min-h-screen bg-white flex flex-col w-full">
+        <div className="min-h-screen bg-white flex flex-col w-full overflow-x-hidden">
             <ScrollToTop />
             {!isAdminRoute && <Header />}
             <main className={`flex-grow w-full ${!isAdminRoute ? 'pt-[120px]' : ''}`}>
@@ -158,7 +158,7 @@ function Layout() {
             </main>
             {!isAdminRoute && <Footer />}
             {!isAdminRoute && <SubscribePopup />}
-            {!isAdminRoute && <Chatbot />}
+            {/* {!isAdminRoute && import.meta.env.VITE_SHOW_CHATBOT === 'true' && <Chatbot />} */}
         </div>
     );
 }
