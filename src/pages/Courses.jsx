@@ -14,6 +14,39 @@ import sqlImg from '../assets/sql.webp';
 import digitalMarketingImg from '../assets/digital_marketing_hero.webp';
 import cybersecurityImg from '../assets/cybersecurity.webp';
 import abacusImg from '../assets/abacus_course.webp';
+const staticRoutes = [
+    "/ai-machine-learning-from-basics-to-industry-applications",
+    "/data-analytics",
+    "/digital-marketing-from-basics-to-growth-campaigns",
+    "/cyber-security",
+    "/abacus-mental-math-masterclass",
+    "/tableau-data-visualization-business-intelligence",
+    "/sql-foundations-of-data-querying-databases",
+    "/power-bi-data-visualization-business-intelligence",
+    "/digital-marketing-strategy-ads-analytics",
+    "/python-certification",
+    "/java-certification",
+    "/b-a-economics-with-data-analytics",
+    "/b-sc-computer-science-with-ai-data-science",
+    "/bba-bachelor-of-business-administration",
+    "/b-com-computer-applications",
+    "/cloud-computing",
+    "/ai-and-machine-learning",
+    "/automation-and-productivity-tools",
+    "/full-stack-development",
+    "/digital-transformation",
+    "/ai-for-business",
+    "/future-skills-and-automation",
+    "/innovation-strategy",
+    "/the-people-manager",
+    "/strategic-decision-maker",
+    "/the-team-builder",
+    "/the-visionary-leader",
+    "/financially-savvy-leader",
+    "/the-effective-communicator",
+    "/the-operations-optimizer",
+    "/design-thinking"
+];
 
 const staticCourses = [
     {
@@ -257,12 +290,23 @@ const Courses = () => {
                                                     {course.students} students enrolled
                                                 </div>
                                             </div>
-                                            <Link
-                                                to={course.link}
-                                                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
-                                            >
-                                                Explore Course
-                                            </Link>
+                                            {staticRoutes.includes(course.link) ? (
+                                                <Link
+                                                    to={course.link}
+                                                    className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
+                                                >
+                                                    Explore Course
+                                                </Link>
+                                            ) : (
+                                                <a
+                                                    href={course.externalLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
+                                                >
+                                                    Explore Course
+                                                </a>
+                                            )}
                                         </>
                                     ) : (
                                         <div className="mt-4 px-6 py-3 bg-gray-50 rounded-2xl text-gray-400 font-bold text-sm">
