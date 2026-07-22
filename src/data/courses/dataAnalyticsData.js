@@ -33,7 +33,7 @@ export const dataAnalyticsData = {
             "Beginner‑friendly · Ideal for students & working professionals · 4.8 / 5 learner feedback"
         ],
         bgImage: DataHeroImg,
-        enrollLink: null // Based on original file which just had a "#top" link
+        enrollLink: "https://user.aindhin.com/course/AD-data-analytics"
     },
     about: [
         "This Data Analytics Course takes you from a beginner to a job‑ready analyst. You will start with the fundamentals of data handling using Excel and SQL, move into statistical analysis and programming with Python or R, and finally master data visualisation with Power BI or Tableau.",

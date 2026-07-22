@@ -838,7 +838,7 @@ const DigitalMarketingStrategyCourse = () => {
                   </li>
                 </ul>
 
-                <a href="#top" className="dm-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href="https://user.aindhin.com" target="_blank" rel="noopener noreferrer" className="dm-cta-btn">Enroll Now &amp; Start Learning</a>
               </Section>
             </aside>
 

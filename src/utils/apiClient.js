@@ -109,6 +109,18 @@ export const apiGetCourses = async (status = null) => {
     return res.json();
 };
 
+export const apiGetAssignedCourses = async () => {
+    const apiKey = import.meta.env.VITE_AINDHIN_PUBLIC_KEY || 'AINDHIN_PUBLIC_KEY_123';
+    const res = await fetch('https://user.aindhin.com/api/users/public/assigned-courses/', {
+        headers: {
+            'X-API-Key': apiKey
+        }
+    });
+    if (!res.ok) throw new Error('Failed to fetch assigned courses');
+    return res.json();
+};
+
+
 // --- Image Upload ---
 const convertToWebP = (file) => {
     return new Promise((resolve, reject) => {
@@ -241,5 +253,31 @@ export const apiCreateSubscriber = async (subscriberData) => {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || data.error || 'Failed to submit form');
+    return data;
+};
+
+// --- Enquiries ---
+export const apiGetAllEnquiries = async () => {
+    const res = await apiFetch('/enquiries');
+    if (!res.ok) throw new Error('Failed to fetch enquiries');
+    return res.json();
+};
+
+export const apiDeleteEnquiry = async (enquiryId) => {
+    const res = await apiFetch(`/enquiries/${enquiryId}`, {
+        method: 'DELETE'
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || data.error || 'Failed to delete enquiry');
+    return data;
+};
+
+export const apiSubmitEnquiry = async (enquiryData) => {
+    const res = await apiFetch('/enquiries', {
+        method: 'POST',
+        body: JSON.stringify(enquiryData)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || data.error || 'Failed to submit enquiry');
     return data;
 };

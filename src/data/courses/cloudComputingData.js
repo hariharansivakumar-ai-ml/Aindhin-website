@@ -29,7 +29,7 @@ export const cloudComputingData = {
             "Beginner‑friendly · Ideal for students & working professionals · 4.6 / 5 learner feedback"
         ],
         bgImage: CloudHeroImg,
-        enrollLink: null // Using #top fallback based on original
+        enrollLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8"
     },
     about: [
         "This Cloud Computing Course introduces you to the core concepts, services and architectures that power modern cloud platforms. You will understand how public, private and hybrid clouds work, and how leading providers like AWS, Azure and Google Cloud deliver compute, storage, networking and security services.",

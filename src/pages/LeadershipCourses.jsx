@@ -126,7 +126,7 @@ const LeadershipCourses = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredCourses.map((course, index) => (
                         <article key={index} className="bg-white rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.06)] flex flex-col border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
-                            <div className="relative w-full aspect-[16/7] overflow-hidden">
+                            <div className="relative w-full aspect-[16/9] overflow-hidden">
                                 <img
                                     src={course.image}
                                     alt={course.title}
@@ -142,7 +142,7 @@ const LeadershipCourses = () => {
                                 </h3>
 
                                 <div className="space-y-2.5 mb-4 flex-1">
-                                    <p className="text-[13px] text-gray-500 leading-relaxed">
+                                    <p className="text-[13px] text-gray-500 leading-relaxed line-clamp-3">
                                         <strong className="text-secondary font-bold">Skills you'll gain:</strong> {course.skills}
                                     </p>
 

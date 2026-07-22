@@ -4,83 +4,135 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
 import { initLogger, logError, logWarning } from './utils/logger'
-import { isChunkError } from './utils/versionCheck'
+import {
+  checkVersionAndRecover,
+  isChunkError,
+  clearReloadCooldown,
+} from './utils/versionCheck'
 
 // Initialize the unified telemetry logging system (with Sentry support)
 initLogger();
 
-// Gracefully handle chunk loading & dynamic import errors (e.g., from fresh production deployments)
-(function() {
-    const handleChunkLoadError = (details, rawError) => {
-        logWarning('Global error handler caught chunk/module load failure', {
-            tags: { type: 'chunk_failure_interception' },
-            extra: { details, rawError: rawError?.message || rawError }
+// Clear the reload cooldown on a successful full-page load.
+// This resets the circuit breaker so the NEXT deployment can trigger a fresh recovery.
+// We wait for the window 'load' event to ensure all chunks have actually loaded
+// successfully before clearing the flag.
+window.addEventListener('load', () => {
+  clearReloadCooldown();
+}, { once: true });
+
+/**
+ * Global chunk/module load failure handler.
+ *
+ * Design decisions:
+ *
+ * 1. DEBOUNCE (100ms): safeLazy's retryImport runs before this handler can
+ *    check the version. The 100ms delay gives safeLazy time to self-heal
+ *    the import on a transient network blip, before we fire an async version
+ *    check that might trigger a full-page reload unnecessarily.
+ *
+ * 2. DEDUPLICATION FLAG: safeLazy sets window.__aindhin_chunkHandled when it
+ *    takes ownership of a chunk error. If the flag is fresh (<200ms old), we
+ *    skip calling checkVersionAndRecover here to avoid two parallel calls
+ *    competing for the same reload decision.
+ *
+ * 3. IN-PROGRESS GUARD: a simple boolean prevents re-entrant calls when multiple
+ *    chunk errors fire simultaneously (e.g., multiple lazy routes in a Suspense tree).
+ */
+(function installGlobalChunkHandlers() {
+  let versionCheckInProgress = false;
+
+  /**
+   * Returns true if safeLazy has already taken ownership of this error
+   * within the last 200ms — prevents double-firing.
+   */
+  const isSafeLazyHandling = () => {
+    try {
+      const ts = window.__aindhin_chunkHandled;
+      return typeof ts === 'number' && (Date.now() - ts) < 200;
+    } catch {
+      return false;
+    }
+  };
+
+  /**
+   * Core handler — debounced 100ms to let safeLazy self-heal first.
+   */
+  const handleChunkLoadError = (source, rawError) => {
+    setTimeout(async () => {
+      // Skip if safeLazy already handled this exact error
+      if (isSafeLazyHandling()) {
+        logWarning(`Global handler: chunk error from "${source}" already handled by safeLazy — skipping.`);
+        return;
+      }
+
+      // Skip if a version check is already running
+      if (versionCheckInProgress) {
+        logWarning(`Global handler: version check already in progress — skipping duplicate from "${source}".`);
+        return;
+      }
+
+      logWarning(`Global error handler: chunk/module load failure intercepted from "${source}".`, {
+        tags:  { type: 'chunk_failure_interception', source },
+        extra: { rawError: rawError?.message || String(rawError) },
+      });
+
+      versionCheckInProgress = true;
+      try {
+        await checkVersionAndRecover(() => {
+          logWarning(
+            `Global handler: checkVersionAndRecover found no version mismatch after "${source}". ` +
+            'RecoveryBoundary will handle the UI fallback.',
+            { extra: { source } }
+          );
         });
-        
-        try {
-            const now = Date.now();
-            const lastReload = localStorage.getItem('aindhin_chunk_reload');
-            
-            // Limit automatic page refreshes to at most once per 15 seconds to avoid reload loops
-            if (!lastReload || (now - parseInt(lastReload, 10) > 15000)) {
-                localStorage.setItem('aindhin_chunk_reload', now.toString());
-                logWarning('Intercepted chunk error. Refreshing asset cache via page reload...', {
-                    extra: { targetUrl: window.location.href }
-                });
-                const url = new URL(window.location.href);
-                url.searchParams.set('t', now.toString());
-                window.location.replace(url.toString());
-                return true;
-            } else {
-                logError(new Error('Preload/chunk failure occurred again within 15s. Automatic reload aborted.'), {
-                    tags: { type: 'chunk_reload_loop_prevented' }
-                });
-                return false;
-            }
-        } catch (e) {
-            logError(e, { extra: { msg: 'Global interceptor reload failure' } });
-            return false;
-        }
-    };
+      } finally {
+        versionCheckInProgress = false;
+      }
+    }, 100); // 100ms debounce — gives safeLazy's retryImport() time to self-heal
+  };
 
-    // 1. Intercept Vite preload errors
-    window.addEventListener('vite:preloadError', (event) => {
-        const reloaded = handleChunkLoadError('vite:preloadError', event);
-        if (reloaded) {
-            event.preventDefault(); // Stop default browser console error only if we actually reload the page
-        }
-    });
+  // ── 1. Vite preload directive failures ──────────────────────────────────────
+  // Fires when Vite's <link rel="modulepreload"> cannot fetch a chunk
+  // (e.g., the old hash no longer exists after a fresh deployment).
+  window.addEventListener('vite:preloadError', (event) => {
+    handleChunkLoadError('vite:preloadError', event?.payload || event);
+    // Always prevent the default browser console error — we handle it above
+    event.preventDefault?.();
+  });
 
-    // 2. Intercept unhandled promise rejections (thrown when a dynamic import promise rejects)
-    window.addEventListener('unhandledrejection', (event) => {
-        const error = event.reason || {};
-        if (isChunkError(error)) {
-            const reloaded = handleChunkLoadError({ type: 'unhandledrejection', message: error.message }, error);
-            if (reloaded) {
-                event.preventDefault();
-            }
-        }
-    });
+  // ── 2. Unhandled promise rejections from dynamic import() ──────────────────
+  // Fires when React.lazy() / safeLazy's import promise rejects and nothing
+  // catches it at the Suspense boundary level yet.
+  window.addEventListener('unhandledrejection', (event) => {
+    const error = event.reason || {};
+    if (isChunkError(error)) {
+      handleChunkLoadError('unhandledrejection', error);
+      event.preventDefault();
+    }
+  });
 
-    // 3. Intercept general script/style asset loading errors
-    window.addEventListener('error', (event) => {
-        const target = event.target || {};
-        if (target.tagName === 'SCRIPT' || target.tagName === 'LINK') {
-            const url = target.src || target.href || '';
-            if (url.includes('/assets/')) {
-                const reloaded = handleChunkLoadError({ type: 'resourceLoadError', url }, event.error || new Error(`Resource load failed: ${url}`));
-                if (reloaded) {
-                    event.preventDefault();
-                }
-            }
-        }
-    }, true); // Use capture phase to catch resource load events
+  // ── 3. Script/stylesheet resource load errors ───────────────────────────────
+  // Catches <script src="…"> and <link href="…"> failures that don't surface
+  // as promise rejections (e.g., dynamically injected script tags).
+  window.addEventListener('error', (event) => {
+    const target = event.target || {};
+    if (target.tagName === 'SCRIPT' || target.tagName === 'LINK') {
+      const url = target.src || target.href || '';
+      if (url.includes('/assets/')) {
+        const syntheticError = event.error || new Error(`Resource load failed: ${url}`);
+        handleChunkLoadError(`resource:${target.tagName}`, syntheticError);
+        event.preventDefault?.();
+      }
+    }
+  }, true); // Capture phase — fires before bubbling, catches resource errors
+
 })();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <App />
-        </BrowserRouter>
-    </React.StrictMode>,
+  <React.StrictMode>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>,
 )

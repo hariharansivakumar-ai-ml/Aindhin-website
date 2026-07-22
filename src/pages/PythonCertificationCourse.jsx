@@ -844,7 +844,7 @@ const PythonCertificationCourse = () => {
                   </li>
                 </ul>
 
-                <a href="#top" className="py-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href="https://user.aindhin.com" target="_blank" rel="noopener noreferrer" className="py-cta-btn">Enroll Now &amp; Start Learning</a>
               </Section>
             </aside>
 

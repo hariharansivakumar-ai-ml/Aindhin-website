@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
+import EnquiryModal from '../components/EnquiryModal';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import comingSoonImg from '../assets/coming_soon.webp';
@@ -18,6 +19,8 @@ import { Gamepad2 } from 'lucide-react';
 
 const CorporateCourses = () => {
     const [searchParams] = useSearchParams();
+    const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
+    const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
 
     useEffect(() => {
         document.title = "Explore Job-Ready Online Certification Courses in India | Aindhin";
@@ -174,7 +177,7 @@ const CorporateCourses = () => {
                                 key={course.id}
                                 className="bg-white rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.06)] flex flex-col border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group"
                             >
-                                <div className="relative w-full aspect-[16/7] overflow-hidden">
+                                <div className="relative w-full aspect-[16/9] overflow-hidden">
                                     <img
                                         src={course.image}
                                         alt={course.title}
@@ -198,7 +201,7 @@ const CorporateCourses = () => {
                                     {!course.comingSoon ? (
                                         <>
                                             <div className="space-y-2.5 mb-4 flex-1">
-                                                <p className="text-[13px] text-gray-500 leading-relaxed">
+                                                <p className="text-[13px] text-gray-500 leading-relaxed line-clamp-3">
                                                     <strong className="text-secondary font-bold">Skills you'll gain:</strong> {course.skills}
                                                 </p>
 
@@ -211,10 +214,6 @@ const CorporateCourses = () => {
                                                     <span>•</span>
                                                     <span>{course.duration}</span>
                                                 </div>
-
-                                                <div className="text-[13px] font-bold text-primary bg-blue-50 px-4 py-1.5 rounded-full inline-block">
-                                                    {course.students} students enrolled
-                                                </div>
                                             </div>
                                             <Link
                                                 to={course.link}
@@ -224,9 +223,15 @@ const CorporateCourses = () => {
                                             </Link>
                                         </>
                                     ) : (
-                                        <div className="mt-4 px-6 py-3 bg-gray-50 rounded-2xl text-gray-400 font-bold text-sm">
-                                            Stay Tuned
-                                        </div>
+                                         <button 
+                                             onClick={() => {
+                                                 setSelectedCourseTitle(course.title);
+                                                 setIsEnquiryModalOpen(true);
+                                             }}
+                                             className="w-full text-center mt-4 px-6 py-3 bg-primary hover:bg-blue-700 text-white border-none rounded-xl font-bold text-sm cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-blue-200"
+                                         >
+                                             Registration Closed - Enquiry
+                                         </button>
                                     )}
                                 </div>
                             </motion.article>
@@ -256,6 +261,12 @@ const CorporateCourses = () => {
                         answer: "Companies enrolling multiple employees can benefit from tiered pricing, dedicated account management, and exclusive live workshops led by industry experts."
                     }
                 ]}
+            />
+
+            <EnquiryModal 
+                isOpen={isEnquiryModalOpen} 
+                onClose={() => setIsEnquiryModalOpen(false)} 
+                courseTitle={selectedCourseTitle} 
             />
         </section>
     );

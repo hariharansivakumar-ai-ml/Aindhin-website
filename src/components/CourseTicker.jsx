@@ -1,86 +1,86 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { apiGetCourses } from '../utils/apiClient';
+import { apiGetAssignedCourses } from '../utils/apiClient';
 
-const staticRawCourses = [
-    { title: "Digital Marketing", date: "Starts: 06.06.2026" },
-    { title: "Data Analytics", date: "Starts: 01.07.2026" },
-    { title: "Artificial Intelligence", date: "Batch Completed - Next Batch Coming Soon" },
-    { title: "Cyber Security", date: "Batch Completed - Next Batch Coming Soon" },
-    { title: "Online Classes for KID'S", date: "Batch Completed - Next Batch Coming Soon" }
-];
+const checkIfCourseCompleted = (c) => {
+    if (c.is_ended) return true;
+    if (c.course_start_date) {
+        const startTime = c.start_time || "00:00:00";
+        const courseDateTime = new Date(`${c.course_start_date}T${startTime}`);
+        if (!isNaN(courseDateTime.getTime())) {
+            return new Date() > courseDateTime;
+        }
+    }
+    return false;
+};
+
+const formatCourseDateAndTime = (dateStr, timeStr) => {
+    if (!dateStr) return '';
+    try {
+        const dateObj = new Date(dateStr);
+        if (isNaN(dateObj.getTime())) return dateStr;
+        const formattedDate = dateObj.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        
+        let formattedTime = '';
+        if (timeStr) {
+            const parts = timeStr.split(':');
+            if (parts.length >= 2) {
+                const hours = parseInt(parts[0], 10);
+                const minutes = parts[1];
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const formattedHours = hours % 12 || 12;
+                formattedTime = ` at ${formattedHours}:${minutes} ${ampm}`;
+            }
+        }
+        return `Starts: ${formattedDate}${formattedTime}`;
+    } catch (e) {
+        return `Starts: ${dateStr}`;
+    }
+};
 
 const CourseTicker = () => {
     const [isHovered, setIsHovered] = useState(false);
-    const [tickerCourses, setTickerCourses] = useState(staticRawCourses);
+    const [tickerCourses, setTickerCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const data = await apiGetCourses();
+                const data = await apiGetAssignedCourses();
                 if (data && data.length > 0) {
-                    const mapped = data.map(c => {
-                        let dateText = "Batch Completed - Next Batch Coming Soon";
-                        if (c.batch_status) {
-                            dateText = c.batch_status;
-                        } else if (c.publish_date) {
-                            const dateObj = new Date(c.publish_date);
-                            const day = String(dateObj.getDate()).padStart(2, '0');
-                            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                            const year = dateObj.getFullYear();
-                            dateText = `Starts: ${day}.${month}.${year}`;
-                        }
-                        return {
-                            title: c.title,
-                            date: dateText
-                        };
-                    });
+                    const activeCourses = data.filter(c => c.is_active && !c.is_deleted);
+                    // Filter: Only keep upcoming/non-completed courses
+                    const upcomingCourses = activeCourses.filter(c => !checkIfCourseCompleted(c));
+                    
+                    const mapped = upcomingCourses.map(c => ({
+                        title: c.title,
+                        date: formatCourseDateAndTime(c.course_start_date, c.start_time)
+                    }));
                     setTickerCourses(mapped);
                 }
             } catch (err) {
                 console.error("Failed to load courses for ticker from API:", err);
+            } finally {
+                setLoading(false);
             }
         };
         fetchCourses();
     }, []);
 
-    const formatCourseDate = (dateStr) => {
-        if (!dateStr || !dateStr.startsWith("Starts: ")) {
-            return dateStr;
-        }
+    if (loading || tickerCourses.length === 0) {
+        return null; // Do not show the top scroll bar if there are no new/upcoming courses
+    }
 
-        const datePart = dateStr.replace("Starts: ", "").trim();
-        const parts = datePart.split(".");
-        if (parts.length !== 3) {
-            return dateStr;
-        }
-
-        const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1; // JS Month is 0-indexed
-        const year = parseInt(parts[2], 10);
-
-        if (isNaN(day) || isNaN(month) || isNaN(year)) {
-            return dateStr;
-        }
-
-        const targetDate = new Date(year, month, day);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        if (targetDate < today) {
-            return "Batch Completed - Next Batch Coming Soon";
-        }
-
-        return dateStr;
-    };
-
-    const courses = tickerCourses.map(course => ({
-        ...course,
-        date: formatCourseDate(course.date)
-    }));
-
-    // Duplicate courses to create seamless infinite scroll
-    const tickerItems = [...courses, ...courses, ...courses, ...courses];
+    // Ensure we have enough items for continuous infinite scrolling
+    let tickerItems = [];
+    const repeatCount = Math.ceil(15 / tickerCourses.length);
+    for (let i = 0; i < repeatCount; i++) {
+        tickerItems = [...tickerItems, ...tickerCourses];
+    }
 
     return (
         <div 
@@ -98,7 +98,7 @@ const CourseTicker = () => {
                         x: {
                             repeat: Infinity,
                             repeatType: "loop",
-                            duration: 30, // Speed of the ticker
+                            duration: 35, // Speed of the ticker
                             ease: "linear",
                         },
                     }}

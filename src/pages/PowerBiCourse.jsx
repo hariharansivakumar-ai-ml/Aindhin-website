@@ -771,7 +771,7 @@ const PowerBiCourse = () => {
                   </li>
                 </ul>
 
-                <a href="#top" className="pb-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href="https://user.aindhin.com" target="_blank" rel="noopener noreferrer" className="pb-cta-btn">Enroll Now &amp; Start Learning</a>
               </Section>
             </aside>
 

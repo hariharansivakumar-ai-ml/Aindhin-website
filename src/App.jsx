@@ -31,6 +31,7 @@ const Media = safeLazy(() => import('./pages/Media'));
 const AdminComments = safeLazy(() => import('./pages/AdminComments'));
 const AdminSubscribers = safeLazy(() => import('./pages/AdminSubscribers'));
 const AdminAnalytics = safeLazy(() => import('./pages/AdminAnalytics'));
+const AdminEnquiries = safeLazy(() => import('./pages/AdminEnquiries'));
 
 // Course Pages
 const AiMlCourse = safeLazy(() => import('./pages/AiMlCourse'));
@@ -92,7 +93,7 @@ function Layout() {
             <ScrollToTop />
             {!isAdminRoute && <Header />}
             <main className={`flex-grow w-full ${!isAdminRoute ? 'pt-[120px]' : ''}`}>
-                <RecoveryBoundary>
+                <RecoveryBoundary key={location.pathname}>
                     <Suspense fallback={getFallback()}>
                         <Routes>
                             <Route path="/" element={<Home />} />
@@ -111,6 +112,7 @@ function Layout() {
                         <Route path="/wp-admin/media" element={<Media />} />
                         <Route path="/wp-admin/comments" element={<AdminComments />} />
                         <Route path="/wp-admin/subscribers" element={<AdminSubscribers />} />
+                        <Route path="/wp-admin/enquiries" element={<AdminEnquiries />} />
                         <Route path="/wp-admin/analytics" element={<AdminAnalytics />} />
                         <Route path="/our-courses" element={<Courses />} />
                         <Route path="/university-courses" element={<UniversityCourses />} />

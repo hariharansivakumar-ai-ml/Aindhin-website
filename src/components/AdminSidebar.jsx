@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, PlusCircle, Trash2, LogOut, Clock, BarChart2, Image, Menu, X, MessageSquare, Users, Activity } from 'lucide-react';
+import { LayoutDashboard, FileText, PlusCircle, Trash2, LogOut, Clock, BarChart2, Image, Menu, X, MessageSquare, Users, Activity, HelpCircle } from 'lucide-react';
 import { apiLogout } from '../utils/apiClient';
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
     { label: 'Media', icon: Image, path: '/wp-admin/media' },
     { label: 'Comments', icon: MessageSquare, path: '/wp-admin/comments' },
     { label: 'Subscribers', icon: Users, path: '/wp-admin/subscribers' },
+    { label: 'Enquiries', icon: HelpCircle, path: '/wp-admin/enquiries' },
     { label: 'Drafts', icon: Clock, path: '/wp-admin/drafts' },
     { label: 'Add New Blog', icon: PlusCircle, path: '/wp-admin/add-new' },
     { label: 'Trash', icon: Trash2, path: '/wp-admin/trash' },

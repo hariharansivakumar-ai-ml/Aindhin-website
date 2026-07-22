@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2 } from 'lucide-react';
+import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2, Cloud } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
-import { apiGetCourses } from '../utils/apiClient';
+import { apiGetAssignedCourses } from '../utils/apiClient';
+import EnquiryModal from '../components/EnquiryModal';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import comingSoonImg from '../assets/coming_soon.webp';
@@ -48,82 +49,82 @@ const staticRoutes = [
     "/design-thinking"
 ];
 
-const staticCourses = [
-    {
-        id: 1,
-        category: 'ai',
-        title: "AI & Machine Learning – From Basics to Industry Applications",
-        image: aiMlBasicsImg,
-        skills: "Machine Learning, Deep Learning, Python, Model Deployment, MLOps",
-        students: 320,
-        rating: 4.8,
-        reviews: 180,
-        level: "Beginner",
-        duration: "12 weeks",
-        link: "/ai-machine-learning-from-basics-to-industry-applications",
-        externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8"
-    },
-    {
-        id: 5,
-        category: 'ai',
-        title: "Data Analytics",
-        image: dataAnalystImg,
-        skills: "Data Analytics, Excel Basics, Data Cleaning, Charts & Visualization, Decision Making",
-        students: 240,
-        rating: 4.8,
-        reviews: 115,
-        level: "Beginner",
-        duration: "12 weeks",
-        link: "/data-analytics",
-        externalLink: "https://user.aindhin.com/course/AD-data-analytics"
-    },
-    {
-        id: 8,
-        category: 'marketing',
-        title: "Digital Marketing – From Basics to Growth Campaigns",
-        image: digitalMarketingImg,
-        skills: "SEO, SEM, Social Media, Email Marketing, Analytics, Growth Strategies",
-        students: 180,
-        rating: 4.6,
-        reviews: 95,
-        level: "Beginner",
-        duration: "10 weeks",
-        link: "/digital-marketing-from-basics-to-growth-campaigns",
-        externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6b037beb11b0c1ada8"
-    },
-    {
-        id: 15,
-        category: 'security',
-        title: "Cybersecurity – Protecting the Digital Frontier",
-        image: cybersecurityImg,
-        skills: "Network Security, Ethical Hacking, Threat Intelligence, Cryptography, Security Auditing",
-        students: 280,
-        rating: 4.9,
-        reviews: 140,
-        level: "Beginner",
-        duration: "14 weeks",
-        link: "/cyber-security",
-        externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6a037beb11b0c1ada8"
-    },
-    {
-        id: 20,
-        category: 'kids',
-        title: "Abacus & Mental Math Masterclass",
-        image: abacusImg,
-        skills: "Mental calculation, Concentration, Memory enhancement, Speed math",
-        students: 150,
-        rating: 4.9,
-        reviews: 110,
-        level: "Beginner",
-        duration: "12 weeks",
-        link: "/abacus-mental-math-masterclass",
-        externalLink: "https://user.aindhin.com/course/AD-abacus-mental-math"
+
+
+const mapCategory = (cat) => {
+    if (!cat) return 'all';
+    const normalized = cat.toLowerCase();
+    if (normalized.includes('digital marketing') || normalized.includes('marketing')) return 'marketing';
+    if (normalized.includes('data analytics') || normalized.includes('analytics') || normalized.includes('ai') || normalized.includes('machine learning')) return 'ai';
+    if (normalized.includes('kid') || normalized.includes('math') || normalized.includes('abacus')) return 'kids';
+    if (normalized.includes('cyber') || normalized.includes('security')) return 'security';
+    if (normalized.includes('cloud')) return 'cloud';
+    return 'all';
+};
+
+const getLocalLink = (title) => {
+    const titleLower = (title || '').toLowerCase();
+    if (titleLower.includes('aws cloud') || titleLower.includes('cloud computing')) {
+        return '/cloud-computing';
+    } else if (titleLower.includes('cyber security') || titleLower.includes('cybersecurity')) {
+        return '/cyber-security';
+    } else if (titleLower.includes('data analytics') || titleLower.includes('data analyst')) {
+        return '/data-analytics';
+    } else if (titleLower.includes('digital marketing')) {
+        return '/digital-marketing-from-basics-to-growth-campaigns';
+    } else if (titleLower.includes('kid') || titleLower.includes('abacus')) {
+        return '/abacus-mental-math-masterclass';
     }
-];
+    return '#';
+};
+
+const checkIfCourseCompleted = (c) => {
+    if (c.is_ended) return true;
+    if (c.course_start_date) {
+        const startTime = c.start_time || "00:00:00";
+        const courseDateTime = new Date(`${c.course_start_date}T${startTime}`);
+        if (!isNaN(courseDateTime.getTime())) {
+            return new Date() > courseDateTime;
+        }
+    }
+    return false;
+};
+
+const formatCourseDate = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return dateStr;
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    } catch (e) {
+        return dateStr;
+    }
+};
+
+const formatCourseTime = (timeStr) => {
+    if (!timeStr) return '';
+    try {
+        const parts = timeStr.split(':');
+        if (parts.length < 2) return timeStr;
+        const hours = parseInt(parts[0], 10);
+        const minutes = parts[1];
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        return `${formattedHours}:${minutes} ${ampm}`;
+    } catch (e) {
+        return timeStr;
+    }
+};
 
 const Courses = () => {
     const [searchParams] = useSearchParams();
-    const [coursesList, setCoursesList] = useState(staticCourses);
+    const [coursesList, setCoursesList] = useState([]);
+    const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
+    const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
 
     useEffect(() => {
         document.title = "Explore Job-Ready Online Certification Courses in India | Aindhin";
@@ -139,33 +140,48 @@ const Courses = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const data = await apiGetCourses();
+                const data = await apiGetAssignedCourses();
                 if (data && data.length > 0) {
-                    const mapped = data.map(c => {
+                    const activeCourses = data
+                        .filter(c => c.is_active && !c.is_deleted)
+                        .sort((a, b) => {
+                            const dateA = a.course_start_date ? new Date(a.course_start_date).getTime() : 0;
+                            const dateB = b.course_start_date ? new Date(b.course_start_date).getTime() : 0;
+                            return dateB - dateA; // descending: most recent date first
+                        });
+                    const mapped = activeCourses.map(c => {
                         let reviewsCount = 0;
-                        if (Array.isArray(c.reviews)) {
+                        if (typeof c.reviews_count === 'number') {
+                            reviewsCount = c.reviews_count;
+                        } else if (typeof c.reviews_count === 'string') {
+                            reviewsCount = parseInt(c.reviews_count) || 0;
+                        } else if (Array.isArray(c.reviews)) {
                             reviewsCount = c.reviews.length;
-                        } else if (c.reviews && typeof c.reviews === 'object') {
-                            reviewsCount = Object.keys(c.reviews).length;
-                        } else if (typeof c.reviews === 'number') {
-                            reviewsCount = c.reviews;
-                        } else if (typeof c.reviews === 'string') {
-                            reviewsCount = parseInt(c.reviews) || 0;
+                        }
+
+                        let imageUrl = comingSoonImg;
+                        if (c.image_url) {
+                            imageUrl = c.image_url.startsWith('http') 
+                                ? c.image_url 
+                                : `https://user.aindhin.com${c.image_url}`;
                         }
 
                         return {
                             id: c.id,
-                            category: c.category || 'all',
+                            category: mapCategory(c.category),
                             title: c.title,
-                            image: c.thumbnail || comingSoonImg,
-                            skills: c.tags || c.short_description || "Skills not specified",
-                            students: c.students_count || 120,
-                            rating: parseFloat(c.rating) || 4.7,
-                            reviews: reviewsCount || 50,
-                            level: c.level || "Beginner",
-                            duration: c.duration || "12 weeks",
-                            link: c.slug ? (c.slug.startsWith('/') ? c.slug : `/${c.slug}`) : '#',
-                            externalLink: c.slug ? (c.slug.startsWith('AD-') ? `https://user.aindhin.com/course/${c.slug}` : `https://user.aindhin.com/course/AD-${c.slug}`) : 'https://user.aindhin.com/our-courses'
+                            image: imageUrl,
+                            skills: c.description || c.about_course || "Skills not specified",
+                            students: c.total_enrolled || 120,
+                            rating: parseFloat(c.rating) || 5.0,
+                            reviews: reviewsCount,
+                            level: c.skill_level || "Beginner",
+                            duration: c.course_duration || "1 Hours",
+                            link: getLocalLink(c.title),
+                            externalLink: `https://user.aindhin.com/course/${c.id}`,
+                            startDate: c.course_start_date,
+                            startTime: c.start_time,
+                            isCompleted: checkIfCourseCompleted(c)
                         };
                     });
                     setCoursesList(mapped);
@@ -182,6 +198,7 @@ const Courses = () => {
         { id: 'ai', label: 'AI and Machine Learning', icon: <Brain size={18} /> },
         { id: 'marketing', label: 'Digital Marketing', icon: <Megaphone size={18} /> },
         { id: 'security', label: 'Cybersecurity', icon: <Monitor size={18} /> },
+        { id: 'cloud', label: 'Cloud Computing', icon: <Cloud size={18} /> },
         { id: 'kids', label: 'Kids Programs', icon: <Gamepad2 size={18} /> }
     ];
 
@@ -248,7 +265,7 @@ const Courses = () => {
                                 key={course.id}
                                 className="bg-white rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.06)] flex flex-col border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group"
                             >
-                                <div className="relative w-full aspect-[16/7] overflow-hidden">
+                                <div className="relative w-full aspect-[16/9] overflow-hidden">
                                     <img
                                         src={course.image}
                                         alt={course.title}
@@ -273,10 +290,10 @@ const Courses = () => {
                                         </a>
                                     </h3>
 
-                                    {!course.comingSoon ? (
+                                     {!course.comingSoon ? (
                                         <>
                                             <div className="space-y-2.5 mb-4 flex-1">
-                                                <p className="text-[13px] text-gray-500 leading-relaxed">
+                                                <p className="text-[13px] text-gray-500 leading-relaxed line-clamp-3">
                                                     <strong className="text-secondary font-bold">Skills you'll gain:</strong> {course.skills}
                                                 </p>
 
@@ -290,31 +307,46 @@ const Courses = () => {
                                                     <span>{course.duration}</span>
                                                 </div>
 
-                                                <div className="text-[13px] font-bold text-primary bg-blue-50 px-4 py-1.5 rounded-full inline-block">
-                                                    {course.students} students enrolled
-                                                </div>
+                                                {!course.isCompleted && course.startDate && (
+                                                    <div className="text-[13px] font-semibold text-primary bg-blue-50 px-4 py-1.5 rounded-full inline-block">
+                                                        Starts: {formatCourseDate(course.startDate)} {course.startTime && `at ${formatCourseTime(course.startTime)}`}
+                                                    </div>
+                                                )}
                                             </div>
-                                            {staticRoutes.includes(course.link) ? (
-                                                <Link
-                                                    to={course.link}
-                                                    className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
-                                                >
-                                                    Explore Course
-                                                </Link>
+
+                                            {!course.isCompleted ? (
+                                                staticRoutes.includes(course.link) ? (
+                                                    <Link
+                                                        to={course.link}
+                                                        className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
+                                                    >
+                                                        Explore Course
+                                                    </Link>
+                                                ) : (
+                                                    <a
+                                                        href={course.externalLink}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200 font-inter"
+                                                    >
+                                                        Explore Course
+                                                    </a>
+                                                )
                                             ) : (
-                                                <a
-                                                    href={course.externalLink}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
+                                                <button 
+                                                    onClick={() => {
+                                                        setSelectedCourseTitle(course.title);
+                                                        setIsEnquiryModalOpen(true);
+                                                    }}
+                                                    className="w-full text-center mt-4 px-6 py-3 bg-primary hover:bg-blue-700 text-white border-none rounded-xl font-bold text-sm cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-blue-200"
                                                 >
-                                                    Explore Course
-                                                </a>
+                                                    Registration Closed - Enquiry
+                                                </button>
                                             )}
                                         </>
                                     ) : (
-                                        <div className="mt-4 px-6 py-3 bg-gray-50 rounded-2xl text-gray-400 font-bold text-sm">
-                                            Stay Tuned
+                                        <div className="w-full text-center mt-4 px-6 py-3 bg-gray-50 rounded-2xl text-gray-400 font-bold text-sm">
+                                            Coming Soon
                                         </div>
                                     )}
                                 </div>
@@ -345,6 +377,12 @@ const Courses = () => {
                         answer: "Yes, we offer flexibility to our learners. If you feel another course better aligns with your career goals, our academic advisors can help you transition smoothly."
                     }
                 ]}
+            />
+
+            <EnquiryModal 
+                isOpen={isEnquiryModalOpen} 
+                onClose={() => setIsEnquiryModalOpen(false)} 
+                courseTitle={selectedCourseTitle} 
             />
         </section>
     );
