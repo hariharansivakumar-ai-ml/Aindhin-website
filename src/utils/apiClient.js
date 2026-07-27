@@ -22,6 +22,24 @@ export const apiFetch = async (endpoint, options = {}) => {
         headers,
     });
 
+    // Centralised fail-safe response.json() patch
+    const originalJson = response.json.bind(response);
+    response.json = async () => {
+        const cloned = response.clone();
+        try {
+            return await originalJson();
+        } catch (err) {
+            if (!response.ok) {
+                let text = '';
+                try {
+                    text = await cloned.text();
+                } catch {}
+                throw new Error(text.substring(0, 150) || `HTTP error ${response.status}`);
+            }
+            throw err;
+        }
+    };
+
     return response;
 };
 
