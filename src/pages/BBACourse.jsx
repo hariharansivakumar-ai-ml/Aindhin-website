@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
     Briefcase, TrendingUp, Users, Award,
-    Target, BarChart, Globe, DollarSign, BookOpen, Layers, Lightbulb, PieChart
+    Target, BarChart, Globe, IndianRupee, BookOpen, Layers, Lightbulb, PieChart
 } from 'lucide-react';
 import './BBACourse.css';
 import BBAHeroImg from '../assets/BBA_scaled.webp';
@@ -299,7 +299,7 @@ const BBACourse = () => {
                                 <p>Learn branding, digital marketing basics, sales management and customer relationship skills.</p>
                             </div>
                             <div className="fs-highlight-card">
-                                <div className="fs-highlight-icon"><DollarSign size={24} /></div>
+                                <div className="fs-highlight-icon"><IndianRupee size={24} /></div>
                                 <h3>Financial Literacy</h3>
                                 <p>Interpret financial statements, budgets and investment basics for better decision‑making.</p>
                             </div>

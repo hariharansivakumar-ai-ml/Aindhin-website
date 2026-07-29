@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Clock, Users, Target, Zap, Star, DollarSign, PieChart, BarChart2, ClipboardList, ShieldCheck, Scale, Briefcase, Map, TrendingUp } from 'lucide-react';
+import { Clock, Users, Target, Zap, Star, IndianRupee, PieChart, BarChart2, ClipboardList, ShieldCheck, Scale, Briefcase, Map, TrendingUp } from 'lucide-react';
 import './FinanciallySavvyLeaderCourse.css';
 
 // Import local images
@@ -99,7 +99,7 @@ const FinanciallySavvyLeaderCourse = () => {
                             <details className="fs-module" open>
                                 <summary>
                                     <div className="fs-module-title">
-                                        <span className="mr-2 flex items-center"><DollarSign className="w-5 h-5 text-blue-600" /></span>
+                                        <span className="mr-2 flex items-center"><IndianRupee className="w-5 h-5 text-blue-600" /></span>
                                         <span className="fs-module-label">Module 1</span>
                                         <span>Financial Fundamentals for Leaders</span>
                                     </div>

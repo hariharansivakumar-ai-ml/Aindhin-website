@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Users, Award, BookOpen, Target, Brain, ArrowUpRight } from 'lucide-react';
+import { USER_APP_URL } from '../utils/apiClient';
 import AbacusHeroImg from '../assets/abacus_course.webp';
 
 const Section = ({ children, className }) => (
@@ -63,7 +64,7 @@ const AbacusCourse = () => {
           </div>
           <div className="flex-shrink-0 w-full md:w-auto mt-6 md:mt-12">
             <a 
-                href="https://user.aindhin.com/course/AD-abacus-mental-math" 
+                href={`${USER_APP_URL}/course/AD-abacus-mental-math`} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-lg w-full md:w-auto animate-color-blink"
@@ -131,7 +132,7 @@ const AbacusCourse = () => {
                 </li>
               </ul>
               <a 
-                href="https://user.aindhin.com/course/AD-abacus-mental-math" 
+                href={`${USER_APP_URL}/course/AD-abacus-mental-math`} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="block w-full py-4 text-center rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-colors"

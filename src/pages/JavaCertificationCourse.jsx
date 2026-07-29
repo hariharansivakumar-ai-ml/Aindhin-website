@@ -4,6 +4,7 @@ import {
   Layout, Zap, Briefcase, Globe, Target, Rocket
 } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
+import { USER_APP_URL } from '../utils/apiClient';
 
 // Hero Image
 import heroImg from '../assets/java_hero.webp';
@@ -797,7 +798,7 @@ const JavaCertificationCourse = () => {
                   </li>
                 </ul>
 
-                <a href="https://user.aindhin.com" target="_blank" rel="noopener noreferrer" className="jv-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href={USER_APP_URL} target="_blank" rel="noopener noreferrer" className="jv-cta-btn">Enroll Now &amp; Start Learning</a>
               </Section>
             </aside>
 

@@ -15,10 +15,10 @@ const checkIfCourseCompleted = (c) => {
 };
 
 const formatCourseDateAndTime = (dateStr, timeStr) => {
-    if (!dateStr) return '';
+    if (!dateStr || dateStr.toLowerCase() === 'flexible') return 'Upcoming';
     try {
         const dateObj = new Date(dateStr);
-        if (isNaN(dateObj.getTime())) return dateStr;
+        if (isNaN(dateObj.getTime())) return dateStr.toLowerCase() === 'flexible' ? 'Upcoming' : `Starts: ${dateStr}`;
         const formattedDate = dateObj.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -38,7 +38,7 @@ const formatCourseDateAndTime = (dateStr, timeStr) => {
         }
         return `Starts: ${formattedDate}${formattedTime}`;
     } catch (e) {
-        return `Starts: ${dateStr}`;
+        return dateStr.toLowerCase() === 'flexible' ? 'Upcoming' : `Starts: ${dateStr}`;
     }
 };
 
@@ -53,8 +53,17 @@ const CourseTicker = () => {
                 const data = await apiGetAssignedCourses();
                 if (data && data.length > 0) {
                     const activeCourses = data.filter(c => c.is_active && !c.is_deleted);
-                    // Filter: Only keep upcoming/non-completed courses
-                    const upcomingCourses = activeCourses.filter(c => !checkIfCourseCompleted(c));
+                    // Filter & Sort: Only keep upcoming/non-completed courses ordered by soonest start date
+                    const upcomingCourses = activeCourses
+                        .filter(c => !checkIfCourseCompleted(c))
+                        .sort((a, b) => {
+                            const dateA = a.course_start_date ? new Date(a.course_start_date).getTime() : 0;
+                            const dateB = b.course_start_date ? new Date(b.course_start_date).getTime() : 0;
+                            if (dateA && dateB) return dateA - dateB;
+                            if (dateA && !dateB) return -1;
+                            if (!dateA && dateB) return 1;
+                            return (a.id || 0) - (b.id || 0);
+                        });
                     
                     const mapped = upcomingCourses.map(c => ({
                         title: c.title,

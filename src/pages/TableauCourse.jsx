@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, PieChart, Calculator, LayoutDashboard, BookOpen, Rocket, Briefcase, Target, Database, Lock } from 'lucide-react';
+import { USER_APP_URL } from '../utils/apiClient';
 
 // Hero Image
 import heroImg from '../assets/tableau_hero.webp';
@@ -773,7 +774,7 @@ const TableauCourse = () => {
                   </li>
                 </ul>
 
-                <a href="https://user.aindhin.com" target="_blank" rel="noopener noreferrer" className="tab-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href={USER_APP_URL} target="_blank" rel="noopener noreferrer" className="tab-cta-btn">Enroll Now &amp; Start Learning</a>
               </Section>
             </aside>
 

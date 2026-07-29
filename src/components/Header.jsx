@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, ChevronRight, Menu, X, LayoutGrid } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, X, LayoutGrid, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import CourseTicker from './CourseTicker';
+import CourseRegistrationModal from './CourseRegistrationModal';
+import { USER_APP_URL, apiGetPublicCategories } from '../utils/apiClient';
 
 import logo from '../assets/logo_aindhin.webp';
 
@@ -16,8 +18,35 @@ const Header = () => {
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileCoursesOpen, setIsMobileCoursesOpen] = useState(false);
+    const [isRegModalOpen, setIsRegModalOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [dynamicCategories, setDynamicCategories] = useState(() => {
+        try {
+            const cached = localStorage.getItem('aindhin_categories_cache');
+            return cached ? JSON.parse(cached) : [];
+        } catch (e) {
+            return [];
+        }
+    });
+    const [remainingSubmenuCount, setRemainingSubmenuCount] = useState(0);
     const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const data = await apiGetPublicCategories();
+                if (Array.isArray(data) && data.length > 0) {
+                    setDynamicCategories(data);
+                    try {
+                        localStorage.setItem('aindhin_categories_cache', JSON.stringify(data));
+                    } catch (e) {}
+                }
+            } catch (err) {
+                console.error("Failed to fetch public categories in Header:", err);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -62,18 +91,39 @@ const Header = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const getCategoryMeta = (name) => {
+        const n = (name || '').toLowerCase();
+        if (n.includes('ai') || n.includes('machine learning')) return { icon: '🤖', sub: 'Neural networks, chatbots, automation' };
+        if (n.includes('software') || n.includes('dev') || n.includes('web')) return { icon: '💻', sub: 'Web, mobile, and backend engineering' };
+        if (n.includes('data') || n.includes('analytic')) return { icon: '📊', sub: 'Data, dashboards, business insights' };
+        if (n.includes('marketing')) return { icon: '📣', sub: 'SEO, social media, paid campaigns' };
+        if (n.includes('cyber') || n.includes('security')) return { icon: '🛡️', sub: 'Network security, ethical hacking, defense' };
+        if (n.includes('cloud') || n.includes('aws')) return { icon: '☁️', sub: 'AWS, Azure, cloud deployment & DevOps' };
+        if (n.includes('kid') || n.includes('math') || n.includes('abacus')) return { icon: '🎮', sub: 'Interactive math, coding & foundation for kids' };
+        return { icon: '📚', sub: 'Professional certification and career upskilling' };
+    };
+
+    const certSubmenu = dynamicCategories.length > 0
+        ? dynamicCategories.map(c => {
+            const meta = getCategoryMeta(c.name);
+            return {
+                icon: meta.icon,
+                title: c.name,
+                sub: meta.sub,
+                path: `/our-courses/?tab=${encodeURIComponent(c.name.trim().toLowerCase())}`
+            };
+        })
+        : [
+            { icon: '📚', title: 'All Courses', sub: 'Explore our complete curriculum', path: '/our-courses' }
+        ];
+
     const categories = [
         {
             id: 'cert',
             icon: '📚',
             title: 'Certification Courses',
             sub: 'AI, Software, Data, Marketing',
-            submenu: [
-                { icon: '🤖', title: 'AI & Machine Learning', sub: 'Neural networks, chatbots, automation', path: '/our-courses/?tab=ai' },
-                { icon: '💻', title: 'Software Development', sub: 'Web, mobile, and backend engineering', path: '/our-courses/?tab=software' },
-                { icon: '📊', title: 'Data Science & Analytics', sub: 'Data, dashboards, business insights', path: '/our-courses/?tab=data' },
-                { icon: '📣', title: 'Digital Marketing', sub: 'SEO, social media, paid campaigns', path: '/our-courses/?tab=marketing' },
-            ]
+            submenu: certSubmenu
         },
         { icon: '🎓', title: 'University Courses', sub: 'UG & PG programs, degrees', path: '/university-courses' },
         { icon: '🏢', title: 'Corporate Courses', sub: 'Team training, L&D, corporate upskilling', path: '/corporate-courses' },
@@ -119,7 +169,26 @@ const Header = () => {
                         {isCategoryOpen && (
                             <div className="absolute top-[120%] left-0 w-[280px] bg-white rounded-2xl shadow-2xl p-2.5 z-50 animate-in fade-in slide-in-from-top-2">
                                 {categories.map((cat, idx) => (
-                                    <div key={idx} className="group relative">
+                                    <div 
+                                        key={idx} 
+                                        className="group relative"
+                                        onMouseEnter={(e) => {
+                                            if (cat.submenu && cat.submenu.length > 5) {
+                                                const container = e.currentTarget;
+                                                setTimeout(() => {
+                                                    const scrollBox = container.querySelector('.submenu-scroll-box');
+                                                    if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) {
+                                                        const { scrollTop, scrollHeight, clientHeight } = scrollBox;
+                                                        const scrollBottom = scrollHeight - scrollTop - clientHeight;
+                                                        const itemHeight = scrollHeight / cat.submenu.length;
+                                                        setRemainingSubmenuCount(Math.max(1, Math.round(scrollBottom / itemHeight)));
+                                                    } else {
+                                                        setRemainingSubmenuCount(Math.max(1, cat.submenu.length - 5));
+                                                    }
+                                                }, 30);
+                                            }
+                                        }}
+                                    >
                                         <Link
                                             to={cat.path || '#'}
                                             onClick={() => {
@@ -136,21 +205,41 @@ const Header = () => {
                                         </Link>
 
                                         {cat.submenu && (
-                                            <div className="absolute left-[100%] top-0 mt-[-10px] ml-2 w-[280px] bg-white rounded-2xl shadow-2xl p-2.5 hidden group-hover:block border border-gray-100 z-50 before:absolute before:-left-4 before:top-0 before:h-full before:w-4 before:content-['']">
-                                                {cat.submenu.map((sub, sIdx) => (
-                                                    <Link
-                                                        key={sIdx}
-                                                        to={sub.path}
-                                                        onClick={() => setIsCategoryOpen(false)}
-                                                        className="flex items-start gap-2.5 p-2.5 rounded-xl hover:bg-cyan-50 transition-all duration-200"
-                                                    >
-                                                        <div className="w-7.5 h-7.5 rounded-full bg-cyan-50 flex items-center justify-center text-base">{sub.icon}</div>
-                                                        <div className="flex flex-col gap-0.5">
-                                                            <span className="text-sm font-semibold text-secondary">{sub.title}</span>
-                                                            <span className="text-xs text-text">{sub.sub}</span>
-                                                        </div>
-                                                    </Link>
-                                                ))}
+                                            <div className="absolute left-[100%] top-0 mt-[-10px] ml-2 w-[300px] bg-white rounded-2xl shadow-2xl p-1.5 hidden group-hover:block border border-gray-100 z-[60] before:absolute before:-left-4 before:top-0 before:h-full before:w-4 before:content-['']">
+                                                <div 
+                                                    onScroll={(e) => {
+                                                        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+                                                        const scrollBottom = scrollHeight - scrollTop - clientHeight;
+                                                        if (scrollBottom < 15) {
+                                                            setRemainingSubmenuCount(0);
+                                                        } else {
+                                                            const itemHeight = scrollHeight / cat.submenu.length;
+                                                            setRemainingSubmenuCount(Math.max(1, Math.round(scrollBottom / itemHeight)));
+                                                        }
+                                                    }}
+                                                    className="submenu-scroll-box max-h-[360px] overflow-y-auto overscroll-contain pr-1 space-y-1 scrollbar-thin pb-4"
+                                                >
+                                                    {cat.submenu.map((sub, sIdx) => (
+                                                        <Link
+                                                            key={sIdx}
+                                                            to={sub.path}
+                                                            onClick={() => setIsCategoryOpen(false)}
+                                                            className="flex items-start gap-2.5 p-2.5 rounded-xl hover:bg-cyan-50 transition-all duration-200"
+                                                        >
+                                                            <div className="w-7.5 h-7.5 rounded-full bg-cyan-50 flex items-center justify-center text-base shrink-0">{sub.icon}</div>
+                                                            <div className="flex flex-col gap-0.5 min-w-0">
+                                                                <span className="text-sm font-semibold text-secondary truncate">{sub.title}</span>
+                                                                <span className="text-xs text-text line-clamp-2">{sub.sub}</span>
+                                                            </div>
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                                {cat.submenu.length > 5 && remainingSubmenuCount > 0 && (
+                                                    <div className="absolute bottom-1.5 left-1.5 right-1.5 py-2 px-3 bg-gradient-to-t from-white via-white/95 to-white/60 flex items-center justify-center gap-1.5 text-[13px] font-bold text-primary pointer-events-none rounded-b-xl border-t border-blue-50 shadow-[0_-4px_12px_rgba(255,255,255,0.9)] animate-pulse transition-all duration-200">
+                                                        <span>Scroll for more (+{remainingSubmenuCount} {remainingSubmenuCount === 1 ? 'topic' : 'topics'})</span>
+                                                        <ChevronDown className="w-4 h-4 animate-bounce shrink-0 text-primary" />
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>
@@ -180,8 +269,6 @@ const Header = () => {
                         </div>
                     </div>
 
-
-
                     <Link
                         to="/blog"
                         className="text-sm font-medium text-secondary hover:text-primary transition-colors"
@@ -192,10 +279,18 @@ const Header = () => {
                 </nav>
 
                 {/* Right Section: Login & Mobile Toggle */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <button
+                        type="button"
+                        onClick={() => setIsRegModalOpen(true)}
+                        className="hidden md:inline-flex items-center justify-center px-4.5 sm:px-5 py-2.5 rounded-full bg-blue-50/90 hover:bg-blue-100 text-blue-700 font-extrabold text-[14px] border border-blue-200 shadow-sm hover:shadow transition-all duration-200 gap-2"
+                    >
+                        <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
+                        Register Courses
+                    </button>
 
                     <a
-                        href="https://user.aindhin.com/"
+                        href={USER_APP_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white font-bold text-[15px] shadow-[0_8px_20px_rgba(37,99,235,0.45)] hover:scale-105 active:scale-95 transition-all duration-200"
@@ -247,8 +342,6 @@ const Header = () => {
                         )}
                     </div>
 
-
-
                     <Link
                         to="/blog"
                         onClick={() => setIsMobileMenuOpen(false)}
@@ -258,14 +351,25 @@ const Header = () => {
                     </Link>
                     <Link to="/contact-us" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-secondary">Contact Us</Link>
 
-                    <a href="https://user.aindhin.com/" target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="mt-4 text-center py-4 bg-primary text-white rounded-full font-bold shadow-lg">Login / Sign Up</a>
-
-
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            setIsRegModalOpen(true);
+                        }}
+                        className="mt-4 w-full py-3.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full font-extrabold text-base shadow-sm border border-blue-200 transition-colors flex items-center justify-center gap-2"
+                    >
+                        <Sparkles className="w-5 h-5 text-blue-600" /> Register Courses
+                    </button>
+                    <a href={USER_APP_URL} target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 text-center py-4 bg-primary text-white rounded-full font-bold shadow-lg">Login / Sign Up</a>
                 </div>
             </div>
 
             {/* Course Ticker rendered exactly below the header navigation */}
             <CourseTicker />
+
+            {/* Course Registration Modal Dialog */}
+            <CourseRegistrationModal isOpen={isRegModalOpen} onClose={() => setIsRegModalOpen(false)} />
         </header>
     );
 };

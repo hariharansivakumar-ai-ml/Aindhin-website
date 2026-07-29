@@ -21,6 +21,7 @@ import {
     BarChart, PieChart, Database, TrendingUp, Search, FileText, Globe, Server, CheckCircle,
     Clock, Users, Target, Briefcase, Award, Map, Brain, Calendar
 } from 'lucide-react';
+import { USER_APP_URL } from '../../utils/apiClient';
 
 export const dataAnalyticsData = {
     hero: {
@@ -33,7 +34,7 @@ export const dataAnalyticsData = {
             "Beginner‑friendly · Ideal for students & working professionals · 4.8 / 5 learner feedback"
         ],
         bgImage: DataHeroImg,
-        enrollLink: "https://user.aindhin.com/course/AD-data-analytics"
+        enrollLink: `${USER_APP_URL}/course/AD-data-analytics`
     },
     about: [
         "This Data Analytics Course takes you from a beginner to a job‑ready analyst. You will start with the fundamentals of data handling using Excel and SQL, move into statistical analysis and programming with Python or R, and finally master data visualisation with Power BI or Tableau.",

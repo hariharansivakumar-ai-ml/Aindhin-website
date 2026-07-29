@@ -1,6 +1,7 @@
 import { Clock, BarChart2, Users, Calendar, Award, Brain, Megaphone, Folder, Briefcase, Target, BookOpen, TrendingUp, Zap } from 'lucide-react';
 import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { USER_APP_URL } from '../utils/apiClient';
 
 // Hero Image
 import heroImg from '../assets/digital_marketing_strategy_hero.webp';
@@ -838,7 +839,7 @@ const DigitalMarketingStrategyCourse = () => {
                   </li>
                 </ul>
 
-                <a href="https://user.aindhin.com" target="_blank" rel="noopener noreferrer" className="dm-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href={USER_APP_URL} target="_blank" rel="noopener noreferrer" className="dm-cta-btn">Enroll Now &amp; Start Learning</a>
               </Section>
             </aside>
 

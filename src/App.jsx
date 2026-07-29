@@ -19,6 +19,7 @@ const Courses = safeLazy(() => import('./pages/Courses'));
 const ContactUs = safeLazy(() => import('./pages/ContactUs'));
 const DownloadApp = safeLazy(() => import('./pages/DownloadApp'));
 const Blogs = safeLazy(() => import('./pages/Blogs'));
+const CourseRegistration = safeLazy(() => import('./pages/CourseRegistration'));
 const AdminLogin = safeLazy(() => import('./pages/AdminLogin'));
 const AdminDashboard = safeLazy(() => import('./pages/AdminDashboard'));
 const AddBlogPost = safeLazy(() => import('./pages/AddBlogPost'));
@@ -32,6 +33,8 @@ const AdminComments = safeLazy(() => import('./pages/AdminComments'));
 const AdminSubscribers = safeLazy(() => import('./pages/AdminSubscribers'));
 const AdminAnalytics = safeLazy(() => import('./pages/AdminAnalytics'));
 const AdminEnquiries = safeLazy(() => import('./pages/AdminEnquiries'));
+const AdminCourses = safeLazy(() => import('./pages/AdminCourses'));
+const AdminEnrollments = safeLazy(() => import('./pages/AdminEnrollments'));
 
 // Course Pages
 const AiMlCourse = safeLazy(() => import('./pages/AiMlCourse'));
@@ -104,6 +107,8 @@ function Layout() {
                         <Route path="/blog/:slug" element={<BlogDetail />} />
                         <Route path="/wp-admin" element={<AdminLogin />} />
                         <Route path="/wp-admin/dashboard" element={<AdminDashboard />} />
+                        <Route path="/wp-admin/courses" element={<AdminCourses />} />
+                        <Route path="/wp-admin/enrollments" element={<AdminEnrollments />} />
                         <Route path="/wp-admin/add-new" element={<AddBlogPost />} />
                         <Route path="/wp-admin/all-blogs" element={<AllBlogs />} />
                         <Route path="/wp-admin/edit/:id" element={<AdminEditPost />} />
@@ -115,6 +120,8 @@ function Layout() {
                         <Route path="/wp-admin/enquiries" element={<AdminEnquiries />} />
                         <Route path="/wp-admin/analytics" element={<AdminAnalytics />} />
                         <Route path="/our-courses" element={<Courses />} />
+                        <Route path="/course-registration-form" element={<CourseRegistration />} />
+                        <Route path="/course-registration" element={<CourseRegistration />} />
                         <Route path="/university-courses" element={<UniversityCourses />} />
                         <Route path="/corporate-courses" element={<CorporateCourses />} />
                         <Route path="/leadership-courses" element={<LeadershipCourses />} />

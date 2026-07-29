@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, PlusCircle, Trash2, LogOut, Clock, BarChart2, Image, Menu, X, MessageSquare, Users, Activity, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, FileText, PlusCircle, Trash2, LogOut, Clock, BarChart2, Image, Menu, X, MessageSquare, Users, Activity, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
 import { apiLogout } from '../utils/apiClient';
 
 const navItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/wp-admin/dashboard' },
+    { label: 'Courses', icon: BookOpen, path: '/wp-admin/courses' },
+    { label: 'Enrollments', icon: GraduationCap, path: '/wp-admin/enrollments' },
     { label: 'All Blogs', icon: FileText, path: '/wp-admin/all-blogs' },
     { label: 'Analytics', icon: Activity, path: '/wp-admin/analytics' },
     { label: 'Media', icon: Image, path: '/wp-admin/media' },

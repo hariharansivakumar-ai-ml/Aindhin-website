@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Clock, BarChart2, Users, Calendar, Award, Database, Calculator, LayoutDashboard, Lock, Rocket, Briefcase, Target, BookOpen } from 'lucide-react';
+import { USER_APP_URL } from '../utils/apiClient';
 
 // Hero Image
 import heroImg from '../assets/power_bi_hero.webp';
@@ -771,7 +772,7 @@ const PowerBiCourse = () => {
                   </li>
                 </ul>
 
-                <a href="https://user.aindhin.com" target="_blank" rel="noopener noreferrer" className="pb-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href={USER_APP_URL} target="_blank" rel="noopener noreferrer" className="pb-cta-btn">Enroll Now &amp; Start Learning</a>
               </Section>
             </aside>
 

@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2, Cloud } from 'lucide-react';
+import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2, Cloud, Search, ChevronDown, Check, X } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
-import { apiGetAssignedCourses } from '../utils/apiClient';
+import { apiGetAssignedCourses, apiGetPublicCategories, USER_APP_URL, USER_API_URL } from '../utils/apiClient';
 import EnquiryModal from '../components/EnquiryModal';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
@@ -51,16 +51,6 @@ const staticRoutes = [
 
 
 
-const mapCategory = (cat) => {
-    if (!cat) return 'all';
-    const normalized = cat.toLowerCase();
-    if (normalized.includes('digital marketing') || normalized.includes('marketing')) return 'marketing';
-    if (normalized.includes('data analytics') || normalized.includes('analytics') || normalized.includes('ai') || normalized.includes('machine learning')) return 'ai';
-    if (normalized.includes('kid') || normalized.includes('math') || normalized.includes('abacus')) return 'kids';
-    if (normalized.includes('cyber') || normalized.includes('security')) return 'security';
-    if (normalized.includes('cloud')) return 'cloud';
-    return 'all';
-};
 
 const getLocalLink = (title) => {
     const titleLower = (title || '').toLowerCase();
@@ -91,17 +81,17 @@ const checkIfCourseCompleted = (c) => {
 };
 
 const formatCourseDate = (dateStr) => {
-    if (!dateStr) return '';
+    if (!dateStr || dateStr.toLowerCase() === 'flexible') return 'Upcoming';
     try {
         const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return dateStr;
+        if (isNaN(date.getTime())) return dateStr.toLowerCase() === 'flexible' ? 'Upcoming' : dateStr;
         return date.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
         });
     } catch (e) {
-        return dateStr;
+        return dateStr.toLowerCase() === 'flexible' ? 'Upcoming' : dateStr;
     }
 };
 
@@ -121,10 +111,31 @@ const formatCourseTime = (timeStr) => {
 };
 
 const Courses = () => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [coursesList, setCoursesList] = useState([]);
+    const [categoriesList, setCategoriesList] = useState(() => {
+        try {
+            const cached = localStorage.getItem('aindhin_categories_cache');
+            return cached ? JSON.parse(cached) : [];
+        } catch (e) {
+            return [];
+        }
+    });
     const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
     const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     useEffect(() => {
         document.title = "Explore Job-Ready Online Certification Courses in India | Aindhin";
@@ -138,16 +149,45 @@ const Courses = () => {
     const [activeTab, setActiveTab] = useState(initialTab);
 
     useEffect(() => {
-        const fetchCourses = async () => {
+        const tabFromUrl = searchParams.get('tab') || 'all';
+        setActiveTab(tabFromUrl);
+    }, [searchParams]);
+
+    useEffect(() => {
+        const fetchCoursesAndCategories = async () => {
             try {
+                const cats = await apiGetPublicCategories().catch(() => []);
+                if (Array.isArray(cats)) {
+                    setCategoriesList(cats);
+                    try {
+                        localStorage.setItem('aindhin_categories_cache', JSON.stringify(cats));
+                    } catch (e) {}
+                }
                 const data = await apiGetAssignedCourses();
                 if (data && data.length > 0) {
                     const activeCourses = data
                         .filter(c => c.is_active && !c.is_deleted)
                         .sort((a, b) => {
+                            const completedA = checkIfCourseCompleted(a);
+                            const completedB = checkIfCourseCompleted(b);
+
+                            // 1. Open/Upcoming courses appear before Closed/Completed courses
+                            if (!completedA && completedB) return -1;
+                            if (completedA && !completedB) return 1;
+
                             const dateA = a.course_start_date ? new Date(a.course_start_date).getTime() : 0;
                             const dateB = b.course_start_date ? new Date(b.course_start_date).getTime() : 0;
-                            return dateB - dateA; // descending: most recent date first
+
+                            if (!completedA) {
+                                // For upcoming courses: sort ascending (soonest starting date first)
+                                if (dateA && dateB) return dateA - dateB;
+                                if (dateA && !dateB) return -1;
+                                if (!dateA && dateB) return 1;
+                                return (a.id || 0) - (b.id || 0);
+                            } else {
+                                // For closed courses: sort descending (most recently closed first)
+                                return dateB - dateA;
+                            }
                         });
                     const mapped = activeCourses.map(c => {
                         let reviewsCount = 0;
@@ -163,12 +203,12 @@ const Courses = () => {
                         if (c.image_url) {
                             imageUrl = c.image_url.startsWith('http') 
                                 ? c.image_url 
-                                : `https://user.aindhin.com${c.image_url}`;
+                                : `${USER_API_URL}${c.image_url}`;
                         }
 
                         return {
                             id: c.id,
-                            category: mapCategory(c.category),
+                            category: (c.category || '').trim(),
                             title: c.title,
                             image: imageUrl,
                             skills: c.description || c.about_course || "Skills not specified",
@@ -178,7 +218,7 @@ const Courses = () => {
                             level: c.skill_level || "Beginner",
                             duration: c.course_duration || "1 Hours",
                             link: getLocalLink(c.title),
-                            externalLink: `https://user.aindhin.com/course/${c.id}`,
+                            externalLink: `${USER_APP_URL}/course/${c.encrypted_id || c.id}`,
                             startDate: c.course_start_date,
                             startTime: c.start_time,
                             isCompleted: checkIfCourseCompleted(c)
@@ -190,21 +230,97 @@ const Courses = () => {
                 console.error("Failed to load courses from API:", err);
             }
         };
-        fetchCourses();
+        fetchCoursesAndCategories();
     }, []);
+
+    const getTabIcon = (catName) => {
+        if (!catName || catName === 'all') return <LayoutGrid size={18} />;
+        const n = catName.toLowerCase();
+        if (n.includes('ai') || n.includes('machine learning') || n.includes('data') || n.includes('analytics')) return <Brain size={18} />;
+        if (n.includes('marketing') || n.includes('seo') || n.includes('campaign')) return <Megaphone size={18} />;
+        if (n.includes('cyber') || n.includes('security') || n.includes('software') || n.includes('dev') || n.includes('code')) return <Monitor size={18} />;
+        if (n.includes('cloud') || n.includes('aws') || n.includes('azure')) return <Cloud size={18} />;
+        if (n.includes('kid') || n.includes('math') || n.includes('abacus')) return <Gamepad2 size={18} />;
+        return <LayoutGrid size={18} />;
+    };
+
+    const allTabNames = new Set();
+    categoriesList.forEach(c => { if (c.name && c.name.trim()) allTabNames.add(c.name.trim()); });
+    coursesList.forEach(c => { if (c.category && c.category !== 'all') allTabNames.add(c.category); });
 
     const tabs = [
         { id: 'all', label: 'All Categories', icon: <LayoutGrid size={18} /> },
-        { id: 'ai', label: 'AI and Machine Learning', icon: <Brain size={18} /> },
-        { id: 'marketing', label: 'Digital Marketing', icon: <Megaphone size={18} /> },
-        { id: 'security', label: 'Cybersecurity', icon: <Monitor size={18} /> },
-        { id: 'cloud', label: 'Cloud Computing', icon: <Cloud size={18} /> },
-        { id: 'kids', label: 'Kids Programs', icon: <Gamepad2 size={18} /> }
+        ...Array.from(allTabNames).map(name => ({
+            id: name.toLowerCase(),
+            label: name,
+            icon: getTabIcon(name)
+        }))
     ];
 
-    const filteredCourses = activeTab === 'all'
-        ? coursesList.filter(c => !c.comingSoon)
-        : coursesList.filter(c => c.category === activeTab);
+    const isTabActive = (tabId, active) => {
+        if (tabId === 'all' && (!active || active === 'all')) return true;
+        if (tabId === 'all') return false;
+        if (!active || active === 'all') return false;
+        const idLower = tabId.toLowerCase().trim();
+        const activeLower = active.toLowerCase().trim();
+        if (idLower === activeLower) return true;
+        if (activeLower === 'ai' && (idLower.includes('ai') || idLower.includes('machine learning') || idLower.includes('data') || idLower.includes('analytics'))) return true;
+        if (activeLower === 'software' && (idLower.includes('software') || idLower.includes('dev') || idLower.includes('web') || idLower.includes('mobile'))) return true;
+        if (activeLower === 'data' && (idLower.includes('data') || idLower.includes('analytic') || idLower.includes('tableau') || idLower.includes('sql') || idLower.includes('power bi'))) return true;
+        if (activeLower === 'marketing' && (idLower.includes('marketing') || idLower.includes('seo'))) return true;
+        if (activeLower === 'security' && (idLower.includes('cyber') || idLower.includes('security'))) return true;
+        if (activeLower === 'cloud' && (idLower.includes('cloud') || idLower.includes('aws') || idLower.includes('azure'))) return true;
+        if (activeLower === 'kids' && (idLower.includes('kid') || idLower.includes('math') || idLower.includes('abacus'))) return true;
+        return idLower.includes(activeLower) || activeLower.includes(idLower);
+    };
+
+    const handleTabClick = (tabId) => {
+        setActiveTab(tabId);
+        const newParams = new URLSearchParams(searchParams);
+        if (tabId === 'all') {
+            newParams.delete('tab');
+        } else {
+            newParams.set('tab', tabId);
+        }
+        setSearchParams(newParams, { replace: true });
+    };
+
+    const matchesTab = (courseCat, tabId) => {
+        if (!tabId || tabId === 'all') return true;
+        if (!courseCat) return false;
+        const catLower = courseCat.toLowerCase().trim();
+        const tabLower = tabId.toLowerCase().trim();
+        if (catLower === tabLower) return true;
+
+        if (tabLower === 'ai' && (catLower.includes('ai') || catLower.includes('machine learning') || catLower.includes('data') || catLower.includes('analytics'))) return true;
+        if (tabLower === 'software' && (catLower.includes('software') || catLower.includes('dev') || catLower.includes('web') || catLower.includes('mobile') || catLower.includes('engineer'))) return true;
+        if (tabLower === 'data' && (catLower.includes('data') || catLower.includes('analytic') || catLower.includes('tableau') || catLower.includes('sql') || catLower.includes('power bi'))) return true;
+        if (tabLower === 'marketing' && (catLower.includes('marketing') || catLower.includes('seo') || catLower.includes('growth') || catLower.includes('campaign'))) return true;
+        if (tabLower === 'security' && (catLower.includes('cyber') || catLower.includes('security') || catLower.includes('hack') || catLower.includes('network'))) return true;
+        if (tabLower === 'cloud' && (catLower.includes('cloud') || catLower.includes('aws') || catLower.includes('azure') || catLower.includes('devops'))) return true;
+        if (tabLower === 'kids' && (catLower.includes('kid') || catLower.includes('math') || catLower.includes('abacus'))) return true;
+
+        return catLower.includes(tabLower) || tabLower.includes(catLower);
+    };
+
+    const selectedTabObj = tabs.find(t => isTabActive(t.id, activeTab)) || tabs[0] || { label: 'All Categories', icon: <LayoutGrid size={18} /> };
+
+    const filteredCourses = coursesList.filter(c => {
+        if (c.comingSoon && activeTab === 'all' && !searchQuery.trim()) return false;
+        if (c.comingSoon) return false;
+
+        const matchesCategory = activeTab === 'all' || matchesTab(c.category, activeTab);
+
+        if (!searchQuery.trim()) return matchesCategory;
+        const q = searchQuery.toLowerCase().trim();
+        const matchesQuery = 
+            (c.title || '').toLowerCase().includes(q) ||
+            (c.skills || '').toLowerCase().includes(q) ||
+            (c.category || '').toLowerCase().includes(q) ||
+            (c.level || '').toLowerCase().includes(q);
+
+        return matchesCategory && matchesQuery;
+    });
 
     return (
         <section className="w-full bg-[#f8faff] pt-12 pb-20 px-6 lg:px-12 font-inter relative min-h-screen">
@@ -213,44 +329,123 @@ const Courses = () => {
                 {/* Header */}
                 <div className="text-center mb-10">
                     <h1 className="text-3xl lg:text-4xl font-bold text-secondary mb-3">Explore Our Top Courses</h1>
-                    <p className="text-gray-500 text-lg">Pick a category to see curated programs.</p>
+                    <p className="text-gray-500 text-lg">Search by skills or filter by category to find your perfect career program.</p>
                 </div>
 
-                {/* ── MOBILE: vertical card list ─────────────────────────────── */}
-                <div className="md:hidden max-w-[450px] mx-auto mb-10">
-                    <div className="bg-white p-3 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.05)] flex flex-col gap-2">
-                        {tabs.map(tab => (
+                {/* ── SEARCH & CATEGORY FILTER CONSOLE ───────────────────────── */}
+                <div className="bg-white rounded-3xl p-3 sm:p-4 shadow-[0_10px_40px_rgba(0,0,0,0.06)] border border-gray-100 mb-10 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-4">
+                    
+                    {/* Search Input Bar */}
+                    <div className="relative flex-1 w-full">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search courses by keyword, skills, or technology..."
+                            className="w-full pl-12 pr-10 py-3.5 bg-gray-50/80 hover:bg-gray-50 focus:bg-white text-secondary placeholder-gray-400 text-[15px] rounded-2xl border border-transparent focus:border-primary/30 focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-200 font-medium"
+                        />
+                        {searchQuery && (
                             <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`w-full border-none rounded-2xl px-6 py-3.5 flex items-center gap-4 text-[15px] font-bold cursor-pointer transition-all duration-300 ${activeTab === tab.id ? 'bg-primary text-white shadow-lg' : 'bg-white text-primary hover:bg-blue-50'
-                                    }`}
+                                onClick={() => setSearchQuery('')}
+                                className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200/60 transition-colors cursor-pointer"
+                                title="Clear search"
                             >
-                                <span className={`flex-shrink-0 p-1.5 rounded-lg ${activeTab === tab.id ? 'bg-white/20' : 'bg-blue-50'}`}>
-                                    {tab.icon}
-                                </span>
-                                <span className="text-left leading-tight">{tab.label}</span>
+                                <X className="w-4 h-4" />
                             </button>
-                        ))}
+                        )}
                     </div>
+
+                    {/* Professional Category Dropdown Filter */}
+                    <div className="relative w-full md:w-auto min-w-[280px]" ref={dropdownRef}>
+                        <button
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className={`w-full flex items-center justify-between gap-3 px-5 py-3.5 rounded-2xl border transition-all duration-200 font-semibold text-[15px] cursor-pointer ${
+                                isDropdownOpen || activeTab !== 'all'
+                                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/25'
+                                    : 'bg-gray-50/80 hover:bg-gray-100 text-secondary border-transparent hover:border-gray-200'
+                            }`}
+                        >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                                <span className={`p-1.5 rounded-lg shrink-0 ${isDropdownOpen || activeTab !== 'all' ? 'bg-white/20 text-white' : 'bg-blue-100 text-primary'}`}>
+                                    {selectedTabObj ? selectedTabObj.icon : <LayoutGrid size={18} />}
+                                </span>
+                                <span className="truncate">{selectedTabObj ? selectedTabObj.label : 'All Categories'}</span>
+                            </div>
+                            <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {/* Dropdown Menu Panel */}
+                        <AnimatePresence>
+                            {isDropdownOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                                    transition={{ duration: 0.15 }}
+                                    className="absolute right-0 top-full mt-2 w-full md:w-[320px] bg-white rounded-2xl shadow-[0_15px_50px_rgba(0,0,0,0.14)] border border-gray-100 p-2 z-50 max-h-[380px] overflow-y-auto overscroll-contain scrollbar-thin space-y-1"
+                                >
+                                    <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-gray-400 border-b border-gray-100 mb-1 flex items-center justify-between">
+                                        <span>Filter by Category</span>
+                                        <span>({tabs.length})</span>
+                                    </div>
+                                    {tabs.map((tab) => {
+                                        const active = isTabActive(tab.id, activeTab);
+                                        return (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => {
+                                                    handleTabClick(tab.id);
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                                className={`w-full flex items-center justify-between gap-3 p-2.5 rounded-xl text-left transition-all duration-200 cursor-pointer ${
+                                                    active
+                                                        ? 'bg-blue-50/90 text-primary font-bold shadow-sm'
+                                                        : 'hover:bg-gray-50 text-secondary font-medium'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-2.5 min-w-0">
+                                                    <span className={`p-1.5 rounded-lg shrink-0 ${active ? 'bg-primary text-white shadow-sm' : 'bg-gray-100 text-gray-600'}`}>
+                                                        {tab.icon}
+                                                    </span>
+                                                    <span className="text-[14px] truncate">{tab.label}</span>
+                                                </div>
+                                                {active && <Check className="w-4 h-4 text-primary shrink-0 ml-2" />}
+                                            </button>
+                                        );
+                                    })}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
                 </div>
 
-                {/* ── TABLET + DESKTOP: horizontal pill tab-bar ─────────────── */}
-                <div className="hidden md:flex items-center gap-2 mb-10 overflow-x-auto pb-1 scrollbar-none flex-wrap">
-                    {tabs.map(tab => (
+                {/* Empty Zero Results State */}
+                {filteredCourses.length === 0 && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center py-16 px-6 bg-white rounded-3xl border border-gray-100 shadow-sm max-w-2xl mx-auto my-6"
+                    >
+                        <div className="w-16 h-16 bg-blue-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-inner">
+                            <Search className="w-8 h-8 opacity-75" />
+                        </div>
+                        <h3 className="text-xl font-bold text-secondary mb-2">No courses found</h3>
+                        <p className="text-gray-500 max-w-md mx-auto text-[15px] mb-6 leading-relaxed">
+                            We couldn&apos;t find any programs matching your filters or keyword &quot;<span className="font-semibold text-secondary">{searchQuery}</span>&quot;. Try adjusting your keywords or category selection.
+                        </p>
                         <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap border transition-all duration-200 ${activeTab === tab.id
-                                ? 'bg-primary text-white border-primary shadow-md shadow-primary/20'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-primary/40 hover:text-primary hover:bg-blue-50'
-                                }`}
+                            onClick={() => {
+                                setSearchQuery('');
+                                handleTabClick('all');
+                            }}
+                            className="px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 hover:bg-primary/90 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer"
                         >
-                            <span className={`shrink-0 ${activeTab === tab.id ? 'text-white' : 'text-primary'}`}>{tab.icon}</span>
-                            {tab.label}
+                            Reset All Filters
                         </button>
-                    ))}
-                </div>
+                    </motion.div>
+                )}
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -309,7 +504,9 @@ const Courses = () => {
 
                                                 {!course.isCompleted && course.startDate && (
                                                     <div className="text-[13px] font-semibold text-primary bg-blue-50 px-4 py-1.5 rounded-full inline-block">
-                                                        Starts: {formatCourseDate(course.startDate)} {course.startTime && `at ${formatCourseTime(course.startTime)}`}
+                                                        {course.startDate.toLowerCase() === 'flexible'
+                                                            ? 'Upcoming'
+                                                            : `Starts: ${formatCourseDate(course.startDate)} ${course.startTime ? `at ${formatCourseTime(course.startTime)}` : ''}`}
                                                     </div>
                                                 )}
                                             </div>

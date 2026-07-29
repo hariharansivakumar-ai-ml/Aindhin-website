@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
     Calculator, FileText, Monitor, CheckCircle, Award,
-    Briefcase, TrendingUp, DollarSign, Database, Target, BookOpen
+    Briefcase, TrendingUp, IndianRupee, Database, Target, BookOpen
 } from 'lucide-react';
 import './BComCourse.css'; // Make sure to save the CSS in this file
 import BComHeroImg from '../assets/B_com_scaled.webp';

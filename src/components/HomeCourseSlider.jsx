@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Play, BookOpen, Clock, Users } from 'lucide-react';
+import { USER_APP_URL } from '../utils/apiClient';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import digitalMarketingImg from '../assets/digital_marketing_hero.webp';
@@ -126,7 +127,7 @@ const ExpandedCard = ({ course, anchorRect, onMouseEnter, onMouseMove, onMouseLe
                     </p>
 
                     <a
-                        href="https://user.aindhin.com/"
+                        href={USER_APP_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-blue-700 text-white text-[13px] font-bold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/30"

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
 import EnquiryModal from '../components/EnquiryModal';
+import { USER_APP_URL } from '../utils/apiClient';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import comingSoonImg from '../assets/coming_soon.webp';
@@ -54,7 +55,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "12 weeks",
             link: "/ai-machine-learning-from-basics-to-industry-applications",
-            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c65037beb11b0c1ada8"
+            externalLink: `${USER_APP_URL}/course/AD-944b67c3bbf11c65037beb11b0c1ada8`
         },
         {
             id: 5,
@@ -68,7 +69,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "12 weeks",
             link: "/data-analytics",
-            externalLink: "https://user.aindhin.com/course/AD-data-analytics"
+            externalLink: `${USER_APP_URL}/course/AD-data-analytics`
         },
         {
             id: 8,
@@ -82,7 +83,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "10 weeks",
             link: "/digital-marketing-from-basics-to-growth-campaigns",
-            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6b037beb11b0c1ada8"
+            externalLink: `${USER_APP_URL}/course/AD-944b67c3bbf11c6b037beb11b0c1ada8`
         },
         {
             id: 15,
@@ -96,7 +97,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "14 weeks",
             link: "/cyber-security",
-            externalLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6a037beb11b0c1ada8"
+            externalLink: `${USER_APP_URL}/course/AD-944b67c3bbf11c6a037beb11b0c1ada8`
         },
         {
             id: 20,
@@ -110,7 +111,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "12 weeks",
             link: "/abacus-mental-math-masterclass",
-            externalLink: "https://user.aindhin.com/course/AD-abacus-mental-math"
+            externalLink: `${USER_APP_URL}/course/AD-abacus-mental-math`
         }
     ];
 

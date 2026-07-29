@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, CheckCircle, Monitor, Smartphone, BookOpen, BarChart3, Users, Rocket } from 'lucide-react';
+import { USER_APP_URL } from '../utils/apiClient';
 import './DownloadApp.css';
 import downloadAppImg from '../assets/download image.webp';
 
@@ -58,7 +59,7 @@ const DownloadApp = () => {
 
                     {/* CTA Button */}
                     <a
-                        href="https://user.aindhin.com/"
+                        href={USER_APP_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="open-web-app-btn no-underline hover:text-white"
@@ -93,7 +94,7 @@ const DownloadApp = () => {
                     </div>
 
                     <p className="footer-note">
-                        Web app is live at <a href="https://user.aindhin.com" className="text-blue-600 underline">user.aindhin.com</a>. No installation required.
+                        Web app is live at <a href={USER_APP_URL} className="text-blue-600 underline">{USER_APP_URL.replace(/^https?:\/\//, '')}</a>. No installation required.
                     </p>
                 </motion.div>
 

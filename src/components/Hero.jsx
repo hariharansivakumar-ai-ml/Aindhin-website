@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Phone } from 'lucide-react';
+import { USER_APP_URL } from '../utils/apiClient';
 import heroStudentImg from '../assets/hero_student.webp';
 
 const Hero = () => {
@@ -40,7 +41,7 @@ const Hero = () => {
                             Our Courses
                         </Link>
                         <a
-                            href="https://user.aindhin.com/course"
+                            href={`${USER_APP_URL}/course`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-white font-bold rounded-full shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:shadow-[0_20px_40px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 font-inter text-sm animate-color-blink"

@@ -4,6 +4,7 @@ import {
   Code, Database, Brain, Server, Terminal, Cpu
 } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
+import { USER_APP_URL } from '../utils/apiClient';
 
 // Hero Image
 import heroImg from '../assets/python_hero.webp';
@@ -844,7 +845,7 @@ const PythonCertificationCourse = () => {
                   </li>
                 </ul>
 
-                <a href="https://user.aindhin.com" target="_blank" rel="noopener noreferrer" className="py-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href={USER_APP_URL} target="_blank" rel="noopener noreferrer" className="py-cta-btn">Enroll Now &amp; Start Learning</a>
               </Section>
             </aside>
 

@@ -20,6 +20,7 @@ import {
     Shield, Lock, Eye, AlertTriangle, Terminal, FileText, Globe, Server, UserCheck,
     Clock, Users, Target, Briefcase, Award, Map, Activity, ArrowUpRight, Calendar
 } from 'lucide-react';
+import { USER_APP_URL } from '../../utils/apiClient';
 
 export const cyberSecurityData = {
     hero: {
@@ -32,7 +33,7 @@ export const cyberSecurityData = {
             "Beginner‑friendly · Ideal for students & working professionals · 4.7 / 5 learner feedback"
         ],
         bgImage: CyberHeroImg,
-        enrollLink: "https://user.aindhin.com/course/AD-944b67c3bbf11c6a037beb11b0c1ada8"
+        enrollLink: `${USER_APP_URL}/course/AD-944b67c3bbf11c6a037beb11b0c1ada8`
     },
     about: [
         "This Cyber Security Course helps you master the fundamentals of network security, ethical hacking, system protection, SOC operations, and incident response. You will learn how cyber attacks happen and how to defend systems, networks, and data using real-world security practices.",
