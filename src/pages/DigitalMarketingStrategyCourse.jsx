@@ -839,7 +839,7 @@ const DigitalMarketingStrategyCourse = () => {
                   </li>
                 </ul>
 
-                <a href={USER_APP_URL} target="_blank" rel="noopener noreferrer" className="dm-cta-btn">Enroll Now &amp; Start Learning</a>
+                <a href={`${USER_APP_URL}/signin`} target="_blank" rel="noopener noreferrer" className="dm-cta-btn">Enroll Now & Start Learning</a>
               </Section>
             </aside>
 

@@ -4,7 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
 import EnquiryModal from '../components/EnquiryModal';
+import SignInModal from '../components/SignInModal';
 import { USER_APP_URL } from '../utils/apiClient';
+import { encodeCourseId } from '../utils/idObfuscator';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import comingSoonImg from '../assets/coming_soon.webp';
@@ -22,6 +24,16 @@ const CorporateCourses = () => {
     const [searchParams] = useSearchParams();
     const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
     const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+    const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+
+    const handleExploreCourse = async (courseId) => {
+        try {
+            const encodedId = await encodeCourseId(courseId);
+            window.open(`${USER_APP_URL}/course/${encodedId}`, '_blank', 'noopener,noreferrer');
+        } catch (error) {
+            console.error('Failed to encode course id', error);
+        }
+    };
 
     useEffect(() => {
         document.title = "Explore Job-Ready Online Certification Courses in India | Aindhin";
@@ -55,7 +67,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "12 weeks",
             link: "/ai-machine-learning-from-basics-to-industry-applications",
-            externalLink: `${USER_APP_URL}/course/AD-944b67c3bbf11c65037beb11b0c1ada8`
+            externalLink: `${USER_APP_URL}/signin`
         },
         {
             id: 5,
@@ -69,7 +81,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "12 weeks",
             link: "/data-analytics",
-            externalLink: `${USER_APP_URL}/course/AD-data-analytics`
+            externalLink: `${USER_APP_URL}/signin`
         },
         {
             id: 8,
@@ -83,7 +95,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "10 weeks",
             link: "/digital-marketing-from-basics-to-growth-campaigns",
-            externalLink: `${USER_APP_URL}/course/AD-944b67c3bbf11c6b037beb11b0c1ada8`
+            externalLink: `${USER_APP_URL}/signin`
         },
         {
             id: 15,
@@ -97,7 +109,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "14 weeks",
             link: "/cyber-security",
-            externalLink: `${USER_APP_URL}/course/AD-944b67c3bbf11c6a037beb11b0c1ada8`
+            externalLink: `${USER_APP_URL}/signin`
         },
         {
             id: 20,
@@ -111,7 +123,7 @@ const CorporateCourses = () => {
             level: "Beginner",
             duration: "12 weeks",
             link: "/abacus-mental-math-masterclass",
-            externalLink: `${USER_APP_URL}/course/AD-abacus-mental-math`
+            externalLink: `${USER_APP_URL}/signin`
         }
     ];
 
@@ -190,7 +202,7 @@ const CorporateCourses = () => {
                                 <div className="p-5 flex flex-col items-start flex-1">
                                     <h3 className="text-base font-bold text-secondary mb-2 leading-tight">
                                         <a 
-                                            href={course.externalLink} 
+                                            href={`${USER_APP_URL}/signin`} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
                                             className="hover:text-primary transition-colors"
@@ -212,16 +224,15 @@ const CorporateCourses = () => {
                                                         <span className="text-secondary font-bold">{course.rating}</span>
                                                         <span>({course.reviews})</span>
                                                     </span>
-                                                    <span>•</span>
-                                                    <span>{course.duration}</span>
+
                                                 </div>
                                             </div>
-                                            <Link
-                                                to={course.link}
-                                                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
+                                            <button
+                                                onClick={() => handleExploreCourse(course.id)}
+                                                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200 cursor-pointer border-none"
                                             >
                                                 Explore Course
-                                            </Link>
+                                            </button>
                                         </>
                                     ) : (
                                          <button 
@@ -268,6 +279,10 @@ const CorporateCourses = () => {
                 isOpen={isEnquiryModalOpen} 
                 onClose={() => setIsEnquiryModalOpen(false)} 
                 courseTitle={selectedCourseTitle} 
+            />
+            <SignInModal 
+                isOpen={isSignInModalOpen} 
+                onClose={() => setIsSignInModalOpen(false)} 
             />
         </section>
     );

@@ -30,6 +30,7 @@ const AdminCourses = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCatFilter, setSelectedCatFilter] = useState('All');
+    const [selectedClassMode, setSelectedClassMode] = useState('All');
 
     // Modal state
     const [showModal, setShowModal] = useState(false);
@@ -46,6 +47,7 @@ const AdminCourses = () => {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [courseType, setCourseType] = useState('Free');
+    const [classMode, setClassMode] = useState('Live Class');
 
     // Form fields - Tab 2 (Specs)
     const [aboutCourse, setAboutCourse] = useState('');
@@ -71,6 +73,9 @@ const AdminCourses = () => {
 
     // Modules state
     const [modules, setModules] = useState([]);
+    
+    // Class mode prompt state
+    const [showClassModePrompt, setShowClassModePrompt] = useState(false);
 
     useEffect(() => {
         const checkAuthAndLoad = async () => {
@@ -124,6 +129,7 @@ const AdminCourses = () => {
                 setDescription(fullCourse.description || '');
                 setPrice(fullCourse.price?.toString() || '');
                 setCourseType(fullCourse.course_type || 'Free');
+                setClassMode(fullCourse.class_mode || 'Live Class');
                 setAboutCourse(fullCourse.about_course || '');
 
                 // Parse duration value & unit
@@ -182,6 +188,7 @@ const AdminCourses = () => {
             setDescription('');
             setPrice('');
             setCourseType('Free');
+            setClassMode('Live Class');
             setAboutCourse('');
             setDurationVal('4');
             setDurationUnit('Weeks');
@@ -200,7 +207,11 @@ const AdminCourses = () => {
             setBannerPreview('');
             setModules([{ title: 'Introduction & Fundamentals', lessons: [{ title: 'Course Overview' }] }]);
         }
-        setShowModal(true);
+        if (!course) {
+            setShowClassModePrompt(true);
+        } else {
+            setShowModal(true);
+        }
     };
 
     const handleDelete = async (id, courseTitle) => {
@@ -269,6 +280,7 @@ const AdminCourses = () => {
                 category: finalCategory,
                 price: price.toString(),
                 course_type: courseType,
+                class_mode: classMode,
                 about_course: aboutCourse,
                 course_duration: combinedDuration,
                 skill_level: skillLevel,
@@ -343,7 +355,12 @@ const AdminCourses = () => {
             c.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             c.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             c.category?.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchCat && matchSearch;
+            
+        const mode = (c.class_mode || c.classMode || 'Live Class').trim();
+        const normalizedMode = (mode === 'Module Class' || mode === 'Module' || c.course_type === 'Module') ? 'Module Class' : 'Live Class';
+        const matchMode = selectedClassMode === 'All' || normalizedMode === selectedClassMode;
+            
+        return matchCat && matchSearch && matchMode;
     }).sort((a, b) => {
         const aActive = (a.is_active !== false && !a.is_ended) ? 1 : 0;
         const bActive = (b.is_active !== false && !b.is_ended) ? 1 : 0;
@@ -441,6 +458,18 @@ const AdminCourses = () => {
                         </div>
 
                         <div className="flex items-center gap-3 shrink-0">
+                            <div className="relative min-w-[180px]">
+                                <select
+                                    value={selectedClassMode}
+                                    onChange={(e) => setSelectedClassMode(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-10 py-2.5 text-sm font-semibold text-slate-700 hover:border-violet-300 focus:outline-none focus:bg-white focus:border-violet-600 focus:ring-2 focus:ring-violet-600/10 appearance-none transition-all cursor-pointer shadow-xs"
+                                >
+                                    <option value="All">All Class Modes</option>
+                                    <option value="Live Class">Live Class</option>
+                                    <option value="Module Class">Module Class</option>
+                                </select>
+                                <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                            </div>
                             <div className="relative min-w-[220px]">
                                 <Layers className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-violet-600 pointer-events-none" />
                                 <select
@@ -505,6 +534,13 @@ const AdminCourses = () => {
                                                 }`}>
                                                     {course.course_type || 'Free'}
                                                 </span>
+                                                {course.class_mode && (
+                                                    <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide uppercase shadow-sm ${
+                                                        course.class_mode === 'Module Class' ? 'bg-indigo-500 text-white' : 'bg-cyan-500 text-white'
+                                                    }`}>
+                                                        {course.class_mode}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
 
@@ -524,10 +560,12 @@ const AdminCourses = () => {
 
                                             <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                                                 <div className="flex items-center gap-3">
-                                                    <span className="flex items-center gap-1 font-medium">
-                                                        <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                                        {course.course_duration || 'Flexible'}
-                                                    </span>
+                                                    {!(course.class_mode === 'Module Class' || course.classMode === 'Module Class') && (
+                                                        <span className="flex items-center gap-1 font-medium">
+                                                            <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                                            {course.course_duration || 'Flexible'}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 {isPaid ? (
                                                     <span className="text-sm font-black text-slate-900">₹{course.price}</span>
@@ -565,6 +603,73 @@ const AdminCourses = () => {
                     )}
                 </main>
             </div>
+
+            {/* ── Class Mode Prompt Modal ────────────────────────────── */}
+            <AnimatePresence>
+                {showClassModePrompt && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white border border-slate-200 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden p-6 relative"
+                        >
+                            <button
+                                onClick={() => setShowClassModePrompt(false)}
+                                className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                            
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-violet-100 text-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <Sparkles className="w-8 h-8" />
+                                </div>
+                                <h2 className="text-2xl font-black text-slate-900">Select Class Mode</h2>
+                                <p className="text-sm text-slate-500 mt-2">Choose the delivery format for your new course to tailor the specifications appropriately.</p>
+                            </div>
+
+                            <div className="space-y-3">
+                                <button
+                                    onClick={() => {
+                                        setClassMode('Live Class');
+                                        setAutoGenCert(false);
+                                        setShowClassModePrompt(false);
+                                        setShowModal(true);
+                                    }}
+                                    className="w-full text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-violet-600 hover:bg-violet-50 transition-all group flex items-center gap-4"
+                                >
+                                    <div className="w-12 h-12 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center shrink-0">
+                                        <Clock className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-900 group-hover:text-violet-700 text-lg">Live Class</h3>
+                                        <p className="text-xs text-slate-500 mt-0.5">Instructor-led batches with fixed schedules.</p>
+                                    </div>
+                                </button>
+                                
+                                <button
+                                    onClick={() => {
+                                        setClassMode('Module Class');
+                                        setAutoGenCert(true);
+                                        setShowClassModePrompt(false);
+                                        setShowModal(true);
+                                    }}
+                                    className="w-full text-left p-4 rounded-2xl border-2 border-slate-100 hover:border-indigo-600 hover:bg-indigo-50 transition-all group flex items-center gap-4"
+                                >
+                                    <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                                        <Layers className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-900 group-hover:text-indigo-700 text-lg">Module Class</h3>
+                                        <p className="text-xs text-slate-500 mt-0.5">Self-paced video modules for flexible learning.</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
             {/* ── Add / Edit Course Modal ────────────────────────────── */}
             <AnimatePresence>
@@ -756,55 +861,59 @@ const AdminCourses = () => {
                                         </div>
 
                                         {/* Duration Value, Unit, and Frequency */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                                            <div>
-                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Duration (Value)</label>
-                                                <input
-                                                    type="number"
-                                                    min="1"
-                                                    value={durationVal}
-                                                    onChange={(e) => setDurationVal(e.target.value)}
-                                                    placeholder="e.g. 4"
-                                                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15"
-                                                />
+                                        {classMode !== 'Module Class' && (
+                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Duration (Value)</label>
+                                                    <input
+                                                        type="number"
+                                                        min="1"
+                                                        value={durationVal}
+                                                        onChange={(e) => setDurationVal(e.target.value)}
+                                                        placeholder="e.g. 4"
+                                                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Duration Unit</label>
+                                                    <select
+                                                        value={durationUnit}
+                                                        onChange={(e) => setDurationUnit(e.target.value)}
+                                                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15"
+                                                    >
+                                                        {durationUnits.map(unit => (
+                                                            <option key={unit} value={unit}>{unit}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Class Frequency</label>
+                                                    <select
+                                                        value={frequency}
+                                                        onChange={(e) => setFrequency(e.target.value)}
+                                                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15"
+                                                    >
+                                                        {frequencyOptions.map(f => (
+                                                            <option key={f} value={f}>{f}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Duration Unit</label>
-                                                <select
-                                                    value={durationUnit}
-                                                    onChange={(e) => setDurationUnit(e.target.value)}
-                                                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15"
-                                                >
-                                                    {durationUnits.map(unit => (
-                                                        <option key={unit} value={unit}>{unit}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Class Frequency</label>
-                                                <select
-                                                    value={frequency}
-                                                    onChange={(e) => setFrequency(e.target.value)}
-                                                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15"
-                                                >
-                                                    {frequencyOptions.map(f => (
-                                                        <option key={f} value={f}>{f}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        </div>
+                                        )}
 
                                         {/* Selectable Date & Skill Level */}
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                            <div>
-                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Course Start Date</label>
-                                                <input
-                                                    type="date"
-                                                    value={startDate}
-                                                    onChange={(e) => setStartDate(e.target.value)}
-                                                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15 cursor-pointer"
-                                                />
-                                            </div>
+                                            {classMode !== 'Module Class' ? (
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Course Start Date</label>
+                                                    <input
+                                                        type="date"
+                                                        value={startDate}
+                                                        onChange={(e) => setStartDate(e.target.value)}
+                                                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15 cursor-pointer"
+                                                    />
+                                                </div>
+                                            ) : <div />}
                                             <div>
                                                 <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Target Skill Level</label>
                                                 <select
@@ -1057,7 +1166,8 @@ const AdminCourses = () => {
                                                 }, 
                                                 col: 'bg-cyan-600' 
                                             }
-                                        ].map((item, idx) => (
+                                        ].filter(item => !(classMode === 'Module Class' && (item.label === 'Project Submissions Enabled' || item.label === 'Proctoring & Assessments')))
+                                         .map((item, idx) => (
                                             <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
                                                 <div>
                                                     <h4 className="text-sm font-bold text-slate-900">{item.label}</h4>

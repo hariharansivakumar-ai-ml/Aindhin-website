@@ -125,6 +125,7 @@ const Header = () => {
             sub: 'AI, Software, Data, Marketing',
             submenu: certSubmenu
         },
+        { icon: '🧩', title: 'Module Courses', sub: 'Short term focused modules', path: '/module-courses' },
         { icon: '🎓', title: 'University Courses', sub: 'UG & PG programs, degrees', path: '/university-courses' },
         { icon: '🏢', title: 'Corporate Courses', sub: 'Team training, L&D, corporate upskilling', path: '/corporate-courses' },
         { icon: '🧭', title: 'Leadership Courses', sub: 'Leadership, management, communication', path: '/leadership-courses' },
@@ -262,6 +263,7 @@ const Header = () => {
                         <div className="absolute top-full left-0 pt-4 hidden group-hover:block z-50">
                             <div className="w-[220px] bg-white rounded-lg shadow-xl py-2 border border-gray-100">
                                 <Link to="/our-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Certification Courses</Link>
+                                <Link to="/module-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Module Courses</Link>
                                 <Link to="/university-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">University Courses</Link>
                                 <Link to="/corporate-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Corporate Courses</Link>
                                 <Link to="/leadership-courses" className="block px-4 py-2 text-sm font-medium text-secondary hover:bg-blue-50 hover:text-primary">Leadership Courses</Link>
@@ -290,7 +292,7 @@ const Header = () => {
                     </button>
 
                     <a
-                        href={USER_APP_URL}
+                        href={`${USER_APP_URL}/signin`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white font-bold text-[15px] shadow-[0_8px_20px_rgba(37,99,235,0.45)] hover:scale-105 active:scale-95 transition-all duration-200"
@@ -335,6 +337,7 @@ const Header = () => {
                         {isMobileCoursesOpen && (
                             <div className="flex flex-col gap-2 pl-4 py-2 bg-gray-50 rounded-2xl animate-in fade-in slide-in-from-top-1">
                                 <Link to="/our-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Certification Courses</Link>
+                                <Link to="/module-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Module Courses</Link>
                                 <Link to="/university-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">University Courses</Link>
                                 <Link to="/corporate-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Corporate Courses</Link>
                                 <Link to="/leadership-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-base font-medium text-text py-1">Leadership Courses</Link>
@@ -361,7 +364,7 @@ const Header = () => {
                     >
                         <Sparkles className="w-5 h-5 text-blue-600" /> Register Courses
                     </button>
-                    <a href={USER_APP_URL} target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 text-center py-4 bg-primary text-white rounded-full font-bold shadow-lg">Login / Sign Up</a>
+                    <a href={`${USER_APP_URL}/signin`} target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 text-center py-4 bg-primary text-white rounded-full font-bold shadow-lg">Login / Sign Up</a>
                 </div>
             </div>
 

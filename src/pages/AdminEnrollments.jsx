@@ -23,6 +23,7 @@ const AdminEnrollments = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCat, setSelectedCat] = useState('All');
+    const [selectedClassMode, setSelectedClassMode] = useState('All');
 
     // Active course for batches management
     const [selectedCourse, setSelectedCourse] = useState(null);
@@ -301,13 +302,14 @@ const AdminEnrollments = () => {
             const cleanStartTime = formatTimeForBackend(startTime);
             const cleanEndTime = formatTimeForBackend(endTime);
 
+            const isModule = selectedCourse?.class_mode === 'Module Class' || selectedCourse?.course_type === 'Module' || selectedCourse?.classMode === 'Module Class';
             const updated = await apiUpdateBatch(editingBatch.id, {
-                batch_name: batchName || `Batch #${editingBatch.id}`,
+                batch_name: isModule ? (batchName || `Batch #${editingBatch.id}`) : (batchName || `Batch #${editingBatch.id}`),
                 start_time: cleanStartTime,
                 end_time: cleanEndTime,
-                max_seats: parseInt(maxSeats, 10) || 20
+                max_seats: isModule ? 999999 : (parseInt(maxSeats, 10) || 20)
             });
-            setCourseBatches(prev => prev.map(b => b.id === editingBatch.id ? { ...b, ...updated, max_seats: parseInt(maxSeats, 10) || 20, batch_name: batchName, start_time: cleanStartTime || '', end_time: cleanEndTime || '' } : b));
+            setCourseBatches(prev => prev.map(b => b.id === editingBatch.id ? { ...b, ...updated, max_seats: isModule ? 999999 : (parseInt(maxSeats, 10) || 20), batch_name: batchName, start_time: cleanStartTime || '', end_time: cleanEndTime || '' } : b));
             setEditingBatch(null);
         } catch (err) {
             alert(`Error updating batch details: ${err.message || 'Invalid data submitted'}`);
@@ -362,7 +364,12 @@ const AdminEnrollments = () => {
         const matchSearch = searchTerm.trim() === '' ||
             c.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             c.category?.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchCat && matchSearch;
+            
+        const mode = (c.class_mode || c.classMode || 'Live Class').trim();
+        const normalizedMode = (mode === 'Module Class' || mode === 'Module' || c.course_type === 'Module') ? 'Module Class' : 'Live Class';
+        const matchMode = selectedClassMode === 'All' || normalizedMode === selectedClassMode;
+            
+        return matchCat && matchSearch && matchMode;
     }).sort((a, b) => {
         const aActive = (a.is_active !== false && !a.is_ended) ? 1 : 0;
         const bActive = (b.is_active !== false && !b.is_ended) ? 1 : 0;
@@ -444,6 +451,18 @@ const AdminEnrollments = () => {
                         </div>
 
                         <div className="flex items-center gap-3 shrink-0">
+                            <div className="relative min-w-[180px]">
+                                <select
+                                    value={selectedClassMode}
+                                    onChange={(e) => setSelectedClassMode(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-10 py-2.5 text-sm font-semibold text-slate-700 hover:border-violet-300 focus:outline-none focus:bg-white focus:border-violet-600 focus:ring-2 focus:ring-violet-600/10 appearance-none transition-all cursor-pointer shadow-xs"
+                                >
+                                    <option value="All">All Class Modes</option>
+                                    <option value="Live Class">Live Class</option>
+                                    <option value="Module Class">Module Class</option>
+                                </select>
+                                <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                            </div>
                             <div className="relative min-w-[220px]">
                                 <Layers className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-violet-600 pointer-events-none" />
                                 <select
@@ -507,13 +526,22 @@ const AdminEnrollments = () => {
                                                 <span className="text-violet-600 font-extrabold">{course.category || 'General'}</span>
                                                 <span className="text-slate-300">•</span>
                                                 <span className="uppercase text-slate-500 font-semibold">{course.course_type || 'Free'}</span>
+                                                {course.class_mode && (
+                                                    <span className={`px-2.5 py-0.5 rounded-md text-[10px] uppercase font-extrabold tracking-wider shadow-xs ${
+                                                        course.class_mode === 'Module Class' ? 'bg-indigo-500 text-white' : 'bg-cyan-500 text-white'
+                                                    }`}>
+                                                        {course.class_mode}
+                                                    </span>
+                                                )}
                                             </div>
                                             <h3 className="text-lg font-extrabold text-slate-900 truncate">{course.title}</h3>
                                             <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
-                                                <span className="flex items-center gap-1.5 font-medium">
-                                                    <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                                    {course.course_duration || 'Flexible schedule'}
-                                                </span>
+                                                {!(course.class_mode === 'Module Class' || course.classMode === 'Module Class') && (
+                                                    <span className="flex items-center gap-1.5 font-medium">
+                                                        <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                                        {course.course_duration || 'Flexible schedule'}
+                                                    </span>
+                                                )}
                                                 <span className="flex items-center gap-1.5 font-bold text-emerald-600">
                                                     <Users className="w-3.5 h-3.5" />
                                                     {course.total_enrolled || course.enrolled_count || course.total_students || 0} active students
@@ -607,56 +635,62 @@ const AdminEnrollments = () => {
 
                                             return (
                                                 <div key={batch.id} className="p-6 rounded-2xl bg-white border border-slate-200/90 space-y-5 shadow-sm hover:shadow transition-shadow">
-                                                    {/* Batch Top Header Row */}
-                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                                        <div>
-                                                            <div className="flex items-center gap-3">
-                                                                <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
-                                                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                                                                    {batch.batch_name || `Batch #${batch.id}`}
-                                                                </h3>
-                                                                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-700 font-semibold">
-                                                                    {batch.enrolled_count || 0} / {batch.max_seats || 20} Seats
-                                                                </span>
-                                                            </div>
-                                                            <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-3">
-                                                                <span className="flex items-center gap-1.5 font-medium text-slate-600">
-                                                                    <Clock className="w-3.5 h-3.5 text-violet-600" />
-                                                                    Timing: {batch.start_time || 'N/A'} - {batch.end_time || 'N/A'}
-                                                                </span>
-                                                            </p>
-                                                        </div>
+                                                        {/* Batch Top Header Row */}
+                                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                                            {!(selectedCourse?.class_mode === 'Module Class' || selectedCourse?.classMode === 'Module Class' || selectedCourse?.course_type === 'Module') ? (
+                                                                <div>
+                                                                    <div className="flex items-center gap-3">
+                                                                        <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                                                                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                                                            {batch.batch_name || `Batch #${batch.id}`}
+                                                                        </h3>
+                                                                        <span className="px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-700 font-semibold">
+                                                                            {batch.enrolled_count || 0} / {batch.max_seats || 20} Seats
+                                                                        </span>
+                                                                    </div>
+                                                                    <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-3">
+                                                                        <span className="flex items-center gap-1.5 font-medium text-slate-600">
+                                                                            <Clock className="w-3.5 h-3.5 text-violet-600" />
+                                                                            Timing: {batch.start_time || 'N/A'} - {batch.end_time || 'N/A'}
+                                                                        </span>
+                                                                    </p>
+                                                                </div>
+                                                            ) : <div />}
 
                                                         {/* Actions Group */}
                                                         <div className="flex flex-wrap items-center gap-2.5">
                                                             {/* Reminder Switch Button */}
-                                                            <button
-                                                                onClick={() => handleToggleReminder(batch)}
-                                                                className={`px-3.5 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all border ${
-                                                                    isReminder
-                                                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm'
-                                                                        : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200/70'
-                                                                }`}
-                                                            >
-                                                                {isReminder ? <Bell className="w-3.5 h-3.5 text-emerald-600" /> : <BellOff className="w-3.5 h-3.5" />}
-                                                                {isReminder ? 'Reminder ON' : 'Reminder OFF'}
-                                                            </button>
+                                                            {!(selectedCourse?.class_mode === 'Module Class' || selectedCourse?.classMode === 'Module Class' || selectedCourse?.course_type === 'Module') && (
+                                                                <button
+                                                                    onClick={() => handleToggleReminder(batch)}
+                                                                    className={`px-3.5 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all border ${
+                                                                        isReminder
+                                                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm'
+                                                                            : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200/70'
+                                                                    }`}
+                                                                >
+                                                                    {isReminder ? <Bell className="w-3.5 h-3.5 text-emerald-600" /> : <BellOff className="w-3.5 h-3.5" />}
+                                                                    {isReminder ? 'Reminder ON' : 'Reminder OFF'}
+                                                                </button>
+                                                            )}
 
                                                             {/* Edit Batch button */}
-                                                            <button
-                                                                onClick={() => {
-                                                                    setEditingBatch(batch);
-                                                                    setBatchName(batch.batch_name || '');
-                                                                    setStartTime(batch.start_time ? batch.start_time.slice(0, 5) : '');
-                                                                    setEndTime(batch.end_time ? batch.end_time.slice(0, 5) : '');
-                                                                    setMaxSeats(batch.max_seats?.toString() || '20');
-                                                                    setMeetUrl(batch.google_meet_url || '');
-                                                                }}
-                                                                className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all flex items-center gap-1.5"
-                                                            >
-                                                                <Edit3 className="w-3.5 h-3.5 text-violet-600" />
-                                                                Edit Timings
-                                                            </button>
+                                                            {!(selectedCourse?.class_mode === 'Module Class' || selectedCourse?.classMode === 'Module Class' || selectedCourse?.course_type === 'Module') && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setEditingBatch(batch);
+                                                                        setBatchName(batch.batch_name || '');
+                                                                        setStartTime(batch.start_time ? batch.start_time.slice(0, 5) : '');
+                                                                        setEndTime(batch.end_time ? batch.end_time.slice(0, 5) : '');
+                                                                        setMaxSeats(batch.max_seats?.toString() || '20');
+                                                                        setMeetUrl(batch.google_meet_url || '');
+                                                                    }}
+                                                                    className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all flex items-center gap-1.5"
+                                                                >
+                                                                    <Edit3 className="w-3.5 h-3.5 text-violet-600" />
+                                                                    Edit Timings
+                                                                </button>
+                                                            )}
 
                                                             {/* Export Batch CSV button */}
                                                             <button
@@ -820,10 +854,12 @@ const AdminEnrollments = () => {
                                 <button onClick={() => setEditingBatch(null)} className="text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></button>
                             </div>
                             <form onSubmit={handleSaveBatchEdit} className="space-y-4">
-                                <div>
-                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">Batch Name</label>
-                                    <input type="text" value={batchName} onChange={(e) => setBatchName(e.target.value)} className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15" required />
-                                </div>
+                                {!(selectedCourse?.class_mode === 'Module Class' || selectedCourse?.course_type === 'Module' || selectedCourse?.classMode === 'Module Class') && (
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">Batch Name</label>
+                                        <input type="text" value={batchName} onChange={(e) => setBatchName(e.target.value)} className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15" required />
+                                    </div>
+                                )}
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
                                         <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">Start Time</label>
@@ -834,10 +870,12 @@ const AdminEnrollments = () => {
                                         <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15" />
                                     </div>
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">Max Seats Capacity</label>
-                                    <input type="number" value={maxSeats} onChange={(e) => setMaxSeats(e.target.value)} className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15" />
-                                </div>
+                                {!(selectedCourse?.class_mode === 'Module Class' || selectedCourse?.course_type === 'Module' || selectedCourse?.classMode === 'Module Class') && (
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">Max Seats Capacity</label>
+                                        <input type="number" value={maxSeats} onChange={(e) => setMaxSeats(e.target.value)} className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15" />
+                                    </div>
+                                )}
                                 <div className="pt-4 flex items-center justify-end gap-2.5 border-t border-slate-200">
                                     <button type="button" onClick={() => setEditingBatch(null)} className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Cancel</button>
                                     <button type="submit" className="px-5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 text-white text-xs font-extrabold shadow-md shadow-violet-500/20">Save Changes</button>

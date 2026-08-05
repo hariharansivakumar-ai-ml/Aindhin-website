@@ -86,36 +86,57 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
         return `${USER_API_URL}${img.startsWith('/') ? '' : '/'}${img}`;
     };
 
-    const isCourseOpenAndNotStarted = (c) => {
+    const isCourseOpen = (c) => {
         if (c.is_ended || c.is_completed || c.is_active === false || c.is_deleted) {
             return false;
         }
+        return true;
+    };
+
+    const isCourseStarted = (c) => {
         const dateStr = c.course_start_date || c.course_date;
         if (dateStr && String(dateStr).toLowerCase() !== 'flexible') {
             const timeStr = c.start_time || '00:00:00';
             const cleanTime = String(timeStr).split(' ')[0];
             const courseDateTime = new Date(`${dateStr}T${cleanTime}`);
             if (!isNaN(courseDateTime.getTime())) {
-                if (new Date() >= courseDateTime) {
-                    return false;
-                }
+                if (new Date() >= courseDateTime) return true;
             } else {
                 const onlyDate = new Date(dateStr);
                 if (!isNaN(onlyDate.getTime())) {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
-                    if (onlyDate < today) {
-                        return false;
-                    }
+                    if (onlyDate < today) return true;
                 }
             }
         }
-        return true;
+        return false;
+    };
+
+    const isCourseNew = (c) => {
+        if (!c.created_at) return false;
+        const createdDate = new Date(c.created_at);
+        if (isNaN(createdDate.getTime())) return false;
+        const diffHours = (new Date() - createdDate) / (1000 * 60 * 60);
+        return diffHours <= 48;
     };
 
     useEffect(() => {
-        if (!isOpen) return;
+        if (!isOpen) {
+            // Reset state when closing so it's fresh next time
+            setIsSuccess(false);
+            setSubmitting(false);
+            setErrorMsg(null);
+            return;
+        }
         
+        // Reset form fields when opening
+        setIsSuccess(false);
+        setErrorMsg(null);
+        setSubmitting(false);
+        // Only clear name/email/phone if you want them strictly cleared each time
+        // setName(''); setEmail(''); setPhone(''); 
+
         const fetchAllCourses = async () => {
             setLoadingCourses(true);
             try {
@@ -125,12 +146,13 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                 ]);
 
                 const combined = [];
-                const seenBatchIds = new Set();
-                const seenCourseIds = new Set();
                 const seenTitles = new Set();
 
                 const addCourse = (c, isLiveBatch) => {
-                    if (!isCourseOpenAndNotStarted(c)) return;
+                    const isLiveClass = c.class_mode ? (c.class_mode === 'Live Class') : isLiveBatch;
+                    
+                    // Only filter out ended/completed courses if they are Live Classes
+                    if (isLiveClass && !isCourseOpen(c)) return;
 
                     const batchId = String(c.id || c.course_id || '').trim();
                     const courseId = String(c.course_id || c.id || '').trim();
@@ -138,13 +160,10 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
 
                     if (!batchId && !normTitle) return;
 
-                    // Exclude duplicates if the course title, batch ID, or underlying course ID has already been included
-                    if (seenBatchIds.has(batchId) || seenCourseIds.has(courseId) || seenTitles.has(normTitle)) {
+                    // Exclude duplicates based on course title to prevent showing courses repeatedly
+                    if (seenTitles.has(normTitle)) {
                         return;
                     }
-
-                    if (batchId) seenBatchIds.add(batchId);
-                    if (courseId && courseId !== 'null') seenCourseIds.add(courseId);
                     if (normTitle) seenTitles.add(normTitle);
 
                     const rawCategory = c.category && !String(c.category).trim().startsWith('#') 
@@ -162,7 +181,8 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                         course_date: c.course_start_date || c.course_date || null,
                         start_time: c.start_time || null,
                         end_time: c.end_time || null,
-                        image_url: c.image_url || c.thumbnail_url || c.image || null
+                        image_url: c.image_url || c.thumbnail_url || c.image || null,
+                        isLiveClass: c.class_mode ? (c.class_mode === 'Live Class') : isLiveBatch
                     });
                 };
 
@@ -175,6 +195,22 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                 if (Array.isArray(assignedRes)) {
                     assignedRes.forEach((c) => addCourse(c, false));
                 }
+
+                const isOngoing = (c) => isCourseStarted(c) && isCourseOpen(c);
+                
+                combined.sort((a, b) => {
+                    const aNew = isCourseNew(a);
+                    const bNew = isCourseNew(b);
+                    if (aNew && !bNew) return -1;
+                    if (!aNew && bNew) return 1;
+
+                    const aOngoing = isOngoing(a);
+                    const bOngoing = isOngoing(b);
+                    if (aOngoing && !bOngoing) return -1;
+                    if (!aOngoing && bOngoing) return 1;
+
+                    return 0;
+                });
 
                 setCourses(combined);
                 if (combined.length > 0 && !selectedCourseId) {
@@ -706,7 +742,7 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                                                 return (
                                                     <div
                                                         key={cId}
-                                                        onClick={() => setSelectedCourseId(cId)}
+                                                        onClick={() => setSelectedCourseId(isSelected ? null : cId)}
                                                         className={`group p-3.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative overflow-hidden ${
                                                             isSelected
                                                                 ? 'bg-blue-50/90 border-2 border-blue-600 shadow-md ring-2 ring-blue-600/10'
@@ -723,12 +759,27 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                                                                 />
                                                                 <div className="min-w-0">
                                                                     <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                                                                        <span className="text-[10px] font-extrabold text-blue-700 bg-blue-100 px-2 py-0.5 rounded shrink-0 truncate max-w-[130px]">
-                                                                            {batchName}
-                                                                        </span>
-                                                                        {categoryName && categoryName !== batchName && (
+                                                                        {course.isLiveClass && (
+                                                                            <span className="text-[10px] font-extrabold text-blue-700 bg-blue-100 px-2 py-0.5 rounded shrink-0 truncate max-w-[130px]">
+                                                                                {batchName}
+                                                                            </span>
+                                                                        )}
+                                                                        {categoryName && (!course.isLiveClass || categoryName !== batchName) && (
                                                                             <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 truncate max-w-[95px]">
                                                                                 {categoryName}
+                                                                            </span>
+                                                                        )}
+                                                                        <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${course.isLiveClass ? 'bg-emerald-100 text-emerald-700' : 'bg-purple-100 text-purple-700'}`}>
+                                                                            {course.isLiveClass ? 'Live Class' : 'Module Class'}
+                                                                        </span>
+                                                                        {isCourseStarted(course) && (
+                                                                            <span className="text-[10px] font-extrabold text-orange-700 bg-orange-100 px-1.5 py-0.5 rounded shrink-0 flex items-center gap-1">
+                                                                                <Sparkles className="w-2.5 h-2.5" /> Ongoing
+                                                                            </span>
+                                                                        )}
+                                                                        {isCourseNew(course) && (
+                                                                            <span className="text-[10px] font-extrabold text-rose-700 bg-rose-100 px-1.5 py-0.5 rounded shrink-0 flex items-center gap-1">
+                                                                                <Tag className="w-2.5 h-2.5" /> New
                                                                             </span>
                                                                         )}
                                                                     </div>
@@ -746,17 +797,19 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                                                         </div>
 
                                                         {/* Schedule strip */}
-                                                        <div className="pt-2 mt-auto border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
-                                                            <div className="flex items-center gap-1 text-slate-600 truncate mr-2">
-                                                                <Calendar className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                                                                {timeStr === 'Coming Soon' ? (
-                                                                    <span className="text-amber-700 font-extrabold bg-amber-100 px-2 py-0.5 rounded text-[10px] animate-pulse">
-                                                                        Coming Soon
-                                                                    </span>
-                                                                ) : (
-                                                                    <span className="truncate font-bold text-slate-700">{timeStr}</span>
-                                                                )}
-                                                            </div>
+                                                        <div className={`pt-2 mt-auto border-t border-slate-100 flex items-center text-[11px] font-semibold text-slate-500 ${course.isLiveClass ? 'justify-between' : 'justify-end'}`}>
+                                                            {course.isLiveClass && (
+                                                                <div className="flex items-center gap-1 text-slate-600 truncate mr-2">
+                                                                    <Calendar className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                                                                    {timeStr === 'Coming Soon' ? (
+                                                                        <span className="text-amber-700 font-extrabold bg-amber-100 px-2 py-0.5 rounded text-[10px] animate-pulse">
+                                                                            Coming Soon
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span className="truncate font-bold text-slate-700">{timeStr}</span>
+                                                                    )}
+                                                                </div>
+                                                            )}
                                                             <span className={`text-[11px] font-extrabold shrink-0 ${isSelected ? 'text-blue-600 underline' : 'text-slate-400 group-hover:text-blue-600'}`}>
                                                                 {isSelected ? 'Selected' : 'Select'}
                                                             </span>
@@ -832,3 +885,4 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
 };
 
 export default CourseRegistrationModal;
+// Vite HMR trigger

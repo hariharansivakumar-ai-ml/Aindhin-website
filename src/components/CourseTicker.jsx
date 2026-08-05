@@ -3,15 +3,7 @@ import { motion } from 'framer-motion';
 import { apiGetAssignedCourses } from '../utils/apiClient';
 
 const checkIfCourseCompleted = (c) => {
-    if (c.is_ended) return true;
-    if (c.course_start_date) {
-        const startTime = c.start_time || "00:00:00";
-        const courseDateTime = new Date(`${c.course_start_date}T${startTime}`);
-        if (!isNaN(courseDateTime.getTime())) {
-            return new Date() > courseDateTime;
-        }
-    }
-    return false;
+    return !!c.is_ended;
 };
 
 const formatCourseDateAndTime = (dateStr, timeStr) => {

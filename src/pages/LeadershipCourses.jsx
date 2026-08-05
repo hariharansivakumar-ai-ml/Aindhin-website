@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { USER_APP_URL } from '../utils/apiClient';
 import { LayoutGrid, Compass, MessageSquare, TrendingUp } from 'lucide-react';
 import './LeadershipCourses.css';
 
@@ -138,7 +139,14 @@ const LeadershipCourses = () => {
 
                             <div className="p-5 flex flex-col items-start flex-1">
                                 <h3 className="text-base font-bold text-secondary mb-2 leading-tight">
-                                    {course.title}
+                                    <a 
+                                        href={`${USER_APP_URL}/signin`} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="hover:text-primary transition-colors"
+                                    >
+                                        {course.title}
+                                    </a>
                                 </h3>
 
                                 <div className="space-y-2.5 mb-4 flex-1">
@@ -146,17 +154,15 @@ const LeadershipCourses = () => {
                                         <strong className="text-secondary font-bold">Skills you'll gain:</strong> {course.skills}
                                     </p>
 
-                                    <div className="text-[13px] font-bold text-primary bg-blue-50 px-4 py-1.5 rounded-full inline-block">
-                                        {course.duration}
-                                    </div>
+
                                 </div>
 
-                                <Link
-                                    to={course.link}
+                                <a
+                                    href={`${USER_APP_URL}/signin`}
                                     className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
                                 >
                                     Explore More
-                                </Link>
+                                </a>
                             </div>
                         </article>
                     ))}

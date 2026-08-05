@@ -41,6 +41,7 @@ const AiMlCourse = safeLazy(() => import('./pages/AiMlCourse'));
 const UniversityCourses = safeLazy(() => import('./pages/UniversityCourses'));
 const LeadershipCourses = safeLazy(() => import('./pages/LeadershipCourses'));
 const CorporateCourses = safeLazy(() => import('./pages/CorporateCourses'));
+const ModuleCourses = safeLazy(() => import('./pages/ModuleCourses'));
 // const DataAnalystCourse = safeLazy(() => import('./pages/DataAnalystCourse'));
 const TableauCourse = safeLazy(() => import('./pages/TableauCourse'));
 const SqlCourse = safeLazy(() => import('./pages/SqlCourse'));
@@ -124,6 +125,7 @@ function Layout() {
                         <Route path="/course-registration" element={<CourseRegistration />} />
                         <Route path="/university-courses" element={<UniversityCourses />} />
                         <Route path="/corporate-courses" element={<CorporateCourses />} />
+                        <Route path="/module-courses" element={<ModuleCourses />} />
                         <Route path="/leadership-courses" element={<LeadershipCourses />} />
                         <Route path="/ai-machine-learning-from-basics-to-industry-applications" element={<AiMlCourse />} />
 {/* <Route path="/data-analyst-from-fundamentals-to-job‑ready-skills" element={<DataAnalystCourse />} /> */}

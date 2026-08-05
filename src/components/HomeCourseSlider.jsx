@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Play, BookOpen, Clock, Users } from 'lucide-react';
 import { USER_APP_URL } from '../utils/apiClient';
+import SignInModal from './SignInModal';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import digitalMarketingImg from '../assets/digital_marketing_hero.webp';
@@ -25,7 +26,7 @@ import futureSkillsImg from '../assets/future_skills.webp';
    The image section is the same size as the original card so it looks
    like the card itself is growing downward with extra details.
 ───────────────────────────────────────────────────────────────────────────── */
-const ExpandedCard = ({ course, anchorRect, onMouseEnter, onMouseMove, onMouseLeave }) => {
+const ExpandedCard = ({ course, anchorRect, onMouseEnter, onMouseMove, onMouseLeave, onEnrollClick }) => {
     if (!course || !anchorRect) return null;
 
     const left   = anchorRect.left + window.scrollX;
@@ -126,16 +127,13 @@ const ExpandedCard = ({ course, anchorRect, onMouseEnter, onMouseMove, onMouseLe
                         {course.description}
                     </p>
 
-                    <a
-                        href={USER_APP_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-blue-700 text-white text-[13px] font-bold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/30"
-                        style={{ textDecoration: 'none' }}
+                    <button
+                        onClick={onEnrollClick}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-blue-700 text-white text-[13px] font-bold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/30 border-none cursor-pointer"
                     >
                         <Play className="w-3.5 h-3.5 fill-white" />
                         Enroll Now
-                    </a>
+                    </button>
                 </div>
             </div>
         </>,
@@ -227,6 +225,7 @@ const HomeCourseSlider = () => {
     const [anchorRect,    setAnchorRect]    = useState(null);
     const [pausedRowId,   setPausedRowId]   = useState(null);
     const [activeInstanceId, setActiveInstanceId] = useState(null);
+    const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
     const leaveTimer = useRef(null);
     const isOverCard = useRef(false);
 
@@ -337,6 +336,15 @@ const HomeCourseSlider = () => {
                     clearTimeout(leaveTimer.current);
                 }}
                 onMouseLeave={handleLeave}
+                onEnrollClick={() => {
+                    setIsSignInModalOpen(true);
+                    handleLeave();
+                }}
+            />
+
+            <SignInModal 
+                isOpen={isSignInModalOpen} 
+                onClose={() => setIsSignInModalOpen(false)} 
             />
         </section>
     );

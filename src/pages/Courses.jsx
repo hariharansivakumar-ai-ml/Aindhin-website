@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2, Cloud, Search, ChevronDown, Check, X } from 'lucide-react';
+import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2, Cloud, Search, ChevronDown, Check, X, Lock, Flame } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
 import { apiGetAssignedCourses, apiGetPublicCategories, USER_APP_URL, USER_API_URL } from '../utils/apiClient';
 import EnquiryModal from '../components/EnquiryModal';
+import SignInModal from '../components/SignInModal';
+import { encodeCourseId } from '../utils/idObfuscator';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import comingSoonImg from '../assets/coming_soon.webp';
@@ -69,8 +71,12 @@ const getLocalLink = (title) => {
 };
 
 const checkIfCourseCompleted = (c) => {
-    if (c.is_ended) return true;
-    if (c.course_start_date) {
+    return !!c.is_ended;
+};
+
+const checkIfCourseStarted = (c) => {
+    if (c.is_ended) return false;
+    if (c.course_start_date && c.course_start_date.toLowerCase() !== 'flexible') {
         const startTime = c.start_time || "00:00:00";
         const courseDateTime = new Date(`${c.course_start_date}T${startTime}`);
         if (!isNaN(courseDateTime.getTime())) {
@@ -123,9 +129,19 @@ const Courses = () => {
     });
     const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
     const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+    const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+
+    const handleExploreCourse = async (courseId) => {
+        try {
+            const encodedId = await encodeCourseId(courseId);
+            window.open(`${USER_APP_URL}/course/${encodedId}`, '_blank', 'noopener,noreferrer');
+        } catch (error) {
+            console.error('Failed to encode course id', error);
+        }
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -166,7 +182,7 @@ const Courses = () => {
                 const data = await apiGetAssignedCourses();
                 if (data && data.length > 0) {
                     const activeCourses = data
-                        .filter(c => c.is_active && !c.is_deleted)
+                        .filter(c => c.is_active && !c.is_deleted && c.class_mode !== 'Module Class')
                         .sort((a, b) => {
                             const completedA = checkIfCourseCompleted(a);
                             const completedB = checkIfCourseCompleted(b);
@@ -218,10 +234,12 @@ const Courses = () => {
                             level: c.skill_level || "Beginner",
                             duration: c.course_duration || "1 Hours",
                             link: getLocalLink(c.title),
-                            externalLink: `${USER_APP_URL}/course/${c.encrypted_id || c.id}`,
+                            externalLink: `${USER_APP_URL}/signin`,
                             startDate: c.course_start_date,
                             startTime: c.start_time,
-                            isCompleted: checkIfCourseCompleted(c)
+                            isCompleted: checkIfCourseCompleted(c),
+                            isStarted: checkIfCourseStarted(c),
+                            classMode: c.class_mode || "Live Class"
                         };
                     });
                     setCoursesList(mapped);
@@ -470,13 +488,35 @@ const Courses = () => {
                                             e.target.src = comingSoonImg;
                                         }}
                                     />
+                                    <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap z-10">
+                                        <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full text-white border uppercase tracking-wide shadow-sm backdrop-blur-sm ${course.classMode === 'Module Class' ? 'bg-purple-600/80 border-purple-400/30' : 'bg-blue-600/80 border-blue-400/30'}`}>
+                                            {course.classMode}
+                                        </span>
+                                    </div>
+                                    
+                                    {course.isCompleted ? (
+                                        <div className="absolute top-0 right-0 z-10">
+                                            <div className="bg-[#D32F2F] text-white text-[12px] font-semibold px-2.5 py-1.5 rounded-bl-xl flex items-center gap-1.5">
+                                                <Lock className="w-3.5 h-3.5" />
+                                                Registration closed
+                                            </div>
+                                        </div>
+                                    ) : course.isStarted ? (
+                                        <div className="absolute top-0 right-0 z-10">
+                                            <div className="bg-[#FF9800] text-white text-[12px] font-semibold px-2.5 py-1.5 rounded-bl-xl flex items-center gap-1.5">
+                                                <Flame className="w-3.5 h-3.5" />
+                                                Ongoing - Register soon
+                                            </div>
+                                        </div>
+                                    ) : null}
+
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 </div>
 
                                 <div className="p-5 flex flex-col items-start flex-1">
                                     <h3 className="text-base font-bold text-secondary mb-2 leading-tight">
                                         <a 
-                                            href={course.externalLink} 
+                                            href={`${USER_APP_URL}/signin`} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
                                             className="hover:text-primary transition-colors"
@@ -498,8 +538,7 @@ const Courses = () => {
                                                         <span className="text-secondary font-bold">{course.rating}</span>
                                                         <span>({course.reviews})</span>
                                                     </span>
-                                                    <span>•</span>
-                                                    <span>{course.duration}</span>
+
                                                 </div>
 
                                                 {!course.isCompleted && course.startDate && (
@@ -512,23 +551,12 @@ const Courses = () => {
                                             </div>
 
                                             {!course.isCompleted ? (
-                                                staticRoutes.includes(course.link) ? (
-                                                    <Link
-                                                        to={course.link}
-                                                        className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200"
-                                                    >
-                                                        Explore Course
-                                                    </Link>
-                                                ) : (
-                                                    <a
-                                                        href={course.externalLink}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200 font-inter"
-                                                    >
-                                                        Explore Course
-                                                    </a>
-                                                )
+                                                <button
+                                                    onClick={() => handleExploreCourse(course.id)}
+                                                    className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold no-underline transition-all duration-300 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200 cursor-pointer border-none"
+                                                >
+                                                    Explore Course
+                                                </button>
                                             ) : (
                                                 <button 
                                                     onClick={() => {
@@ -580,6 +608,11 @@ const Courses = () => {
                 isOpen={isEnquiryModalOpen} 
                 onClose={() => setIsEnquiryModalOpen(false)} 
                 courseTitle={selectedCourseTitle} 
+            />
+
+            <SignInModal 
+                isOpen={isSignInModalOpen} 
+                onClose={() => setIsSignInModalOpen(false)} 
             />
         </section>
     );
