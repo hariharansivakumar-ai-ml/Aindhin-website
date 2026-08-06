@@ -14,7 +14,7 @@ import {
 import AdminSidebar from '../components/AdminSidebar';
 
 const frequencyOptions = [
-    'Once', 'Mon - Fri', 'Mon, Wed, Fri', 'Tue, Thu',
+    'Once', 'Mon - Fri', 'Mon - Sat', 'Mon, Wed, Fri', 'Tue, Thu',
     'Every Monday', 'Every Tuesday', 'Every Wednesday', 'Every Thursday', 'Every Friday',
     'Every Saturday', 'Every Sunday', 'All 7 days'
 ];
@@ -102,6 +102,7 @@ const AdminCourses = () => {
             const getAllowedDays = (freq) => {
                 switch (freq) {
                     case 'Mon - Fri': return [1, 2, 3, 4, 5];
+                    case 'Mon - Sat': return [1, 2, 3, 4, 5, 6];
                     case 'Mon, Wed, Fri': return [1, 3, 5];
                     case 'Tue, Thu': return [2, 4];
                     case 'Every Monday': return [1];
