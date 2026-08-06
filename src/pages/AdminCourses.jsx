@@ -15,7 +15,8 @@ import AdminSidebar from '../components/AdminSidebar';
 
 const frequencyOptions = [
     'Once', 'Mon - Fri', 'Mon, Wed, Fri', 'Tue, Thu',
-    'Every Monday', 'Every Tuesday', 'Every Wednesday', 'Every Thursday', 'Every Friday'
+    'Every Monday', 'Every Tuesday', 'Every Wednesday', 'Every Thursday', 'Every Friday',
+    'Every Saturday', 'Every Sunday', 'All 7 days'
 ];
 
 const durationUnits = ['Weeks', 'Months', 'Days', 'Hours'];
@@ -57,6 +58,7 @@ const AdminCourses = () => {
     const [skillLevel, setSkillLevel] = useState('Beginner');
     const [includes, setIncludes] = useState('');
     const [startDate, setStartDate] = useState('');
+    const [completionDate, setCompletionDate] = useState('');
     const [certificateDetails, setCertificateDetails] = useState('');
 
     // Form fields - Tab 5 (Settings)
@@ -76,6 +78,90 @@ const AdminCourses = () => {
     
     // Class mode prompt state
     const [showClassModePrompt, setShowClassModePrompt] = useState(false);
+
+    useEffect(() => {
+        if (!durationVal || !durationUnit || classMode === 'Module Class') {
+            setCompletionDate('');
+            return;
+        }
+
+        try {
+            const start = startDate ? new Date(startDate) : new Date();
+            if (isNaN(start.getTime())) {
+                setCompletionDate('');
+                return;
+            }
+
+            let end = new Date(start);
+            const duration = parseInt(durationVal, 10);
+            if (isNaN(duration)) {
+                setCompletionDate('');
+                return;
+            }
+
+            const getAllowedDays = (freq) => {
+                switch (freq) {
+                    case 'Mon - Fri': return [1, 2, 3, 4, 5];
+                    case 'Mon, Wed, Fri': return [1, 3, 5];
+                    case 'Tue, Thu': return [2, 4];
+                    case 'Every Monday': return [1];
+                    case 'Every Tuesday': return [2];
+                    case 'Every Wednesday': return [3];
+                    case 'Every Thursday': return [4];
+                    case 'Every Friday': return [5];
+                    case 'Every Saturday': return [6];
+                    case 'Every Sunday': return [0]; // Sunday is 0 in JS
+                    case 'All 7 days': return [0, 1, 2, 3, 4, 5, 6];
+                    default: return [1, 2, 3, 4, 5];
+                }
+            };
+
+            if (frequency === 'Once') {
+                end = new Date(start);
+            } else if (durationUnit === 'Hours') {
+                const daysToAdd = duration > 0 ? Math.floor((duration - 1) / 24) : 0;
+                end.setDate(end.getDate() + daysToAdd);
+            } else if (durationUnit === 'Days' && frequency !== 'Once') {
+                let counted = 0;
+                let current = new Date(start);
+                const allowedDays = getAllowedDays(frequency);
+                
+                while (counted < duration) {
+                    if (allowedDays.includes(current.getDay())) {
+                        counted++;
+                    }
+                    if (counted < duration) {
+                        current.setDate(current.getDate() + 1);
+                    }
+                }
+                end = current;
+            } else if (durationUnit === 'Days') {
+                const daysToAdd = duration - 1 >= 0 ? duration - 1 : 0;
+                end.setDate(end.getDate() + daysToAdd);
+            } else if (durationUnit === 'Weeks') {
+                end.setDate(end.getDate() + duration * 7 - 1);
+            } else if (durationUnit === 'Months') {
+                let newMonth = start.getMonth() + duration; // 0-indexed
+                end.setMonth(newMonth);
+                end.setDate(end.getDate() - 1);
+            }
+
+            if ((durationUnit === 'Weeks' || durationUnit === 'Months') && frequency !== 'Once') {
+                const allowedDays = getAllowedDays(frequency);
+                while (!allowedDays.includes(end.getDay()) && end > start) {
+                    end.setDate(end.getDate() - 1);
+                }
+            }
+
+            const yyyy = end.getFullYear();
+            const mm = String(end.getMonth() + 1).padStart(2, '0');
+            const dd = String(end.getDate()).padStart(2, '0');
+            setCompletionDate(`${yyyy}-${mm}-${dd}`);
+
+        } catch (e) {
+            setCompletionDate('');
+        }
+    }, [startDate, durationVal, durationUnit, frequency, classMode]);
 
     useEffect(() => {
         const checkAuthAndLoad = async () => {
@@ -904,14 +990,26 @@ const AdminCourses = () => {
                                         {/* Selectable Date & Skill Level */}
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                             {classMode !== 'Module Class' ? (
-                                                <div>
-                                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Course Start Date</label>
-                                                    <input
-                                                        type="date"
-                                                        value={startDate}
-                                                        onChange={(e) => setStartDate(e.target.value)}
-                                                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15 cursor-pointer"
-                                                    />
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Course Start Date</label>
+                                                        <input
+                                                            type="date"
+                                                            value={startDate}
+                                                            onChange={(e) => setStartDate(e.target.value)}
+                                                            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15 cursor-pointer"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Completion Date</label>
+                                                        <input
+                                                            type="text"
+                                                            readOnly
+                                                            value={completionDate}
+                                                            placeholder="Auto-calculated"
+                                                            className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 font-medium cursor-not-allowed"
+                                                        />
+                                                    </div>
                                                 </div>
                                             ) : <div />}
                                             <div>
