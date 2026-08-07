@@ -35,6 +35,7 @@ const AdminAnalytics = safeLazy(() => import('./pages/AdminAnalytics'));
 const AdminEnquiries = safeLazy(() => import('./pages/AdminEnquiries'));
 const AdminCourses = safeLazy(() => import('./pages/AdminCourses'));
 const AdminEnrollments = safeLazy(() => import('./pages/AdminEnrollments'));
+const AdminUsers = safeLazy(() => import('./pages/AdminUsers'));
 
 // Course Pages
 const AiMlCourse = safeLazy(() => import('./pages/AiMlCourse'));
@@ -110,6 +111,7 @@ function Layout() {
                         <Route path="/wp-admin/dashboard" element={<AdminDashboard />} />
                         <Route path="/wp-admin/courses" element={<AdminCourses />} />
                         <Route path="/wp-admin/enrollments" element={<AdminEnrollments />} />
+                        <Route path="/wp-admin/users" element={<AdminUsers />} />
                         <Route path="/wp-admin/add-new" element={<AddBlogPost />} />
                         <Route path="/wp-admin/all-blogs" element={<AllBlogs />} />
                         <Route path="/wp-admin/edit/:id" element={<AdminEditPost />} />

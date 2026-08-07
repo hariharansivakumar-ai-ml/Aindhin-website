@@ -152,7 +152,8 @@ const CourseRegistration = () => {
                         start_time: c.start_time || null,
                         end_time: c.end_time || null,
                         image_url: c.image_url || c.thumbnail_url || c.image || null,
-                        isLiveClass: c.class_mode ? (c.class_mode === 'Live Class') : isLiveBatch
+                        isLiveClass: c.class_mode ? (c.class_mode === 'Live Class') : isLiveBatch,
+                        unique_id: isLiveBatch ? `batch_${c.id || c.course_id}` : `course_${c.id || c.course_id}`
                     });
                 };
 
@@ -183,9 +184,7 @@ const CourseRegistration = () => {
                 });
 
                 setCourses(combined);
-                if (combined.length > 0 && !selectedCourseId) {
-                    setSelectedCourseId(String(combined[0].id || combined[0].course_id));
-                }
+                // Removed auto-selection so the user must explicitly choose a course
             } catch (err) {
                 console.error('Failed to load courses:', err);
             } finally {
@@ -331,7 +330,7 @@ const CourseRegistration = () => {
         setTimeout(() => setCopied(false), 3000);
     };
 
-    const selectedCourseData = courses.find((c) => String(c.id || c.course_id) === String(selectedCourseId));
+    const selectedCourseData = courses.find((c) => c.unique_id === String(selectedCourseId));
 
     return (
         <div className="min-h-screen bg-slate-50 relative overflow-hidden text-slate-800 pb-24">
@@ -697,7 +696,7 @@ const CourseRegistration = () => {
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {filteredCourses.map((course) => {
-                                            const cId = String(course.id || course.course_id);
+                                            const cId = course.unique_id;
                                             const isSelected = String(selectedCourseId) === cId;
                                             const timeStr = formatCourseDateTime(course);
                                             const batchName = course.batch_name || 'Live Training';
