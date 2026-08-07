@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     X,
@@ -64,6 +64,7 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
     const [generatedPassword, setGeneratedPassword] = useState('');
     const [copied, setCopied] = useState(false);
     const [showAlreadyEnrolledModal, setShowAlreadyEnrolledModal] = useState(false);
+    const didAutoSelectRef = useRef(false);
 
     // Lock background page scroll when dialog modal is open
     useEffect(() => {
@@ -127,6 +128,7 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
             setIsSuccess(false);
             setSubmitting(false);
             setErrorMsg(null);
+            didAutoSelectRef.current = false;
             return;
         }
         
@@ -182,7 +184,8 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                         start_time: c.start_time || null,
                         end_time: c.end_time || null,
                         image_url: c.image_url || c.thumbnail_url || c.image || null,
-                        isLiveClass: c.class_mode ? (c.class_mode === 'Live Class') : isLiveBatch
+                        isLiveClass: c.class_mode ? (c.class_mode === 'Live Class') : isLiveBatch,
+                        unique_id: isLiveBatch ? `batch_${c.id || c.course_id}` : `course_${c.id || c.course_id}`
                     });
                 };
 
@@ -213,9 +216,6 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                 });
 
                 setCourses(combined);
-                if (combined.length > 0 && !selectedCourseId) {
-                    setSelectedCourseId(String(combined[0].id || combined[0].course_id));
-                }
             } catch (err) {
                 console.error('Failed to fetch courses for dialog:', err);
             } finally {
@@ -225,6 +225,28 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
 
         fetchAllCourses();
     }, [isOpen]);
+
+    useEffect(() => {
+        if (!courses.length) return;
+
+        if (selectedCourseId) {
+            const resolved = courses.find((course) =>
+                String(course.unique_id) === String(selectedCourseId) ||
+                String(course.id) === String(selectedCourseId) ||
+                String(course.course_id) === String(selectedCourseId)
+            );
+
+            if (resolved && String(resolved.unique_id) !== String(selectedCourseId)) {
+                setSelectedCourseId(resolved.unique_id);
+            }
+            return;
+        }
+
+        if (!didAutoSelectRef.current) {
+            setSelectedCourseId(courses[0].unique_id);
+            didAutoSelectRef.current = true;
+        }
+    }, [courses, selectedCourseId]);
 
     if (!isOpen) return null;
 
@@ -363,7 +385,7 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
         setTimeout(() => setCopied(false), 3000);
     };
 
-    const selectedCourseData = courses.find((c) => String(c.id || c.course_id) === String(selectedCourseId));
+    const selectedCourseData = courses.find((c) => String(c.unique_id) === String(selectedCourseId));
 
     return (
         <AnimatePresence>
@@ -733,7 +755,7 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                                     ) : (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                             {filteredCourses.map((course) => {
-                                                const cId = String(course.id || course.course_id);
+                                                const cId = String(course.unique_id);
                                                 const isSelected = String(selectedCourseId) === cId;
                                                 const timeStr = formatCourseDateTime(course);
                                                 const batchName = course.batch_name || 'Live Training';

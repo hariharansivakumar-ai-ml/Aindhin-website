@@ -330,7 +330,7 @@ const CourseRegistration = () => {
         setTimeout(() => setCopied(false), 3000);
     };
 
-    const selectedCourseData = courses.find((c) => c.unique_id === String(selectedCourseId));
+    const selectedCourseData = courses.find((c) => String(c.unique_id) === String(selectedCourseId));
 
     return (
         <div className="min-h-screen bg-slate-50 relative overflow-hidden text-slate-800 pb-24">
