@@ -4,7 +4,7 @@ import { ChevronDown, ChevronRight, Menu, X, LayoutGrid, Sparkles } from 'lucide
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import CourseTicker from './CourseTicker';
-import CourseRegistrationModal from './CourseRegistrationModal';
+
 import { USER_APP_URL, apiGetPublicCategories } from '../utils/apiClient';
 
 import logo from '../assets/logo_aindhin.webp';
@@ -18,7 +18,7 @@ const Header = () => {
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileCoursesOpen, setIsMobileCoursesOpen] = useState(false);
-    const [isRegModalOpen, setIsRegModalOpen] = useState(false);
+
     const [isScrolled, setIsScrolled] = useState(false);
     const [dynamicCategories, setDynamicCategories] = useState(() => {
         try {
@@ -282,14 +282,13 @@ const Header = () => {
 
                 {/* Right Section: Login & Mobile Toggle */}
                 <div className="flex items-center gap-3 sm:gap-4">
-                    <button
-                        type="button"
-                        onClick={() => setIsRegModalOpen(true)}
+                    <Link
+                        to="/course-registration"
                         className="hidden md:inline-flex items-center justify-center px-4.5 sm:px-5 py-2.5 rounded-full bg-blue-50/90 hover:bg-blue-100 text-blue-700 font-extrabold text-[14px] border border-blue-200 shadow-sm hover:shadow transition-all duration-200 gap-2"
                     >
                         <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
                         Register Courses
-                    </button>
+                    </Link>
 
                     <a
                         href={`${USER_APP_URL}/signin`}
@@ -354,16 +353,13 @@ const Header = () => {
                     </Link>
                     <Link to="/contact-us" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-secondary">Contact Us</Link>
 
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setIsMobileMenuOpen(false);
-                            setIsRegModalOpen(true);
-                        }}
+                    <Link
+                        to="/course-registration"
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className="mt-4 w-full py-3.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full font-extrabold text-base shadow-sm border border-blue-200 transition-colors flex items-center justify-center gap-2"
                     >
                         <Sparkles className="w-5 h-5 text-blue-600" /> Register Courses
-                    </button>
+                    </Link>
                     <a href={`${USER_APP_URL}/signin`} target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 text-center py-4 bg-primary text-white rounded-full font-bold shadow-lg">Login / Sign Up</a>
                 </div>
             </div>
@@ -371,8 +367,7 @@ const Header = () => {
             {/* Course Ticker rendered exactly below the header navigation */}
             <CourseTicker />
 
-            {/* Course Registration Modal Dialog */}
-            <CourseRegistrationModal isOpen={isRegModalOpen} onClose={() => setIsRegModalOpen(false)} />
+
         </header>
     );
 };
