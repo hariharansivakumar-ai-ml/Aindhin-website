@@ -160,9 +160,10 @@ export const apiGetAdminPanelCourses = async () => {
     if (!res.ok) throw new Error('Failed to fetch admin courses');
     return res.json();
 };
-export const apiGetAdminPanelUsers = async () => {
+export const apiGetAdminPanelUsers = async (pageUrl = null) => {
     const apiKey = import.meta.env.VITE_AINDHIN_PUBLIC_KEY || 'AINDHIN_PUBLIC_KEY_123';
-    const res = await fetch(`${USER_API_URL}/api/admin-panel/users/`, {
+    const url = pageUrl || `${USER_API_URL}/api/admin-panel/users/`;
+    const res = await fetch(url, {
         headers: { 'X-API-Key': apiKey, 'Authorization': `Bearer ${getToken()}` }
     });
     if (!res.ok) throw new Error('Failed to fetch admin users');

@@ -20,6 +20,7 @@ const ContactUs = safeLazy(() => import('./pages/ContactUs'));
 const DownloadApp = safeLazy(() => import('./pages/DownloadApp'));
 const Blogs = safeLazy(() => import('./pages/Blogs'));
 const CourseRegistration = safeLazy(() => import('./pages/CourseRegistration'));
+const CourseRegistrationSuccess = safeLazy(() => import('./pages/CourseRegistrationSuccess'));
 const AdminLogin = safeLazy(() => import('./pages/AdminLogin'));
 const AdminDashboard = safeLazy(() => import('./pages/AdminDashboard'));
 const AddBlogPost = safeLazy(() => import('./pages/AddBlogPost'));
@@ -125,6 +126,7 @@ function Layout() {
                         <Route path="/our-courses" element={<Courses />} />
                         <Route path="/course-registration-form" element={<CourseRegistration />} />
                         <Route path="/course-registration" element={<CourseRegistration />} />
+                        <Route path="/course-registration-success" element={<CourseRegistrationSuccess />} />
                         <Route path="/university-courses" element={<UniversityCourses />} />
                         <Route path="/corporate-courses" element={<CorporateCourses />} />
                         <Route path="/module-courses" element={<ModuleCourses />} />

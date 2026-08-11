@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     User,
@@ -43,6 +44,7 @@ const COUNTRY_CODES = [
 ];
 
 const CourseRegistration = () => {
+    const navigate = useNavigate();
     // Form States
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -60,9 +62,6 @@ const CourseRegistration = () => {
     const [loadingCourses, setLoadingCourses] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [generatedPassword, setGeneratedPassword] = useState('');
-    const [copied, setCopied] = useState(false);
     const [showAlreadyEnrolledModal, setShowAlreadyEnrolledModal] = useState(false);
 
     const getCourseImage = (img) => {
@@ -308,9 +307,13 @@ const CourseRegistration = () => {
                 selectedCourseId || ''
             );
 
-            setIsSuccess(true);
-            setGeneratedPassword(response?.password || 'Sent to your registered email');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            navigate('/course-registration-success', {
+                state: {
+                    email: email.trim(),
+                    generatedPassword: response?.password || 'Sent to your registered email',
+                    selectedCourseData: courses.find((c) => String(c.unique_id) === String(selectedCourseId))
+                }
+            });
         } catch (err) {
             const msg = err.message || 'Registration failed';
             if (msg.includes('already_enrolled') || msg.toLowerCase().includes('already enrolled')) {
@@ -321,13 +324,6 @@ const CourseRegistration = () => {
         } finally {
             setSubmitting(false);
         }
-    };
-
-    const handleCopyCredentials = () => {
-        const textToCopy = `Email: ${email.trim()}\nPassword: ${generatedPassword}`;
-        navigator.clipboard.writeText(textToCopy);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 3000);
     };
 
     const selectedCourseData = courses.find((c) => String(c.unique_id) === String(selectedCourseId));
@@ -380,118 +376,8 @@ const CourseRegistration = () => {
                     {/* Top Decorative Line */}
                     <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600" />
 
-                    {isSuccess ? (
-                        /* SUCCESS VIEW */
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4 }}
-                            className="space-y-8 text-center py-4 max-w-2xl mx-auto"
-                        >
-                            <div className="w-24 h-24 bg-emerald-50 border-2 border-emerald-200 rounded-full flex items-center justify-center mx-auto shadow-md">
-                                <CheckCircle2 className="w-14 h-14 text-emerald-600 animate-bounce" />
-                            </div>
-
-                            <div>
-                                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight font-outfit">
-                                    Registration Confirmed!
-                                </h2>
-                                <p className="text-slate-600 mt-2 text-sm sm:text-base max-w-md mx-auto">
-                                    Your student account and credentials have been successfully generated below.
-                                </p>
-                            </div>
-
-                            {/* Credentials Box */}
-                            <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6 text-left relative shadow-inner">
-                                <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
-                                    <span className="text-sm font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                                        <Award className="w-4 h-4 text-blue-600" /> Your Portal Credentials
-                                    </span>
-                                    <button
-                                        type="button"
-                                        onClick={handleCopyCredentials}
-                                        className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-lg bg-white border border-slate-200 shadow-sm hover:bg-slate-100 text-slate-800 transition-colors"
-                                    >
-                                        {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
-                                        {copied ? 'Copied!' : 'Copy Credentials'}
-                                    </button>
-                                </div>
-
-                                <div className="space-y-3 font-mono text-sm sm:text-base">
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-                                        <span className="text-slate-500 font-sans text-xs sm:text-sm font-medium">Email Address:</span>
-                                        <span className="font-bold text-slate-900 break-all">{email.trim()}</span>
-                                    </div>
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-                                        <span className="text-slate-500 font-sans text-xs sm:text-sm font-medium">Generated Password:</span>
-                                        <span className="font-extrabold text-blue-600 text-base">{generatedPassword}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Selected Course Display */}
-                            {selectedCourseData && (
-                                <div className="bg-blue-50/80 rounded-2xl p-5 border border-blue-200 text-left">
-                                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-blue-900 mb-3 flex items-center gap-1.5">
-                                        <Calendar className="w-4 h-4 text-blue-600" /> Enrolled Course Batch
-                                    </h4>
-                                    <div className="flex items-center gap-4">
-                                        <img
-                                            src={getCourseImage(selectedCourseData.image_url)}
-                                            onError={(e) => { e.target.src = comingSoonImg; }}
-                                            alt={selectedCourseData.course_title}
-                                            className="w-14 h-14 rounded-xl object-cover border border-blue-200 shrink-0 shadow-xs"
-                                        />
-                                        <div className="min-w-0">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="font-mono text-xs font-extrabold text-blue-800 bg-blue-100 px-2 py-0.5 rounded">
-                                                    {formatCourseId(selectedCourseData)}
-                                                </span>
-                                                <span className="inline-block px-2.5 py-0.5 rounded text-xs font-extrabold bg-indigo-100 text-indigo-900">
-                                                    {selectedCourseData.batch_name || 'Confirmed Batch'}
-                                                </span>
-                                            </div>
-                                            <h3 className="font-bold text-slate-900 text-base sm:text-lg truncate">
-                                                {selectedCourseData.course_title || 'Course'}
-                                            </h3>
-                                            <p className="text-xs text-slate-500 mt-1 flex items-center gap-1 font-medium">
-                                                <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                                                <span className="truncate">{formatCourseDateTime(selectedCourseData)}</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* CTA Actions */}
-                            <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href={`${USER_APP_URL}/signin?redirect=live`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base sm:text-lg shadow-lg shadow-blue-500/25 transition-all inline-flex items-center justify-center gap-2.5 hover:scale-[1.02] active:scale-[0.98]"
-                                >
-                                    <LogIn className="w-5 h-5" /> Sign In to Learning Portal
-                                </a>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsSuccess(false);
-                                        setName('');
-                                        setEmail('');
-                                        setPhone('');
-                                        setSelectedCourseId(null);
-                                        window.location.reload();
-                                    }}
-                                    className="px-6 py-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm sm:text-base transition-all inline-flex items-center justify-center gap-2"
-                                >
-                                    Register Another Course
-                                </button>
-                            </div>
-                        </motion.div>
-                    ) : (
-                        /* REGISTRATION FORM */
-                        <form onSubmit={handleRegister} className="space-y-8">
+                    {/* REGISTRATION FORM */}
+                    <form onSubmit={handleRegister} className="space-y-8">
                             {errorMsg && (
                                 <motion.div
                                     initial={{ opacity: 0, y: -10 }}
@@ -803,8 +689,7 @@ const CourseRegistration = () => {
                                     )}
                                 </button>
                             </div>
-                        </form>
-                    )}
+                    </form>
                 </motion.div>
             </div>
 
