@@ -30,20 +30,10 @@
 # ONLY applies to files inside /assets/ which Vite stamps with a content hash.
 # The hash changes with every file change, so `immutable` is safe — browsers will
 # never request the same URL twice for different content.
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase   /
-
-    # Match requests to /assets/*.js and /assets/*.css specifically
-    RewriteCond %{REQUEST_URI} ^/assets/.*\.(js|css)$
-    RewriteRule ^ - [L,E=ASSET_HASHED:1]
+SetEnvIf Request_URI "^/assets/.*\.(js|css)$" IS_HASHED_ASSET
+<IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable" env=IS_HASHED_ASSET
 </IfModule>
-
-<FilesMatch "^assets/.*\.(js|css)$">
-    <IfModule mod_headers.c>
-        Header set Cache-Control "public, max-age=31536000, immutable"
-    </IfModule>
-</FilesMatch>
 
 # ── Static media assets — long-term but revalidatable ─────────────────────────
 # Images and fonts are also hash-named by Vite so immutable is safe here too.

@@ -98,7 +98,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const backendUrl = env.VITE_API_URL || 'https://api2.aindhin.com/api'
 
-  let backendOrigin = 'http://localhost:8080'
+  let backendOrigin = env.VITE_BACKEND_TARGET || 'http://localhost:5000'
   if (backendUrl && backendUrl.startsWith('http')) {
     try {
       backendOrigin = new URL(backendUrl).origin

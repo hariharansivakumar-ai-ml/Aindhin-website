@@ -58,25 +58,31 @@ const AdminEditPost = () => {
                 let recoveredAlt = data.image_alt || '';
                 
                 // Content Recovery Logic
-                let mainBody = data.content || data.article_body || data.body || '';
                 let desc = data.description || '';
+                let mainBody = '';
 
-                try {
+                if (desc) {
                     const trimmed = desc.trim();
                     if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
-                        const parsed = JSON.parse(trimmed);
-                        if (!mainBody) mainBody = parsed.metaDescription || '';
-                        if (!recoveredAlt) recoveredAlt = parsed.featuredImageAlt || '';
-                        
-                        setMetaTitle(parsed.metaTitle || '');
-                        setMetaDescription(parsed.metaDescription || '');
-                        setFocusKeyword(parsed.focusedKeyword || '');
-                        if (parsed.tags) setTags(Array.isArray(parsed.tags) ? parsed.tags : parsed.tags.split(','));
-                    } else if (desc && !mainBody) {
+                        try {
+                            const parsed = JSON.parse(trimmed);
+                            mainBody = data.content || data.article_body || data.body || parsed.metaDescription || '';
+                            if (!recoveredAlt) recoveredAlt = parsed.featuredImageAlt || '';
+                            
+                            setMetaTitle(parsed.metaTitle || '');
+                            setMetaDescription(parsed.metaDescription || '');
+                            setFocusKeyword(parsed.focusedKeyword || '');
+                            if (parsed.tags) setTags(Array.isArray(parsed.tags) ? parsed.tags : parsed.tags.split(','));
+                        } catch (e) {
+                            mainBody = desc;
+                        }
+                    } else {
                         mainBody = desc;
                     }
-                } catch (e) {
-                    if (desc && !mainBody) mainBody = desc;
+                }
+
+                if (!mainBody) {
+                    mainBody = data.content || data.article_body || data.body || '';
                 }
 
                 setImageAlt(recoveredAlt);

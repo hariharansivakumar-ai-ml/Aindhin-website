@@ -1,13 +1,23 @@
 import { motion } from 'framer-motion';
 import { fadeIn } from '../utils/motion';
-import { MapPin, Phone, Mail, Monitor, ArrowDown } from 'lucide-react';
+import { MapPin, Phone, Mail, Monitor, ArrowDown, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import mobilePicImg from '../assets/mobile pic.webp';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { apiSubmitEnquiry } from '../utils/apiClient';
 
 const ContactUs = () => {
     const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        message: ''
+    });
+    const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         document.title = "Contact Aindhin | Get Expert Guidance on Your Learning Journey";
@@ -16,6 +26,68 @@ const ContactUs = () => {
             metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
         }
     }, []);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus('loading');
+        setErrorMessage('');
+
+        // 1. Submit to Backend DB so Admin can view in /wp-admin/enquiries
+        try {
+            await apiSubmitEnquiry({
+                name: formData.name.trim(),
+                email: formData.email.trim(),
+                phone: formData.phone.trim(),
+                course_title: 'Contact Us Form',
+                message: formData.message.trim()
+            });
+        } catch (backendErr) {
+            console.warn('Backend DB submission notice:', backendErr);
+        }
+
+        // 2. Submit to FormSubmit AJAX endpoint using URLSearchParams
+        try {
+            const params = new URLSearchParams();
+            params.append('name', formData.name.trim());
+            params.append('email', formData.email.trim());
+            params.append('phone', formData.phone.trim());
+            params.append('message', formData.message.trim());
+            params.append('_subject', 'New Submission from Aindhin Contact Form');
+            params.append('_cc', 'info.aindhin@gmail.com,connect@aindhin.com');
+            params.append('_template', 'table');
+            params.append('_captcha', 'false');
+
+            const response = await fetch('https://formsubmit.co/ajax/aindhinbackup@gmail.com', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                body: params
+            });
+
+            const data = await response.json();
+
+            if (data.success === 'true' || data.success === true) {
+                setStatus('success');
+                setFormData({ name: '', email: '', phone: '', message: '' });
+            } else if (data.message && data.message.toLowerCase().includes('activation')) {
+                setStatus('error');
+                setErrorMessage("FormSubmit Activation Required: An email with an 'Activate Form' button was sent to aindhinbackup@gmail.com. Please open aindhinbackup@gmail.com, click 'Activate Form', and future messages will be sent automatically.");
+            } else {
+                setStatus('error');
+                setErrorMessage(data.message || 'Submission failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Contact form submission error:', error);
+            setStatus('error');
+            setErrorMessage('Unable to connect to email server. Please check your connection or try again.');
+        }
+    };
 
     return (
         <div className="min-h-screen bg-white flex flex-col pt-32 lg:pt-36 pb-0 relative overflow-hidden">
@@ -164,42 +236,100 @@ const ContactUs = () => {
                         className="bg-white p-8 lg:p-10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 w-full"
                     >
                         <form
-                            action="https://formsubmit.co/your@email.com"
+                            action="https://formsubmit.co/aindhinbackup@gmail.com"
                             method="POST"
+                            onSubmit={handleSubmit}
                             className="flex flex-col gap-5"
                         >
                             {/* FormSubmit Configuration */}
                             <input type="hidden" name="_subject" value="New Submission from Aindhin Contact Form" />
+                            <input type="hidden" name="_cc" value="info.aindhin@gmail.com,connect@aindhin.com" />
                             <input type="hidden" name="_captcha" value="false" />
-                            <input type="hidden" name="_next" value="http://localhost:5173/contact-us" />
+                            <input type="hidden" name="_next" value={typeof window !== 'undefined' ? window.location.href : 'http://localhost:5173/contact-us'} />
                             <input type="hidden" name="_template" value="table" />
+
+                            {status === 'success' && (
+                                <div className="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-sm font-semibold">
+                                    <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
+                                    <span>Thank you! Your message has been sent to both the admin and backup email. We will get back to you shortly.</span>
+                                </div>
+                            )}
+
+                            {status === 'error' && (
+                                <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-semibold">
+                                    <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+                                    <span>{errorMessage || 'Failed to submit message. Please try again.'}</span>
+                                </div>
+                            )}
 
                             {/* Name */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-gray-700 font-bold font-inter text-sm">Name <span className="text-red-500">*</span></label>
-                                <input type="text" name="name" placeholder="Enter Your Name" required className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white" />
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="Enter Your Name"
+                                    required
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white"
+                                />
                             </div>
 
                             {/* Email */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-gray-700 font-bold font-inter text-sm">Email <span className="text-red-500">*</span></label>
-                                <input type="email" name="email" placeholder="Email Address" required className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white" />
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="Email Address"
+                                    required
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white"
+                                />
                             </div>
 
                             {/* Phone */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-gray-700 font-bold font-inter text-sm">Phone Number <span className="text-red-500">*</span></label>
-                                <input type="text" name="phone" placeholder="Enter your Phone Number" required className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white" />
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    placeholder="Enter your Phone Number"
+                                    required
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white"
+                                />
                             </div>
 
                             {/* Message */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-gray-700 font-bold font-inter text-sm">Message <span className="text-red-500">*</span></label>
-                                <textarea name="message" rows="4" required className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none font-inter bg-gray-50/50 focus:bg-white"></textarea>
+                                <textarea
+                                    name="message"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    rows="4"
+                                    required
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none font-inter bg-gray-50/50 focus:bg-white"
+                                ></textarea>
                             </div>
 
-                            <button type="submit" className="mt-2 bg-primary text-white py-4 rounded-xl font-bold font-inter text-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 active:scale-[0.98]">
-                                Submit Form
+                            <button
+                                type="submit"
+                                disabled={status === 'loading'}
+                                className="mt-2 bg-primary text-white py-4 rounded-xl font-bold font-inter text-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
+                            >
+                                {status === 'loading' ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        <span>Submitting...</span>
+                                    </>
+                                ) : (
+                                    'Submit Form'
+                                )}
                             </button>
                         </form>
                     </motion.div>

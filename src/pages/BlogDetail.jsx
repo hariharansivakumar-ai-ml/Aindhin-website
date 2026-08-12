@@ -280,22 +280,26 @@ const BlogDetail = () => {
                                     className="blog-content text-gray-700 leading-relaxed mb-10"
                                     dangerouslySetInnerHTML={{
                                         __html: (() => {
-                                            // 1. Try to find the main body in multiple fields
-                                            let body = blog.content || blog.article_body || blog.body || '';
+                                            // 1. Try to use description (where editor saves content) unless it's legacy JSON
                                             let desc = blog.description || '';
+                                            let body = '';
 
-                                            // 2. Handle JSON data recovery
-                                            try {
+                                            if (desc) {
                                                 const trimmed = desc.trim();
                                                 if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
-                                                    const parsed = JSON.parse(trimmed);
-                                                    // If main body is empty, use the metaDescription from JSON
-                                                    if (!body) body = parsed.metaDescription || '';
-                                                } else if (desc && !body) {
+                                                    try {
+                                                        const parsed = JSON.parse(trimmed);
+                                                        body = blog.content || blog.article_body || blog.body || parsed.metaDescription || '';
+                                                    } catch (e) {
+                                                        body = desc;
+                                                    }
+                                                } else {
                                                     body = desc;
                                                 }
-                                            } catch (e) {
-                                                if (desc && !body) body = desc;
+                                            }
+
+                                            if (!body) {
+                                                body = blog.content || blog.article_body || blog.body || '';
                                             }
 
                                             return cleanBlogContent(body);
@@ -654,13 +658,14 @@ const BlogDetail = () => {
                 }
                 
                 .blog-content blockquote { 
-                    border-left: 4px solid #3b82f6; 
-                    padding: 1.5rem 2rem; 
-                    background: #f8fafc; 
-                    color: #334155; 
-                    font-style: italic; 
-                    margin: 2rem 0; 
-                    border-radius: 0 1rem 1rem 0; 
+                    border-left: 4px solid #f97316; 
+                    padding: 1.25rem 1.5rem; 
+                    background-color: #f7eded; 
+                    color: #1f2937; 
+                    font-style: normal; 
+                    margin: 1.5rem 0; 
+                    border-radius: 0.75rem; 
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
                 }
 
                 .blog-content pre { 
