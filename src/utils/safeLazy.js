@@ -44,7 +44,13 @@ const extractUrl = (fn) => {
     const str = fn.toString();
     // Match quoted path strings ending in .js
     const m = str.match(/["'`]([^"'`]+\.js)["'`]/);
-    return m?.[1] ?? null;
+    if (!m?.[1]) return null;
+    let url = m[1];
+    // If it's a relative path like "./AiMlCourse-xxxx.js", ensure it maps under /assets/
+    if (url.startsWith('./') && !url.startsWith('./assets/')) {
+      url = '/assets/' + url.slice(2);
+    }
+    return url;
   } catch {
     return null;
   }
@@ -176,6 +182,28 @@ export const safeLazy = (importFn) => {
           // Signal that safeLazy is handling this — prevents main.jsx handlers
           // from firing checkVersionAndRecover for the same error in parallel
           setHandledFlag();
+
+          // If we haven't already attempted a recovery reload for this path in this session,
+          // reload once immediately to fetch fresh HTML and new chunk hashes from the server.
+          const chunkReloadKey = 'aindhin_chunk_reload_' + window.location.pathname;
+          let hasReloaded = false;
+          try {
+            hasReloaded = Boolean(sessionStorage.getItem(chunkReloadKey));
+          } catch { /* ignore */ }
+
+          if (!hasReloaded && !isReloadCoolingDown()) {
+            try {
+              sessionStorage.setItem(chunkReloadKey, '1');
+              logWarning('safeLazy: chunk missing (new deployment detected). Performing automatic reload.');
+              const url = new URL(window.location.href);
+              url.searchParams.set('reload_t', Date.now().toString());
+              window.location.replace(url.toString());
+              return new Promise(() => {}); // Hold until browser completes reload
+            } catch (e) {
+              window.location.reload();
+              return new Promise(() => {});
+            }
+          }
 
           // If we're already in the reload cooldown window, reject immediately
           // so RecoveryBoundary shows its fallback UI rather than hanging

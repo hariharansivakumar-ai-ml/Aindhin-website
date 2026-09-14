@@ -28,14 +28,34 @@ CAUTION: Never upload a build that failed validate_assets.js. Missing chunks wil
 
 ---
 
-## FileZilla Settings (One-Time Setup)
+## Two Deployment Methods for Hostinger
+
+### Method 1: The Zero-Downtime ZIP Method (Recommended - Fastest & 100% Fail-Proof)
+Uploading 250+ loose files via FTP often hits Hostinger's connection limits and drops chunks. The cleanest way is uploading a single `.zip` file:
+1. Run:
+   ```bash
+   npm run package
+   ```
+   This builds, validates all 256 chunks, and generates `aindhin-website-dist.zip`.
+2. Open Hostinger hPanel → **File Manager** → go to `public_html/`.
+3. Drag & drop `aindhin-website-dist.zip` into `public_html/` (takes ~3 seconds).
+4. Right-click `aindhin-website-dist.zip` → click **Extract** (choose current directory `/public_html`).
+5. Delete `aindhin-website-dist.zip`.
+Done! All assets, `.htaccess`, and `index.html` are updated atomically with 0 dropped files and 0 downtime.
+
+---
+
+### Method 2: FileZilla Direct FTP
+
+#### Critical Hostinger FileZilla Settings (One-Time Setup)
 
 | Setting | Value | Why |
 |---|---|---|
-| Transfer mode | **Active (Binary)** | Prevents line-ending corruption of JS files |
-| Max simultaneous transfers | **4** | FTP servers often reject > 5 parallel connections |
-| Timeout | **60s** | Allows large chunk files to finish uploading |
+| Max simultaneous transfers | **2 (or 3)** | **CRITICAL for Hostinger**: Hostinger drops/blocks connections when > 3 parallel transfers are opened. Setting 10 or 4 causes chunks to silently fail into FileZilla's "Failed transfers" queue! |
+| Transfer mode | **Passive / Binary** | Prevents corruption of JS chunks and WebP images |
+| Timeout | **60s** | Prevents connection dropouts |
 | Transfer → Overwrite | **Always overwrite** | Ensures stale files are replaced |
+| Check Failed Transfers | **Always check** | Look at the "Failed transfers" tab at the bottom. If any exist, right-click and click "Reset and requeue all" |
 
 ---
 

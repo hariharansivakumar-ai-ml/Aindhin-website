@@ -646,8 +646,27 @@ const BlogDetail = () => {
                     max-width: 100%;
                     height: auto;
                     border-radius: 1rem;
-                    margin: 2.5rem auto;
                     display: block;
+                    margin: 2rem auto;
+                }
+
+                .blog-content img[data-align="center"] {
+                    display: block !important;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    float: none !important;
+                }
+
+                .blog-content img[data-align="left"] {
+                    display: inline-block !important;
+                    float: left !important;
+                    margin: 0.5rem 1.5rem 1rem 0 !important;
+                }
+
+                .blog-content img[data-align="right"] {
+                    display: inline-block !important;
+                    float: right !important;
+                    margin: 0.5rem 0 1rem 1.5rem !important;
                 }
 
                 .blog-content a { 
@@ -658,10 +677,10 @@ const BlogDetail = () => {
                 }
                 
                 .blog-content blockquote { 
-                    border-left: 4px solid #f97316; 
+                    border: none;
                     padding: 1.25rem 1.5rem; 
-                    background-color: #f7eded; 
-                    color: #1f2937; 
+                    background-color: #eff6ff; 
+                    color: #1e293b; 
                     font-style: normal; 
                     margin: 1.5rem 0; 
                     border-radius: 0.75rem; 

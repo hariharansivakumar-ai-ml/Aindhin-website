@@ -30,6 +30,53 @@ class CustomLink extends Link {
 }
 Quill.register(CustomLink, true);
 
+// --- Custom Image Blot to support style, width, alt, alignment ---
+const ImageBlot = Quill.import('formats/image');
+const CUSTOM_IMAGE_ATTRIBUTES = ['alt', 'height', 'width', 'style', 'class', 'data-align'];
+
+class CustomImage extends ImageBlot {
+    static blotName = 'image';
+    static tagName = 'IMG';
+
+    static create(value) {
+        let node;
+        if (typeof value === 'object' && value !== null) {
+            node = super.create(value.src || value.url || '');
+            if (value.alt) node.setAttribute('alt', value.alt);
+            if (value.width) node.setAttribute('width', value.width);
+            if (value.height) node.setAttribute('height', value.height);
+            if (value.style) node.setAttribute('style', value.style);
+            if (value['data-align']) node.setAttribute('data-align', value['data-align']);
+            if (value.class) node.setAttribute('class', value.class);
+        } else {
+            node = super.create(value);
+        }
+        return node;
+    }
+
+    static formats(domNode) {
+        return CUSTOM_IMAGE_ATTRIBUTES.reduce((formats, attribute) => {
+            if (domNode.hasAttribute(attribute)) {
+                formats[attribute] = domNode.getAttribute(attribute);
+            }
+            return formats;
+        }, {});
+    }
+
+    format(name, value) {
+        if (CUSTOM_IMAGE_ATTRIBUTES.indexOf(name) > -1) {
+            if (value) {
+                this.domNode.setAttribute(name, value);
+            } else {
+                this.domNode.removeAttribute(name);
+            }
+        } else {
+            super.format(name, value);
+        }
+    }
+}
+Quill.register(CustomImage, true);
+
 // --- Register Custom Icons in Quill UI ---
 const icons = Quill.import('ui/icons');
 icons['table-insert'] = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 12h18"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`;
@@ -197,23 +244,32 @@ const LinkModal = ({ visible, initialText, onCancel, onSubmit }) => {
 // --- Image Settings Modal Component ---
 const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, onCancel, onSubmit }) => {
     const [alt, setAlt] = useState(initialAlt || '');
-    const [width, setWidth] = useState(initialWidth || '550px');
+    const [width, setWidth] = useState(initialWidth || '100%');
     const [align, setAlign] = useState(initialAlign || 'center');
 
     useEffect(() => {
         if (visible) {
             setAlt(initialAlt || '');
-            setWidth(initialWidth || '550px');
+            setWidth(initialWidth || '100%');
             setAlign(initialAlign || 'center');
         }
     }, [visible, initialAlt, initialWidth, initialAlign]);
 
     if (!visible) return null;
 
+    const isFullWidth = !width || width === '100%';
+    const numericWidth = !isFullWidth ? (parseInt(width) || '') : '';
+
     const alignOptions = [
         { id: 'left', icon: AlignLeft, label: 'Left' },
         { id: 'center', icon: AlignCenter, label: 'Center' },
         { id: 'right', icon: AlignRight, label: 'Right' },
+    ];
+
+    const presets = [
+        { label: 'Small (300px)', val: '300px' },
+        { label: 'Medium (600px)', val: '600px' },
+        { label: 'Large (900px)', val: '900px' }
     ];
 
     return (
@@ -243,26 +299,60 @@ const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, o
                     </div>
                     
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center block">Image Width (Pixels)</label>
+                        <div className="flex justify-between items-center">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Image Width</label>
+                            <span className="text-[11px] font-semibold text-orange-600">
+                                {isFullWidth ? 'Full Width (100%)' : `${numericWidth}px`}
+                            </span>
+                        </div>
                         <div className="flex items-center gap-3">
                             <div className="relative flex-1">
                                 <input 
                                     type="number" 
-                                    value={parseInt(width) || ''}
-                                    onChange={(e) => setWidth(e.target.value ? e.target.value + 'px' : '')}
+                                    min="50"
+                                    max="2400"
+                                    value={numericWidth}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setWidth(val ? `${val}px` : '100%');
+                                    }}
                                     className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all bg-gray-50/50 focus:bg-white pr-12"
-                                    placeholder="e.g. 800"
+                                    placeholder={isFullWidth ? "Auto (100%)" : "e.g. 600"}
                                 />
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
                                     px
                                 </div>
                             </div>
                             <button 
+                                type="button"
                                 onClick={() => setWidth('100%')}
-                                className="px-4 py-3 bg-gray-100 text-gray-600 rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors"
+                                className={`px-4 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                                    isFullWidth 
+                                        ? 'bg-orange-600 border-orange-600 text-white shadow-sm shadow-orange-200' 
+                                        : 'bg-gray-100 border-gray-200 text-gray-600 hover:bg-gray-200'
+                                }`}
                             >
                                 Full Width
                             </button>
+                        </div>
+
+                        {/* Quick Presets */}
+                        <div className="flex items-center gap-2 pt-1">
+                            <span className="text-[10px] font-medium text-gray-400">Presets:</span>
+                            {presets.map((preset) => (
+                                <button
+                                    key={preset.val}
+                                    type="button"
+                                    onClick={() => setWidth(preset.val)}
+                                    className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg border transition-colors ${
+                                        width === preset.val 
+                                            ? 'bg-orange-50 border-orange-300 text-orange-600 font-bold' 
+                                            : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    {preset.label}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
@@ -272,10 +362,11 @@ const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, o
                             {alignOptions.map((opt) => (
                                 <button
                                     key={opt.id}
+                                    type="button"
                                     onClick={() => setAlign(opt.id)}
                                     className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
                                         align === opt.id 
-                                            ? 'bg-orange-50 border-orange-200 text-orange-600' 
+                                            ? 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm' 
                                             : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50'
                                     }`}
                                 >
@@ -287,8 +378,9 @@ const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, o
                     </div>
                 </div>
                 <div className="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex justify-end gap-3">
-                    <button onClick={onCancel} className="px-5 py-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">Cancel</button>
+                    <button type="button" onClick={onCancel} className="px-5 py-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">Cancel</button>
                     <button 
+                        type="button"
                         onClick={() => onSubmit({ alt, width, align })}
                         className="px-8 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-orange-100 transition-all"
                     >
@@ -394,12 +486,24 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             if (e.target.tagName === 'IMG') {
                 const img = e.target;
                 const style = img.style;
+                const dataAlign = img.getAttribute('data-align');
+                const alignVal = dataAlign || (style.float === 'left' ? 'left' : style.float === 'right' ? 'right' : 'center');
+
+                let currentWidth = '100%';
+                if (style.width && style.width !== '100%') {
+                    currentWidth = style.width;
+                } else if (img.getAttribute('width') && img.getAttribute('width') !== '100%') {
+                    currentWidth = `${img.getAttribute('width')}px`;
+                } else if (style.width === '100%') {
+                    currentWidth = '100%';
+                }
+
                 setImageModal({
                     visible: true,
                     imgNode: img,
-                    initialAlt: img.alt || '',
-                    initialWidth: img.getAttribute('width') || style.width || '100%',
-                    initialAlign: style.float === 'left' ? 'left' : style.float === 'right' ? 'right' : 'center'
+                    initialAlt: img.getAttribute('alt') || '',
+                    initialWidth: currentWidth,
+                    initialAlign: alignVal
                 });
             }
         };
@@ -449,6 +553,8 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 { selector: '.ql-underline', title: 'Underline' },
                 { selector: '.ql-strike', title: 'Strikethrough' },
                 { selector: '.ql-header.ql-picker', title: 'Heading Style' },
+                { selector: '.ql-list[value="ordered"]', title: 'Numbered List' },
+                { selector: '.ql-list[value="bullet"]', title: 'Bullet List' },
                 { selector: '.ql-blockquote', title: 'Quote / Blockquote' },
                 { selector: '.ql-color.ql-picker', title: 'Text Color' },
                 { selector: '.ql-align.ql-picker', title: 'Text Alignment' },
@@ -500,12 +606,43 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
         return () => document.removeEventListener('mousedown', handleDocumentClick);
     }, []);
 
+    // Prevent Toolbar Clicks from deselecting text selection in editor
+    useEffect(() => {
+        let cleanup = null;
+        const timer = setTimeout(() => {
+            const container = document.querySelector('.rich-text-editor-container');
+            if (!container) return;
+
+            const toolbar = container.querySelector('.ql-toolbar');
+            if (!toolbar) return;
+
+            const handleToolbarMouseDown = (e) => {
+                const tag = e.target.tagName;
+                if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+                    return;
+                }
+
+                // Prevent mousedown from stealing focus and deselecting text
+                e.preventDefault();
+            };
+
+            toolbar.addEventListener('mousedown', handleToolbarMouseDown);
+            cleanup = () => toolbar.removeEventListener('mousedown', handleToolbarMouseDown);
+        }, 100);
+
+        return () => {
+            clearTimeout(timer);
+            if (cleanup) cleanup();
+        };
+    }, []);
+
     // Custom Key Bindings and Toolbar Configuration
     const modules = useMemo(() => ({
         toolbar: {
             container: [
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ 'header': [1, 2, 3, false] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                 ['blockquote'],
                 [{ 'color': COLOR_PALETTE }],
                 [{ 'align': [] }],
@@ -532,6 +669,38 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 },
                 'table-insert': function() {
                     setTableModal({ visible: true });
+                },
+                image: function() {
+                    const quill = this.quill;
+                    const input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.click();
+                    input.onchange = async () => {
+                        const file = input.files?.[0];
+                        if (file) {
+                            if (onImageUploadRef.current) {
+                                try {
+                                    const range = quill.getSelection(true);
+                                    const url = await onImageUploadRef.current(file);
+                                    if (url) {
+                                        quill.insertEmbed(range.index, 'image', url);
+                                        quill.setSelection(range.index + 1);
+                                    }
+                                } catch (e) {
+                                    console.error('Image upload failed', e);
+                                }
+                            } else {
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    const range = quill.getSelection(true);
+                                    quill.insertEmbed(range.index, 'image', e.target.result);
+                                    quill.setSelection(range.index + 1);
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        }
+                    };
                 }
             }
         }
@@ -559,23 +728,71 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
     const handleImageSubmit = ({ alt, width, align }) => {
         const img = imageModal.imgNode;
         if (img) {
-            img.alt = alt;
-            img.style.width = width;
-            img.removeAttribute('width');
+            const quill = quillRef.current?.getEditor();
             
-            if (align === 'center') {
-                img.style.display = 'block';
-                img.style.margin = '1rem auto';
-                img.style.float = 'none';
-            } else {
-                img.style.display = 'inline-block';
-                img.style.margin = '1rem';
-                img.style.float = align;
+            const isFull = !width || width === '100%';
+            let widthStyle = '100%';
+            let widthAttr = '';
+
+            if (!isFull) {
+                const num = parseInt(width);
+                if (num && !isNaN(num)) {
+                    widthStyle = `${num}px`;
+                    widthAttr = `${num}`;
+                } else {
+                    widthStyle = width;
+                }
             }
 
-            const quill = quillRef.current.getEditor();
-            quill.update();
-            onChange(quill.root.innerHTML);
+            let displayStyle = 'block';
+            let marginStyle = '1.5rem auto';
+            let floatStyle = 'none';
+
+            if (align === 'center') {
+                displayStyle = 'block';
+                marginStyle = '1.5rem auto';
+                floatStyle = 'none';
+            } else if (align === 'left') {
+                displayStyle = 'inline-block';
+                marginStyle = '0.5rem 1.5rem 1rem 0';
+                floatStyle = 'left';
+            } else if (align === 'right') {
+                displayStyle = 'inline-block';
+                marginStyle = '0.5rem 0 1rem 1.5rem';
+                floatStyle = 'right';
+            }
+
+            const styleString = `width: ${widthStyle}; max-width: 100%; height: auto; display: ${displayStyle}; margin: ${marginStyle}; float: ${floatStyle};`;
+
+            // Update DOM element directly
+            img.setAttribute('alt', alt || '');
+            img.setAttribute('style', styleString);
+            img.setAttribute('data-align', align || 'center');
+            if (widthAttr) {
+                img.setAttribute('width', widthAttr);
+            } else {
+                img.removeAttribute('width');
+            }
+
+            // Update Quill Blot so Quill delta and formats preserve width, style, alt, data-align
+            const blot = Quill.find(img);
+            if (blot) {
+                blot.format('alt', alt || '');
+                blot.format('style', styleString);
+                blot.format('data-align', align || 'center');
+                if (widthAttr) {
+                    blot.format('width', widthAttr);
+                } else {
+                    blot.format('width', null);
+                }
+            }
+
+            if (quill) {
+                quill.update();
+                if (onChange) {
+                    onChange(quill.root.innerHTML);
+                }
+            }
         }
         setImageModal({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '' });
     };
@@ -847,6 +1064,9 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                     border-radius: 1rem;
                     background-color: #FFFFFF;
                     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
                 }
 
                 /* Fixed & Sticky Top Toolbar Bar */
@@ -868,7 +1088,8 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
 
                 .rich-text-editor-container .ql-container.ql-snow {
                     border: none !important;
-                    height: 520px;
+                    flex: 1;
+                    height: calc(100% - 48px);
                 }
 
                 .rich-text-editor-container .ql-editor {
@@ -943,17 +1164,41 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 .ql-editor h1 { font-size: 2.5em; font-weight: 800; margin-top: 1em; margin-bottom: 0.5em; }
                 .ql-editor h2 { font-size: 2em; font-weight: 700; margin-top: 1em; margin-bottom: 0.5em; }
                 .ql-editor h3 { font-size: 1.75em; font-weight: 600; margin-top: 1em; margin-bottom: 0.5em; }
-                .ql-editor img { border-radius: 0.5rem; margin: 1.5rem 0; max-width: 100%; cursor: pointer; transition: outline 0.2s; }
-                .ql-editor img:hover { outline: 3px solid #3B82F6; }
+                .ql-editor img { 
+                    border-radius: 0.5rem; 
+                    max-width: 100%; 
+                    height: auto;
+                    cursor: pointer; 
+                    transition: outline 0.2s, transform 0.15s; 
+                }
+                .ql-editor img:hover { 
+                    outline: 3px solid #F97316; 
+                }
+                .ql-editor img[data-align="center"] {
+                    display: block !important;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    float: none !important;
+                }
+                .ql-editor img[data-align="left"] {
+                    display: inline-block !important;
+                    float: left !important;
+                    margin: 0.5rem 1.5rem 1rem 0 !important;
+                }
+                .ql-editor img[data-align="right"] {
+                    display: inline-block !important;
+                    float: right !important;
+                    margin: 0.5rem 0 1rem 1.5rem !important;
+                }
                 
                 /* Styled Quote & Callout Blocks */
                 .ql-editor blockquote { 
-                    background-color: #F7EDED; 
-                    border-left: 4px solid #F97316; 
+                    background-color: #EFF6FF; 
+                    border: none;
                     border-radius: 0.75rem; 
                     padding: 1.25rem 1.5rem; 
                     margin: 1.5rem 0; 
-                    color: #1F2937; 
+                    color: #1E293B; 
                     font-style: normal; 
                     box-shadow: 0 1px 3px rgba(0,0,0,0.04); 
                 }

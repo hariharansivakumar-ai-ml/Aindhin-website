@@ -97,8 +97,14 @@ const CourseRegistrationSuccess = () => {
         return `#${curMonth}${prefix}${idVal || '101'}`;
     };
 
+    const isExistingPassword = !generatedPassword ||
+        String(generatedPassword).toLowerCase().includes('existing') ||
+        String(generatedPassword).toLowerCase().includes('sent to your');
+
     const handleCopyCredentials = () => {
-        const textToCopy = `Email: ${email.trim()}\nPassword: ${generatedPassword}`;
+        const textToCopy = isExistingPassword
+            ? `Email: ${email.trim()}`
+            : `Email: ${email.trim()}\nPassword: ${generatedPassword}`;
         navigator.clipboard.writeText(textToCopy);
         setCopied(true);
         setTimeout(() => setCopied(false), 3000);
@@ -158,8 +164,12 @@ const CourseRegistrationSuccess = () => {
                                     <span className="font-bold text-slate-900 break-all">{email.trim()}</span>
                                 </div>
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-                                    <span className="text-slate-500 font-sans text-xs sm:text-sm font-medium">Generated Password:</span>
-                                    <span className="font-extrabold text-blue-600 text-base">{generatedPassword}</span>
+                                    <span className="text-slate-500 font-sans text-xs sm:text-sm font-medium">
+                                        {isExistingPassword ? 'Password:' : 'Generated Password:'}
+                                    </span>
+                                    <span className={isExistingPassword ? "font-medium text-slate-400 text-sm sm:text-base select-none" : "font-extrabold text-blue-600 text-base"}>
+                                        {generatedPassword}
+                                    </span>
                                 </div>
                             </div>
                         </div>

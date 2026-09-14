@@ -219,7 +219,7 @@ const AddBlogPost = () => {
                                 className="w-full text-4xl md:text-5xl font-extrabold placeholder-gray-300 border-none outline-none bg-transparent text-gray-900 mb-2 resize-none h-24 overflow-y-auto"
                             />
 
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 h-[600px] overflow-visible relative z-10">
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 h-[800px] lg:h-[850px] min-h-[750px] overflow-visible relative z-10">
                                 <RichTextEditor
                                     content={content}
                                     onChange={setContent}
@@ -463,29 +463,6 @@ const AddBlogPost = () => {
                                         />
                                         <p className="mt-2 text-[10px] text-gray-400">Character count: {metaDescription.length} (Recommended: 150-160)</p>
                                     </div>
-
-                                    {focusKeyword && (
-                                        <div className="mt-6 pt-6 border-t border-gray-100">
-                                            <h4 className="text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest flex items-center gap-2">
-                                                <Sparkles className="w-3 h-3 text-amber-400" />
-                                                SEO Recommendations
-                                            </h4>
-                                            <ul className="space-y-2">
-                                                {getSEORecommendations().map((rec, idx) => (
-                                                    <li key={idx} className="flex items-start gap-2 text-[11px] text-gray-500 leading-tight">
-                                                        <span className="w-1 h-1 bg-gray-300 rounded-full mt-1.5 shrink-0"></span>
-                                                        {rec}
-                                                    </li>
-                                                ))}
-                                                {getSEORecommendations().length === 0 && (
-                                                    <li className="text-[11px] text-emerald-500 font-bold flex items-center gap-2">
-                                                        <div className="w-1 h-1 bg-emerald-400 rounded-full"></div>
-                                                        Great job! Your SEO is looking good.
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </div>

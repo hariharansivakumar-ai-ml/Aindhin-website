@@ -378,8 +378,14 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
         }
     };
 
+    const isExistingPassword = !generatedPassword ||
+        String(generatedPassword).toLowerCase().includes('existing') ||
+        String(generatedPassword).toLowerCase().includes('sent to your');
+
     const handleCopyCredentials = () => {
-        const textToCopy = `Email: ${email.trim()}\nPassword: ${generatedPassword}`;
+        const textToCopy = isExistingPassword
+            ? `Email: ${email.trim()}`
+            : `Email: ${email.trim()}\nPassword: ${generatedPassword}`;
         navigator.clipboard.writeText(textToCopy);
         setCopied(true);
         setTimeout(() => setCopied(false), 3000);
@@ -499,8 +505,12 @@ const CourseRegistrationModal = ({ isOpen, onClose, defaultCourseId = null }) =>
                                             <span className="font-bold text-slate-900">{email.trim()}</span>
                                         </div>
                                         <div className="flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-200/80">
-                                            <span className="text-slate-500 font-sans text-xs">Password:</span>
-                                            <span className="font-extrabold text-blue-600 text-sm">{generatedPassword}</span>
+                                            <span className="text-slate-500 font-sans text-xs">
+                                                {isExistingPassword ? 'Password:' : 'Generated Password:'}
+                                            </span>
+                                            <span className={isExistingPassword ? "font-medium text-slate-400 text-xs sm:text-sm select-none" : "font-extrabold text-blue-600 text-sm"}>
+                                                {generatedPassword}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

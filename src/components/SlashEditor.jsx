@@ -223,7 +223,7 @@ const SlashEditor = ({ content, onChange, onImageUpload }) => {
                 .prose p { margin-bottom: 0.8em; line-height: 1.6; color: #4b5563; }
                 .prose img { max-width: 100%; border-radius: 0.5rem; margin: 1em 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
                 .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 0.8em; }
-                .prose blockquote { border-left: 4px solid #e5e7eb; padding-left: 1em; font-style: italic; color: #6b7280; }
+                .prose blockquote { border: none; background-color: #eff6ff; padding: 1.25rem 1.5rem; border-radius: 0.75rem; color: #1e293b; font-style: normal; margin: 1.5rem 0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
                 .prose a { color: #2563EB; text-decoration: underline; }
                 .prose:focus { outline: none; }
             `}</style>

@@ -134,6 +134,10 @@ export default defineConfig(({ mode }) => {
       assetsInlineLimit: 4096,
       // Warn when a single chunk exceeds 1MB (after splitting)
       chunkSizeWarningLimit: 1000,
+      target:            'es2020',
+      modulePreload: {
+        polyfill: true,
+      },
 
       rollupOptions: {
         output: {

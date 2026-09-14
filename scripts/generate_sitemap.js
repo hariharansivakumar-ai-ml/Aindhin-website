@@ -10,29 +10,11 @@ const SITEMAP_PATH = path.resolve(__dirname, '../public/sitemap.xml');
 const API_URL = 'https://api2.aindhin.com/api/blogs';
 
 async function fetchBlogs() {
-  return new Promise((resolve, reject) => {
-    https.get(API_URL, (res) => {
-      if (res.statusCode !== 200) {
-        reject(new Error(`Failed to fetch blogs. Status: ${res.statusCode}`));
-        return;
-      }
-      
-      let data = '';
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-      res.on('end', () => {
-        try {
-          const blogs = JSON.parse(data);
-          resolve(blogs);
-        } catch (e) {
-          reject(new Error(`Failed to parse blogs JSON: ${e.message}`));
-        }
-      });
-    }).on('error', (err) => {
-      reject(err);
-    });
-  });
+  const res = await fetch(API_URL, { signal: AbortSignal.timeout(5000) });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch blogs. Status: ${res.status}`);
+  }
+  return await res.json();
 }
 
 function formatDate(dateStr) {

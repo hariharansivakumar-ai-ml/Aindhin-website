@@ -34,54 +34,54 @@ const SidebarContent = ({ userEmail, onNavigate }) => {
     return (
         <div className="flex flex-col h-full">
             {/* Logo */}
-            <div className="px-6 pt-8 pb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/30 shrink-0">
-                        <BarChart2 className="w-5 h-5 text-white" />
+            <div className="px-4 pt-6 pb-4">
+                <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/30 shrink-0">
+                        <BarChart2 className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-white font-extrabold text-lg tracking-tight leading-none">Aindhin</h1>
-                        <p className="text-violet-400 text-xs font-medium">Admin Panel</p>
+                        <h1 className="text-white font-extrabold text-base tracking-tight leading-none">Aindhin</h1>
+                        <p className="text-violet-400 text-[11px] font-medium mt-0.5">Admin Panel</p>
                     </div>
                 </div>
             </div>
 
             {/* Nav */}
-            <nav className="flex-1 px-3 space-y-1">
-                <p className="px-3 text-[10px] font-bold text-white/30 uppercase tracking-widest mb-3">Main Menu</p>
+            <nav className="flex-1 px-2.5 space-y-1">
+                <p className="px-2.5 text-[9px] font-bold text-white/30 uppercase tracking-widest mb-2">Main Menu</p>
                 {navItems.map(({ label, icon: Icon, path }) => {
                     const isActive = location.pathname === path;
                     return (
                         <button
                             key={label}
                             onClick={() => onNavigate(path)}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-left
+                            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all
                                 ${isActive
                                     ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25'
                                     : 'text-white/50 hover:text-white hover:bg-white/8'
                                 }`}
                         >
-                            <Icon className="shrink-0" size={18} />
-                            {label}
+                            <Icon className="shrink-0" size={16} />
+                            <span className="truncate">{label}</span>
                         </button>
                     );
                 })}
             </nav>
 
             {/* User card + Sign Out */}
-            <div className="p-4 m-3 rounded-2xl bg-white/5 border border-white/10">
-                <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-sm font-bold text-white shadow-md shrink-0">
+            <div className="p-3 m-2.5 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center gap-2.5 mb-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-xs font-bold text-white shadow-md shrink-0">
                         {initials}
                     </div>
                     <div className="overflow-hidden min-w-0">
-                        <p className="text-sm font-semibold text-white truncate">{username}</p>
-                        <p className="text-xs text-white/40 truncate">Administrator</p>
+                        <p className="text-xs font-semibold text-white truncate">{username}</p>
+                        <p className="text-[10px] text-white/40 truncate">Administrator</p>
                     </div>
                 </div>
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-red-400 border border-red-500/20 hover:bg-red-500/10 hover:text-red-300 transition-all text-xs font-semibold"
+                    className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-red-400 border border-red-500/20 hover:bg-red-500/10 hover:text-red-300 transition-all text-xs font-semibold"
                 >
                     <LogOut className="w-3.5 h-3.5" />
                     Sign Out
@@ -104,7 +104,7 @@ const AdminSidebar = ({ userEmail }) => {
     return (
         <>
             {/* Desktop sidebar */}
-            <aside className="hidden md:flex w-64 xl:w-72 bg-[#0f1117] flex-col shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+            <aside className="hidden md:flex w-48 lg:w-52 xl:w-56 bg-[#0f1117] flex-col shrink-0 h-screen sticky top-0 overflow-y-auto z-20 transition-all duration-300">
                 <SidebarContent userEmail={userEmail} onNavigate={handleNavigate} />
             </aside>
 
@@ -124,7 +124,7 @@ const AdminSidebar = ({ userEmail }) => {
                         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                         onClick={() => setShowMobile(false)}
                     />
-                    <aside className="absolute left-0 top-0 bottom-0 w-72 bg-[#0f1117] shadow-2xl overflow-y-auto">
+                    <aside className="absolute left-0 top-0 bottom-0 w-56 bg-[#0f1117] shadow-2xl overflow-y-auto">
                         <button
                             onClick={() => setShowMobile(false)}
                             className="absolute top-4 right-4 p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors"

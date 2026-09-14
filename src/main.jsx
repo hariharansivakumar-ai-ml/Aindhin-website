@@ -96,8 +96,21 @@ window.addEventListener('load', () => {
   // Fires when Vite's <link rel="modulepreload"> cannot fetch a chunk
   // (e.g., the old hash no longer exists after a fresh deployment).
   window.addEventListener('vite:preloadError', (event) => {
+    const reloadKey = 'vite_preload_reloaded_' + window.location.pathname;
+    let hasReloaded = false;
+    try {
+      hasReloaded = Boolean(sessionStorage.getItem(reloadKey));
+    } catch { /* ignore */ }
+
+    if (!hasReloaded) {
+      try {
+        sessionStorage.setItem(reloadKey, '1');
+        window.location.reload();
+        return;
+      } catch { /* ignore */ }
+    }
+
     handleChunkLoadError('vite:preloadError', event?.payload || event);
-    // Always prevent the default browser console error — we handle it above
     event.preventDefault?.();
   });
 

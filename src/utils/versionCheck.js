@@ -9,11 +9,9 @@ export const RELOAD_KEY = 'aindhin_deploy_reload_at';
 
 /**
  * How long (ms) to suppress additional reload attempts after one has fired.
- * Set to 90s — long enough to cover a full FTP upload cycle (typically 1–2 min).
- * Previously 30s, which caused a second "Persistent chunk load failure" error
- * when the FTP upload hadn't finished within the cooldown window.
+ * Set to 15s — long enough to prevent rapid looping while avoiding long lockouts.
  */
-const RELOAD_COOLDOWN_MS = 90_000;
+const RELOAD_COOLDOWN_MS = 15_000;
 
 /**
  * Returns the application version baked in at build time by buildVersionPlugin().
@@ -116,6 +114,13 @@ export const markReloadAttempt = () => {
 export const clearReloadCooldown = () => {
   try {
     localStorage.removeItem(RELOAD_KEY);
+    // Clear all chunk/preload reload tracking from sessionStorage
+    for (let i = sessionStorage.length - 1; i >= 0; i--) {
+      const key = sessionStorage.key(i);
+      if (key && (key.startsWith('aindhin_chunk_') || key.startsWith('vite_preload_'))) {
+        sessionStorage.removeItem(key);
+      }
+    }
   } catch {
     /* ignore */
   }

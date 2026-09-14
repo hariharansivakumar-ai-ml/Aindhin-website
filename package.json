@@ -7,6 +7,7 @@
     "dev": "vite",
     "backend": "cd Aindhin-Backend && uvicorn main:app --port 5000 --reload",
     "build": "node scripts/generate_sitemap.js && vite build && node scripts/validate_assets.js",
+    "package": "npm run build && node scripts/package_dist.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
