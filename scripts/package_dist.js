@@ -42,13 +42,13 @@ function packageDist() {
   const isWindows = process.platform === 'win32';
   try {
     if (isWindows) {
-      // Use PowerShell to compress contents of dist into zip
-      execSync(`powershell -Command "Compress-Archive -Path dist\\* -DestinationPath aindhin-website-dist.zip -Force"`, {
+      // Use PowerShell to compress contents of dist including .htaccess into zip
+      execSync(`powershell -Command "Compress-Archive -Path dist/*, dist/.htaccess -DestinationPath aindhin-website-dist.zip -Force"`, {
         cwd: rootDir,
         stdio: 'inherit',
       });
     } else {
-      execSync(`cd dist && zip -r ../aindhin-website-dist.zip ./*`, {
+      execSync(`cd dist && zip -r ../aindhin-website-dist.zip ./* .htaccess`, {
         cwd: rootDir,
         stdio: 'inherit',
       });

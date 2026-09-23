@@ -10,9 +10,23 @@ import {
 // --- Custom Link Blot to support target="_blank" ---
 const Link = Quill.import('formats/link');
 class CustomLink extends Link {
+    static blotName = 'link';
+    static tagName = 'A';
+
     static create(value) {
-        let node = super.create(value.url || value);
-        if (value.target) {
+        let url = '';
+        let target = false;
+
+        if (typeof value === 'object' && value !== null) {
+            url = value.url || '';
+            target = Boolean(value.target);
+        } else if (typeof value === 'string') {
+            url = value;
+        }
+
+        const node = super.create(url);
+        node.setAttribute('href', this.sanitize(url));
+        if (target) {
             node.setAttribute('target', '_blank');
             node.setAttribute('rel', 'noopener noreferrer');
         } else {
@@ -21,11 +35,45 @@ class CustomLink extends Link {
         }
         return node;
     }
-    static formats(node) {
+
+    static formats(domNode) {
+        const url = domNode.getAttribute('href') || '';
+        const target = domNode.getAttribute('target') === '_blank';
         return {
-            url: node.getAttribute('href'),
-            target: node.getAttribute('target') === '_blank'
+            url,
+            target,
+            toString() {
+                return this.url;
+            }
         };
+    }
+
+    format(name, value) {
+        if (name !== this.statics.blotName || !value) {
+            super.format(name, value);
+            return;
+        }
+
+        let url = '';
+        let target = false;
+
+        if (typeof value === 'object' && value !== null) {
+            url = value.url || '';
+            target = Boolean(value.target);
+        } else if (typeof value === 'string') {
+            url = value;
+            // Preserve existing target if already set
+            target = this.domNode.getAttribute('target') === '_blank';
+        }
+
+        this.domNode.setAttribute('href', this.constructor.sanitize(url));
+        if (target) {
+            this.domNode.setAttribute('target', '_blank');
+            this.domNode.setAttribute('rel', 'noopener noreferrer');
+        } else {
+            this.domNode.removeAttribute('target');
+            this.domNode.removeAttribute('rel');
+        }
     }
 }
 Quill.register(CustomLink, true);
@@ -152,18 +200,18 @@ const SlashMenu = ({ position, onSelect, onClose }) => {
 };
 
 // --- Link Modal Component ---
-const LinkModal = ({ visible, initialText, onCancel, onSubmit }) => {
-    const [url, setUrl] = useState('');
+const LinkModal = ({ visible, initialText, initialUrl = '', initialNewTab = false, onCancel, onSubmit }) => {
+    const [url, setUrl] = useState(initialUrl || '');
     const [text, setText] = useState(initialText || '');
-    const [newTab, setNewTab] = useState(false);
+    const [newTab, setNewTab] = useState(Boolean(initialNewTab));
 
     useEffect(() => {
         if (visible) {
             setText(initialText || '');
-            setUrl('');
-            setNewTab(false);
+            setUrl(initialUrl || '');
+            setNewTab(Boolean(initialNewTab));
         }
-    }, [visible, initialText]);
+    }, [visible, initialText, initialUrl, initialNewTab]);
 
     if (!visible) return null;
 
@@ -468,7 +516,7 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
     const quillRef = useRef(null);
     const onImageUploadRef = useRef(onImageUpload);
     const [slashMenu, setSlashMenu] = useState({ visible: false, position: null });
-    const [linkModal, setLinkModal] = useState({ visible: false, range: null, initialText: '' });
+    const [linkModal, setLinkModal] = useState({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false });
     const [imageModal, setImageModal] = useState({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '' });
     const [tableModal, setTableModal] = useState({ visible: false });
     const [activeTable, setActiveTable] = useState(null);
@@ -636,6 +684,135 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
         };
     }, []);
 
+    // Setup and Enhance Quill Snow Tooltip with "Open in new tab" option
+    useEffect(() => {
+        const quill = quillRef.current?.getEditor();
+        if (!quill || !quill.theme?.tooltip) return;
+
+        const tooltip = quill.theme.tooltip;
+        const root = tooltip.root;
+
+        // Inject custom Open in New Tab checkbox inside tooltip
+        let newTabWrapper = root.querySelector('.ql-newtab-wrapper');
+        let newTabCheckbox = root.querySelector('.ql-newtab-checkbox');
+
+        if (!newTabWrapper) {
+            newTabWrapper = document.createElement('label');
+            newTabWrapper.className = 'ql-newtab-wrapper';
+            newTabWrapper.title = 'Open link in a new tab (target="_blank")';
+            newTabWrapper.innerHTML = `
+                <input type="checkbox" class="ql-newtab-checkbox" />
+                <span class="ql-newtab-label-text">Open in new tab</span>
+            `;
+
+            const actionBtn = root.querySelector('a.ql-action');
+            if (actionBtn) {
+                root.insertBefore(newTabWrapper, actionBtn);
+            } else {
+                root.appendChild(newTabWrapper);
+            }
+
+            newTabCheckbox = newTabWrapper.querySelector('.ql-newtab-checkbox');
+        }
+
+        // Helper to get target of link at current position
+        const getTargetAtPosition = (index) => {
+            try {
+                const [linkBlot] = quill.scroll.descendant(CustomLink, index);
+                if (linkBlot && linkBlot.domNode) {
+                    return linkBlot.domNode.getAttribute('target') === '_blank';
+                }
+            } catch (err) {}
+            return false;
+        };
+
+        // When checkbox is toggled directly in tooltip (preview or edit mode):
+        const handleCheckboxChange = (e) => {
+            const isChecked = e.target.checked;
+            if (!root.classList.contains('ql-editing') && tooltip.linkRange) {
+                try {
+                    const [linkBlot] = quill.scroll.descendant(CustomLink, tooltip.linkRange.index);
+                    if (linkBlot && linkBlot.domNode) {
+                        const url = linkBlot.domNode.getAttribute('href') || '';
+                        quill.formatText(tooltip.linkRange, 'link', { url, target: isChecked }, Quill.sources.USER);
+                        if (onChange) onChange(quill.root.innerHTML);
+                    }
+                } catch (err) {
+                    console.error('Error updating link target from preview:', err);
+                }
+            }
+        };
+
+        newTabCheckbox?.addEventListener('change', handleCheckboxChange);
+
+        // Override tooltip.edit so that checkbox is accurately initialized with the current link status
+        const origEdit = tooltip.edit.bind(tooltip);
+        tooltip.edit = function(mode = 'link', preview = null) {
+            origEdit(mode, preview);
+            if (mode === 'link' && newTabCheckbox) {
+                let isBlank = false;
+                if (tooltip.linkRange) {
+                    isBlank = getTargetAtPosition(tooltip.linkRange.index);
+                } else if (quill.selection?.savedRange) {
+                    isBlank = getTargetAtPosition(quill.selection.savedRange.index);
+                }
+                newTabCheckbox.checked = isBlank;
+            }
+        };
+
+        // Override tooltip.save so that formatted link value includes url and target
+        const origSave = tooltip.save.bind(tooltip);
+        tooltip.save = function() {
+            const mode = root.getAttribute('data-mode');
+            if (mode === 'link') {
+                let value = tooltip.textbox?.value?.trim() || '';
+                const isTarget = Boolean(newTabCheckbox?.checked);
+                const { scrollTop } = quill.root;
+
+                if (value) {
+                    if (tooltip.linkRange) {
+                        quill.formatText(tooltip.linkRange, 'link', { url: value, target: isTarget }, Quill.sources.USER);
+                        delete tooltip.linkRange;
+                    } else {
+                        tooltip.restoreFocus();
+                        quill.format('link', { url: value, target: isTarget }, Quill.sources.USER);
+                    }
+                } else {
+                    if (tooltip.linkRange) {
+                        quill.formatText(tooltip.linkRange, 'link', false, Quill.sources.USER);
+                        delete tooltip.linkRange;
+                    } else {
+                        quill.format('link', false, Quill.sources.USER);
+                    }
+                }
+
+                quill.root.scrollTop = scrollTop;
+                root.classList.remove('ql-editing');
+                tooltip.hide();
+                if (onChange) onChange(quill.root.innerHTML);
+            } else {
+                origSave();
+            }
+        };
+
+        // Listen for selection changes to sync checkbox in preview mode
+        const handleSelectionChange = (range, oldRange, source) => {
+            if (range && range.length === 0 && source === Quill.sources.USER) {
+                const isBlank = getTargetAtPosition(range.index);
+                if (newTabCheckbox) {
+                    newTabCheckbox.checked = isBlank;
+                }
+            }
+        };
+
+        quill.on('selection-change', handleSelectionChange);
+
+        return () => {
+            newTabCheckbox?.removeEventListener('change', handleCheckboxChange);
+            quill.off('selection-change', handleSelectionChange);
+        };
+    }, [onChange]);
+
     // Custom Key Bindings and Toolbar Configuration
     const modules = useMemo(() => ({
         toolbar: {
@@ -657,10 +834,25 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                         const range = quill.getSelection();
                         if (range) {
                             const selectedText = quill.getText(range.index, range.length);
+                            const formats = quill.getFormat(range);
+                            let existingUrl = '';
+                            let existingNewTab = false;
+
+                            if (formats.link) {
+                                if (typeof formats.link === 'object') {
+                                    existingUrl = formats.link.url || '';
+                                    existingNewTab = Boolean(formats.link.target);
+                                } else if (typeof formats.link === 'string') {
+                                    existingUrl = formats.link;
+                                }
+                            }
+
                             setLinkModal({
                                 visible: true,
                                 range: range,
-                                initialText: selectedText
+                                initialText: selectedText,
+                                initialUrl: existingUrl,
+                                initialNewTab: existingNewTab
                             });
                         }
                     } else {
@@ -707,22 +899,26 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
     }), []);
 
     const handleLinkSubmit = ({ url, text, newTab }) => {
-        const quill = quillRef.current.getEditor();
+        const quill = quillRef.current?.getEditor();
         const range = linkModal.range;
         
-        if (range) {
+        if (range && quill) {
             quill.setSelection(range.index, range.length);
             
-            if (text !== linkModal.initialText) {
+            if (text && text !== linkModal.initialText) {
                 quill.deleteText(range.index, range.length);
                 quill.insertText(range.index, text, {
                     link: { url, target: newTab }
                 });
+                quill.setSelection(range.index, text.length);
             } else {
-                quill.format('link', { url, target: newTab });
+                quill.format('link', { url, target: newTab }, Quill.sources.USER);
+            }
+            if (onChange) {
+                onChange(quill.root.innerHTML);
             }
         }
-        setLinkModal({ visible: false, range: null, initialText: '' });
+        setLinkModal({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false });
     };
 
     const handleImageSubmit = ({ alt, width, align }) => {
@@ -984,7 +1180,9 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             <LinkModal 
                 visible={linkModal.visible}
                 initialText={linkModal.initialText}
-                onCancel={() => setLinkModal({ visible: false, range: null, initialText: '' })}
+                initialUrl={linkModal.initialUrl}
+                initialNewTab={linkModal.initialNewTab}
+                onCancel={() => setLinkModal({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false })}
                 onSubmit={handleLinkSubmit}
             />
 
@@ -1230,6 +1428,122 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 .ql-editor td { 
                     padding: 0.75rem 1rem; 
                     border: 1px solid #E5E7EB; 
+                }
+
+                /* Quill Tooltip Enhancement for Open in New Tab */
+                .ql-snow .ql-tooltip.ql-hidden,
+                .rich-text-editor-container .ql-snow .ql-tooltip.ql-hidden {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                }
+
+                .ql-snow .ql-tooltip:not(.ql-hidden),
+                .rich-text-editor-container .ql-snow .ql-tooltip:not(.ql-hidden) {
+                    border-radius: 8px !important;
+                    border: 1px solid #E5E7EB !important;
+                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+                    padding: 8px 12px !important;
+                    background-color: #FFFFFF !important;
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    gap: 8px !important;
+                    z-index: 1000 !important;
+                    line-height: normal !important;
+                }
+
+                .ql-snow .ql-tooltip::before {
+                    font-size: 12px !important;
+                    font-weight: 600 !important;
+                    color: #4B5563 !important;
+                    line-height: normal !important;
+                    margin-right: 0 !important;
+                }
+
+                .ql-snow .ql-tooltip input[type="text"] {
+                    border: 1px solid #D1D5DB !important;
+                    border-radius: 6px !important;
+                    padding: 4px 8px !important;
+                    font-size: 13px !important;
+                    outline: none !important;
+                    min-width: 200px !important;
+                    transition: all 0.15s ease !important;
+                }
+
+                .ql-snow .ql-tooltip input[type="text"]:focus {
+                    border-color: #2563EB !important;
+                    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+                }
+
+                .ql-snow .ql-tooltip .ql-newtab-wrapper {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    gap: 5px !important;
+                    cursor: pointer !important;
+                    user-select: none !important;
+                    padding: 3px 8px !important;
+                    border-radius: 6px !important;
+                    background-color: #F3F4F6 !important;
+                    border: 1px solid #E5E7EB !important;
+                    transition: all 0.15s ease !important;
+                    margin: 0 4px !important;
+                }
+
+                .ql-snow .ql-tooltip .ql-newtab-wrapper:hover {
+                    background-color: #E5E7EB !important;
+                }
+
+                .ql-snow .ql-tooltip .ql-newtab-wrapper .ql-newtab-checkbox {
+                    width: 14px !important;
+                    height: 14px !important;
+                    cursor: pointer !important;
+                    accent-color: #2563EB !important;
+                    margin: 0 !important;
+                }
+
+                .ql-snow .ql-tooltip .ql-newtab-wrapper .ql-newtab-label-text {
+                    font-size: 12px !important;
+                    font-weight: 500 !important;
+                    color: #374151 !important;
+                    white-space: nowrap !important;
+                }
+
+                .ql-snow .ql-tooltip a.ql-action {
+                    font-size: 12px !important;
+                    font-weight: 600 !important;
+                    color: #2563EB !important;
+                    text-decoration: none !important;
+                    cursor: pointer !important;
+                    padding: 4px 8px !important;
+                    border-radius: 6px !important;
+                }
+
+                .ql-snow .ql-tooltip a.ql-action:hover {
+                    background-color: #EFF6FF !important;
+                }
+
+                .ql-snow .ql-tooltip a.ql-remove {
+                    font-size: 12px !important;
+                    font-weight: 600 !important;
+                    color: #DC2626 !important;
+                    text-decoration: none !important;
+                    cursor: pointer !important;
+                    padding: 4px 8px !important;
+                    border-radius: 6px !important;
+                }
+
+                .ql-snow .ql-tooltip a.ql-remove:hover {
+                    background-color: #FEF2F2 !important;
+                }
+
+                .ql-snow .ql-tooltip a.ql-preview {
+                    font-size: 13px !important;
+                    color: #2563EB !important;
+                    max-width: 220px !important;
+                    overflow: hidden !important;
+                    text-overflow: ellipsis !important;
+                    white-space: nowrap !important;
                 }
             `}</style>
         </div>

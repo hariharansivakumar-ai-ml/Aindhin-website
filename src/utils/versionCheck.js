@@ -64,12 +64,16 @@ export const isChunkError = (error) => {
     message.includes('Loading chunk')                            ||
     message.includes('Loading CSS chunk')                        ||
     message.includes('imported module')                          ||
+    message.includes('dynamically imported module')              ||
     message.includes('loading dynamically')                      ||
     message.includes("missing 'default' export")                 ||
     message.includes("Unexpected token '<'")                     ||
     message.includes("expected expression, got '<'")             ||
     message.includes('Failed to parse SourceMap')                ||
     message.includes('error loading dynamically imported module') ||
+    message.includes('Importing a module script failed')         || // Safari module script failure
+    message.includes('Failed to load module script')             || // WebKit module failure
+    message.includes('Failed to load resource')                  || // Chrome resource 404
     // TypeError: Cannot read properties of undefined (reading 'default')
     // Happens when a stale/partial chunk returns HTML instead of JS
     (message.includes('Cannot read properties of undefined') &&

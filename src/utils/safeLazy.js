@@ -10,9 +10,9 @@ import {
  * Retry configuration.
  * 4 attempts: 500ms → 1000ms → 2000ms → (max 3000ms) before giving up.
  */
-const RETRY_ATTEMPTS  = 4;
-const RETRY_DELAY_MS  = 500;
-const RETRY_DELAY_CAP = 3_000;
+const RETRY_ATTEMPTS  = 2;
+const RETRY_DELAY_MS  = 200;
+const RETRY_DELAY_CAP = 1_000;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
