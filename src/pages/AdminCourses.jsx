@@ -289,7 +289,7 @@ const AdminCourses = () => {
             setSkillLevel('Beginner');
             setIncludes('Live Sessions, Study Materials, Certificate');
             setIsComingSoon(false);
-            setStartDate(new Date().toISOString().split('T')[0]);
+            setStartDate('');
             setCertificateDetails('Certificate of Completion');
             setIsActive(true);
             setIsProjectActive(true);
@@ -367,6 +367,7 @@ const AdminCourses = () => {
             }));
 
             const combinedDuration = `${durationVal || '1'} ${durationUnit || 'Weeks'}`;
+            const courseStartDateVal = (isComingSoon || !startDate || !startDate.trim()) ? 'Coming Soon' : startDate.trim();
 
             const payloadData = {
                 title,
@@ -379,7 +380,7 @@ const AdminCourses = () => {
                 course_duration: combinedDuration,
                 skill_level: skillLevel,
                 includes,
-                course_start_date: isComingSoon ? '' : (startDate || ''),
+                course_start_date: courseStartDateVal,
                 certificate_details: certificateDetails,
                 modules: moduleData,
                 frequency: frequency || 'Once',
@@ -1021,8 +1022,6 @@ const AdminCourses = () => {
                                                                     if (checked) {
                                                                         setStartDate('');
                                                                         setCompletionDate('');
-                                                                    } else {
-                                                                        setStartDate(new Date().toISOString().split('T')[0]);
                                                                     }
                                                                 }}
                                                                 className="w-4 h-4 text-violet-600 rounded border-slate-300 focus:ring-violet-500 cursor-pointer accent-violet-600"
@@ -1057,7 +1056,9 @@ const AdminCourses = () => {
                                                     ) : (
                                                         <div className="grid grid-cols-2 gap-4">
                                                             <div>
-                                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">Course Start Date</label>
+                                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">
+                                                                    Course Start Date <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                                                                </label>
                                                                 <input
                                                                     type="date"
                                                                     value={startDate}

@@ -76,7 +76,7 @@ const checkIfCourseCompleted = (c) => {
 
 const checkIfCourseStarted = (c) => {
     if (c.is_ended) return false;
-    if (c.course_start_date && c.course_start_date.toLowerCase() !== 'flexible') {
+    if (c.course_start_date && !['flexible', 'coming soon', 'coming_soon', 'null'].includes(String(c.course_start_date).toLowerCase())) {
         const startTime = c.start_time || "00:00:00";
         const courseDateTime = new Date(`${c.course_start_date}T${startTime}`);
         if (!isNaN(courseDateTime.getTime())) {
@@ -87,17 +87,17 @@ const checkIfCourseStarted = (c) => {
 };
 
 const formatCourseDate = (dateStr) => {
-    if (!dateStr || dateStr.toLowerCase() === 'flexible') return 'Upcoming';
+    if (!dateStr || ['flexible', 'coming soon', 'coming_soon', 'null'].includes(String(dateStr).toLowerCase())) return 'Coming Soon';
     try {
         const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return dateStr.toLowerCase() === 'flexible' ? 'Upcoming' : dateStr;
+        if (isNaN(date.getTime())) return 'Coming Soon';
         return date.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
         });
     } catch (e) {
-        return dateStr.toLowerCase() === 'flexible' ? 'Upcoming' : dateStr;
+        return 'Coming Soon';
     }
 };
 

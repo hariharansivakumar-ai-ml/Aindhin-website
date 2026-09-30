@@ -77,7 +77,7 @@ const CourseRegistration = () => {
         if (c.class_mode === 'Module Class') return false;
         const total = parseInt(c.total_classes, 10);
         const startStr = c.course_start_date || c.course_date;
-        if (!total || total <= 0 || !startStr || String(startStr).toLowerCase() === 'flexible') {
+        if (!total || total <= 0 || !startStr || ['flexible', 'coming soon', 'coming_soon', 'null'].includes(String(startStr).toLowerCase())) {
             return false;
         }
         try {
@@ -124,7 +124,7 @@ const CourseRegistration = () => {
 
     const isCourseStarted = (c) => {
         const dateStr = c.course_start_date || c.course_date;
-        if (dateStr && String(dateStr).toLowerCase() !== 'flexible') {
+        if (dateStr && !['flexible', 'coming soon', 'coming_soon', 'null'].includes(String(dateStr).toLowerCase())) {
             const timeStr = c.start_time || '00:00:00';
             const cleanTime = String(timeStr).split(' ')[0];
             const courseDateTime = new Date(`${dateStr}T${cleanTime}`);
