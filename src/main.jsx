@@ -105,7 +105,10 @@ window.addEventListener('load', () => {
     if (!hasReloaded) {
       try {
         sessionStorage.setItem(reloadKey, '1');
-        window.location.reload();
+        const url = new URL(window.location.href);
+        url.searchParams.set('v', Date.now().toString());
+        window.location.replace(url.toString());
+        event.preventDefault?.();
         return;
       } catch { /* ignore */ }
     }

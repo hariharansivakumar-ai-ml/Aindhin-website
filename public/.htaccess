@@ -99,6 +99,11 @@ DirectoryIndex index.html
     RewriteEngine On
     RewriteBase /
 
+    # Force HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
     # Never rewrite version.json, sitemap.xml, robots.txt
     RewriteRule ^(version\.json|sitemap\.xml|robots\.txt)$ - [L,NC]
 

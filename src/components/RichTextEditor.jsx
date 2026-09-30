@@ -2,12 +2,13 @@ import { useState, useRef, useMemo, useEffect } from 'react';
 import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { 
-    Heading1, Heading2, Heading3, Image as ImageIcon, List, Quote, 
+    Heading1, Heading2, Heading3, Heading4, Image as ImageIcon, List, Quote, 
     CheckSquare, Code, X, Link as LinkIcon, ExternalLink, 
-    AlignLeft, AlignCenter, AlignRight, Table as TableIcon, Palette, Trash2
+    AlignLeft, AlignCenter, AlignRight, Table as TableIcon, Palette, Trash2,
+    Video, Lightbulb, Plus, Minus
 } from 'lucide-react';
 
-// --- Custom Link Blot to support target="_blank" ---
+// --- Custom Link Blot to support target="_blank" and custom color ---
 const Link = Quill.import('formats/link');
 class CustomLink extends Link {
     static blotName = 'link';
@@ -16,10 +17,12 @@ class CustomLink extends Link {
     static create(value) {
         let url = '';
         let target = false;
+        let color = '';
 
         if (typeof value === 'object' && value !== null) {
             url = value.url || '';
             target = Boolean(value.target);
+            color = value.color || '';
         } else if (typeof value === 'string') {
             url = value;
         }
@@ -33,15 +36,20 @@ class CustomLink extends Link {
             node.removeAttribute('target');
             node.removeAttribute('rel');
         }
+        if (color) {
+            node.style.color = color;
+        }
         return node;
     }
 
     static formats(domNode) {
         const url = domNode.getAttribute('href') || '';
         const target = domNode.getAttribute('target') === '_blank';
+        const color = domNode.style.color || '';
         return {
             url,
             target,
+            color,
             toString() {
                 return this.url;
             }
@@ -56,14 +64,16 @@ class CustomLink extends Link {
 
         let url = '';
         let target = false;
+        let color = '';
 
         if (typeof value === 'object' && value !== null) {
             url = value.url || '';
             target = Boolean(value.target);
+            color = value.color || '';
         } else if (typeof value === 'string') {
             url = value;
-            // Preserve existing target if already set
             target = this.domNode.getAttribute('target') === '_blank';
+            color = this.domNode.style.color || '';
         }
 
         this.domNode.setAttribute('href', this.constructor.sanitize(url));
@@ -74,13 +84,18 @@ class CustomLink extends Link {
             this.domNode.removeAttribute('target');
             this.domNode.removeAttribute('rel');
         }
+        if (color) {
+            this.domNode.style.color = color;
+        } else {
+            this.domNode.style.removeProperty('color');
+        }
     }
 }
 Quill.register(CustomLink, true);
 
 // --- Custom Image Blot to support style, width, alt, alignment ---
 const ImageBlot = Quill.import('formats/image');
-const CUSTOM_IMAGE_ATTRIBUTES = ['alt', 'height', 'width', 'style', 'class', 'data-align'];
+const CUSTOM_IMAGE_ATTRIBUTES = ['alt', 'height', 'width', 'style', 'class', 'data-align', 'data-caption'];
 
 class CustomImage extends ImageBlot {
     static blotName = 'image';
@@ -95,6 +110,7 @@ class CustomImage extends ImageBlot {
             if (value.height) node.setAttribute('height', value.height);
             if (value.style) node.setAttribute('style', value.style);
             if (value['data-align']) node.setAttribute('data-align', value['data-align']);
+            if (value['data-caption']) node.setAttribute('data-caption', value['data-caption']);
             if (value.class) node.setAttribute('class', value.class);
         } else {
             node = super.create(value);
@@ -125,16 +141,71 @@ class CustomImage extends ImageBlot {
 }
 Quill.register(CustomImage, true);
 
+// --- Custom Block-Level Background Attributor for WordPress-Style Box Containers ---
+const Parchment = Quill.import('parchment');
+const BackgroundStyle = Quill.import('attributors/style/background');
+
+class BlockBackgroundAttributor extends BackgroundStyle.constructor {
+    constructor() {
+        super('background', 'background-color', { scope: Parchment.Scope.BLOCK });
+    }
+}
+const blockBackground = new BlockBackgroundAttributor();
+Quill.register({
+    'attributors/style/background': blockBackground,
+    'formats/background': blockBackground
+}, true);
+
+// Utility to normalize existing paragraphs where Quill wrapped text in inline background spans
+export const normalizeBackgroundBoxes = (html) => {
+    if (!html || typeof html !== 'string') return html;
+    try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const blocks = doc.querySelectorAll('p, h1, h2, h3, h4, blockquote');
+        let modified = false;
+
+        blocks.forEach(block => {
+            if (!block.style.backgroundColor) {
+                const bgSpans = Array.from(block.querySelectorAll('span[style*="background-color"]'));
+                if (bgSpans.length > 0) {
+                    const blockText = block.textContent.trim();
+                    const bgText = bgSpans.map(s => s.textContent).join('').trim();
+                    if (blockText && bgText && (blockText === bgText || (bgSpans.length === 1 && block.children.length === 1))) {
+                        const bgColor = bgSpans[0].style.backgroundColor;
+                        if (bgColor && bgColor !== 'transparent') {
+                            block.style.backgroundColor = bgColor;
+                            bgSpans.forEach(s => s.style.removeProperty('background-color'));
+                            modified = true;
+                        }
+                    }
+                }
+            }
+        });
+
+        return modified ? doc.body.innerHTML : html;
+    } catch (e) {
+        return html;
+    }
+};
+
 // --- Register Custom Icons in Quill UI ---
 const icons = Quill.import('ui/icons');
-icons['table-insert'] = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 12h18"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`;
+icons['undo'] = `<svg viewBox="0 0 18 18"><polyline class="ql-stroke" points="5 9 2 6 5 3"/><path class="ql-stroke" d="M2.5,6h7a4.5,4.5,0,0,1,4.5,4.5v0a4.5,4.5,0,0,1-4.5,4.5H6"/></svg>`;
+icons['redo'] = `<svg viewBox="0 0 18 18"><polyline class="ql-stroke" points="13 9 16 6 13 3"/><path class="ql-stroke" d="M15.5,6H8.5a4.5,4.5,0,0,0-4.5,4.5v0a4.5,4.5,0,0,0,4.5,4.5H12"/></svg>`;
+icons['table-insert'] = `<svg viewBox="0 0 18 18"><rect class="ql-stroke" height="12" width="12" x="3" y="3" rx="1.5"/><line class="ql-stroke" x1="9" x2="9" y1="3" y2="15"/><line class="ql-stroke" x1="3" x2="15" y1="9" y2="9"/></svg>`;
+icons['callout-insert'] = `<svg viewBox="0 0 18 18"><path class="ql-stroke" d="M9,2.5A4.5,4.5,0,0,0,5.8,10.2c.5.5.7,1.1.7,1.8h5c0-.7.2-1.3.7-1.8A4.5,4.5,0,0,0,9,2.5Z"/><line class="ql-stroke" x1="7" x2="11" y1="13.5" y2="13.5"/><line class="ql-stroke" x1="7.5" x2="10.5" y1="15.5" y2="15.5"/></svg>`;
 
 // --- Color Palette Options ---
 const COLOR_PALETTE = [
-    '#000000', '#1F2937', '#4B5563', '#6B7280', '#9CA3AF', '#FFFFFF',
-    '#DC2626', '#EA580C', '#D97706', '#CA8A04', '#16A34A', '#059669', '#0284C7',
-    '#2563EB', '#4F46E5', '#7C3AED', '#9333EA', '#DB2777',
-    '#FDF2F2', '#FFF7ED', '#FEFCE8', '#F0FDF4', '#EFF6FF', '#FAF5FF', '#F3F4F6'
+    '#111827', '#374151', '#6B7280', '#9CA3AF', '#FFFFFF',
+    '#DC2626', '#EA580C', '#D97706', '#CA8A04', '#16A34A',
+    '#059669', '#0284C7', '#2563EB', '#4F46E5', '#7C3AED', '#DB2777'
+];
+
+const BG_COLOR_PALETTE = [
+    'transparent', '#FEF08A', '#BBF7D0', '#BAE6FD', '#DDD6FE',
+    '#FBCFE8', '#FED7AA', '#F3F4F6'
 ];
 
 // --- Slash Menu Component ---
@@ -157,8 +228,11 @@ const SlashMenu = ({ position, onSelect, onClose }) => {
         { id: 'h1', label: 'Heading 1', icon: Heading1, desc: 'Big section heading' },
         { id: 'h2', label: 'Heading 2', icon: Heading2, desc: 'Medium section heading' },
         { id: 'h3', label: 'Heading 3', icon: Heading3, desc: 'Small section heading' },
+        { id: 'h4', label: 'Heading 4', icon: Heading4, desc: 'Sub-section heading' },
+        { id: 'callout', label: 'Callout Box', icon: Lightbulb, desc: 'Highlight box (Info/Tip/Warning)' },
         { id: 'image', label: 'Image', icon: ImageIcon, desc: 'Upload an image' },
-        { id: 'list-ul', label: 'Bullet List', icon: List, desc: 'Create a simple list' },
+        { id: 'video', label: 'Video Embed', icon: Video, desc: 'YouTube or Instagram video' },
+        { id: 'list-ul', label: 'Bullet List', icon: List, desc: 'Create a simple bullet list' },
         { id: 'list-ol', label: 'Numbered List', icon: CheckSquare, desc: 'Create a numbered list' },
         { id: 'blockquote', label: 'Quote', icon: Quote, desc: 'Format paragraph as a quote' },
         { id: 'table', label: 'Table', icon: TableIcon, desc: 'Insert a customizable table' },
@@ -200,20 +274,32 @@ const SlashMenu = ({ position, onSelect, onClose }) => {
 };
 
 // --- Link Modal Component ---
-const LinkModal = ({ visible, initialText, initialUrl = '', initialNewTab = false, onCancel, onSubmit }) => {
+const LinkModal = ({ visible, initialText, initialUrl = '', initialNewTab = false, initialColor = '', onCancel, onSubmit }) => {
     const [url, setUrl] = useState(initialUrl || '');
     const [text, setText] = useState(initialText || '');
     const [newTab, setNewTab] = useState(Boolean(initialNewTab));
+    const [color, setColor] = useState(initialColor || '#2563EB');
 
     useEffect(() => {
         if (visible) {
             setText(initialText || '');
             setUrl(initialUrl || '');
             setNewTab(Boolean(initialNewTab));
+            setColor(initialColor || '#2563EB');
         }
-    }, [visible, initialText, initialUrl, initialNewTab]);
+    }, [visible, initialText, initialUrl, initialNewTab, initialColor]);
 
     if (!visible) return null;
+
+    const linkColors = [
+        { label: 'Royal Blue', val: '#2563EB' },
+        { label: 'Sky Blue', val: '#0284C7' },
+        { label: 'Emerald Green', val: '#059669' },
+        { label: 'Warm Orange', val: '#EA580C' },
+        { label: 'Crimson Red', val: '#DC2626' },
+        { label: 'Purple', val: '#7C3AED' },
+        { label: 'Charcoal', val: '#1F2937' },
+    ];
 
     return (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-[2px] flex items-center justify-center z-[10001] animate-in fade-in duration-200">
@@ -223,22 +309,25 @@ const LinkModal = ({ visible, initialText, initialUrl = '', initialNewTab = fals
                         <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                             <LinkIcon size={18} />
                         </div>
-                        <h3 className="text-base font-bold text-gray-900">Insert Link</h3>
+                        <div>
+                            <h3 className="text-base font-bold text-gray-900">Insert / Edit Link</h3>
+                            <p className="text-[11px] text-gray-400">Configure destination, display text, styling & tab behavior</p>
+                        </div>
                     </div>
-                    <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 p-1">
+                    <button type="button" onClick={onCancel} className="text-gray-400 hover:text-gray-600 p-1">
                         <X size={20} />
                     </button>
                 </div>
-                <div className="p-6 space-y-5">
+                <div className="p-6 space-y-4">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">URL</label>
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Destination URL</label>
                         <input 
                             type="text" 
                             autoFocus
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all bg-gray-50/50 focus:bg-white"
-                            placeholder="https://example.com"
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all bg-gray-50/50 focus:bg-white font-mono text-xs"
+                            placeholder="https://example.com or /blog/slug"
                         />
                     </div>
                     <div className="space-y-1.5">
@@ -247,37 +336,70 @@ const LinkModal = ({ visible, initialText, initialUrl = '', initialNewTab = fals
                             type="text" 
                             value={text}
                             onChange={(e) => setText(e.target.value)}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all bg-gray-50/50 focus:bg-white"
-                            placeholder="Text to display"
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all bg-gray-50/50 focus:bg-white"
+                            placeholder="Display text"
                         />
                     </div>
-                    <label className="flex items-center gap-3 cursor-pointer group p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                        <div className="relative flex items-center">
-                            <input 
-                                type="checkbox" 
-                                checked={newTab}
-                                onChange={(e) => setNewTab(e.target.checked)}
-                                className="peer w-5 h-5 opacity-0 absolute cursor-pointer"
-                            />
-                            <div className="w-5 h-5 border-2 border-gray-300 rounded-md bg-white peer-checked:bg-blue-600 peer-checked:border-blue-600 transition-all flex items-center justify-center">
-                                <div className="w-2.5 h-2.5 bg-white rounded-sm opacity-0 peer-checked:opacity-100 transition-opacity" />
+
+                    {/* Link Color Option */}
+                    <div className="space-y-1.5">
+                        <div className="flex justify-between items-center">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Link Colour (Works even if bold)</label>
+                            <span className="text-[11px] font-mono text-gray-600 font-bold" style={{ color }}>{color}</span>
+                        </div>
+                        <div className="flex items-center gap-2 pt-1 flex-wrap">
+                            {linkColors.map(c => (
+                                <button
+                                    key={c.val}
+                                    type="button"
+                                    onClick={() => setColor(c.val)}
+                                    title={c.label}
+                                    style={{ backgroundColor: c.val }}
+                                    className={`w-7 h-7 rounded-full border-2 transition-all ${
+                                        color === c.val ? 'border-gray-900 scale-110 shadow-md ring-2 ring-blue-300' : 'border-white hover:scale-105 shadow-sm'
+                                    }`}
+                                />
+                            ))}
+                            <div className="relative flex items-center">
+                                <input
+                                    type="color"
+                                    value={color || '#2563EB'}
+                                    onChange={e => setColor(e.target.value)}
+                                    title="Custom Color"
+                                    className="w-7 h-7 rounded-full cursor-pointer border border-gray-300 p-0 overflow-hidden shadow-sm"
+                                />
                             </div>
                         </div>
-                        <span className="text-sm font-medium text-gray-600 group-hover:text-gray-900 flex items-center gap-2">
-                            Open in new tab
-                            <ExternalLink size={14} className="text-gray-400" />
-                        </span>
+                    </div>
+
+                    {/* Open in new tab option visible */}
+                    <label className="flex items-center justify-between cursor-pointer group p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100">
+                        <div className="flex items-center gap-2.5">
+                            <ExternalLink size={16} className="text-blue-600" />
+                            <div>
+                                <span className="text-xs font-bold text-gray-800 block">Open in New Tab</span>
+                                <span className="text-[11px] text-gray-400 block">Adds target="_blank" and rel="noopener noreferrer"</span>
+                            </div>
+                        </div>
+                        <input 
+                            type="checkbox" 
+                            checked={newTab}
+                            onChange={(e) => setNewTab(e.target.checked)}
+                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
+                        />
                     </label>
                 </div>
                 <div className="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex justify-end gap-3">
                     <button 
+                        type="button"
                         onClick={onCancel}
                         className="px-5 py-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors"
                     >
                         Cancel
                     </button>
                     <button 
-                        onClick={() => onSubmit({ url, text, newTab })}
+                        type="button"
+                        onClick={() => onSubmit({ url, text, newTab, color })}
                         disabled={!url}
                         className="px-8 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-100 transition-all"
                     >
@@ -290,18 +412,20 @@ const LinkModal = ({ visible, initialText, initialUrl = '', initialNewTab = fals
 };
 
 // --- Image Settings Modal Component ---
-const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, onCancel, onSubmit }) => {
+const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, initialCaption, onCancel, onSubmit }) => {
     const [alt, setAlt] = useState(initialAlt || '');
     const [width, setWidth] = useState(initialWidth || '100%');
     const [align, setAlign] = useState(initialAlign || 'center');
+    const [caption, setCaption] = useState(initialCaption || '');
 
     useEffect(() => {
         if (visible) {
             setAlt(initialAlt || '');
             setWidth(initialWidth || '100%');
             setAlign(initialAlign || 'center');
+            setCaption(initialCaption || '');
         }
-    }, [visible, initialAlt, initialWidth, initialAlign]);
+    }, [visible, initialAlt, initialWidth, initialAlign, initialCaption]);
 
     if (!visible) return null;
 
@@ -334,15 +458,26 @@ const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, o
                         <X size={20} />
                     </button>
                 </div>
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-5">
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Alt Text (SEO)</label>
                         <input 
                             type="text" 
                             value={alt}
                             onChange={(e) => setAlt(e.target.value)}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all bg-gray-50/50 focus:bg-white"
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all bg-gray-50/50 focus:bg-white"
                             placeholder="Describe this image..."
+                        />
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Caption (Optional)</label>
+                        <input 
+                            type="text" 
+                            value={caption}
+                            onChange={(e) => setCaption(e.target.value)}
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all bg-gray-50/50 focus:bg-white"
+                            placeholder="Add image caption..."
                         />
                     </div>
                     
@@ -364,7 +499,7 @@ const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, o
                                         const val = e.target.value;
                                         setWidth(val ? `${val}px` : '100%');
                                     }}
-                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all bg-gray-50/50 focus:bg-white pr-12"
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all bg-gray-50/50 focus:bg-white pr-12"
                                     placeholder={isFullWidth ? "Auto (100%)" : "e.g. 600"}
                                 />
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
@@ -374,13 +509,13 @@ const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, o
                             <button 
                                 type="button"
                                 onClick={() => setWidth('100%')}
-                                className={`px-4 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                                className={`px-4 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border ${
                                     isFullWidth 
                                         ? 'bg-orange-600 border-orange-600 text-white shadow-sm shadow-orange-200' 
                                         : 'bg-gray-100 border-gray-200 text-gray-600 hover:bg-gray-200'
                                 }`}
                             >
-                                Full Width
+                                Full
                             </button>
                         </div>
 
@@ -412,13 +547,13 @@ const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, o
                                     key={opt.id}
                                     type="button"
                                     onClick={() => setAlign(opt.id)}
-                                    className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all ${
                                         align === opt.id 
                                             ? 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm' 
                                             : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50'
                                     }`}
                                 >
-                                    <opt.icon size={20} />
+                                    <opt.icon size={18} />
                                     <span className="text-[10px] font-bold uppercase tracking-wider">{opt.label}</span>
                                 </button>
                             ))}
@@ -429,10 +564,196 @@ const ImageSettingsModal = ({ visible, initialAlt, initialWidth, initialAlign, o
                     <button type="button" onClick={onCancel} className="px-5 py-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">Cancel</button>
                     <button 
                         type="button"
-                        onClick={() => onSubmit({ alt, width, align })}
+                        onClick={() => onSubmit({ alt, width, align, caption })}
                         className="px-8 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-orange-100 transition-all"
                     >
                         Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- Callout / Highlight Box Modal ---
+const CalloutModal = ({ visible, onCancel, onSubmit }) => {
+    const [type, setType] = useState('info');
+    const [title, setTitle] = useState('Important Note');
+    const [text, setText] = useState('');
+
+    if (!visible) return null;
+
+    const types = [
+        { id: 'info', label: 'Info', icon: '💡', bg: '#EFF6FF', border: '#3B82F6', text: '#1E40AF', defaultTitle: 'Important Note' },
+        { id: 'tip', label: 'Tip', icon: '⚡', bg: '#ECFDF5', border: '#10B981', text: '#065F46', defaultTitle: 'Pro Tip' },
+        { id: 'warning', label: 'Warning', icon: '⚠️', bg: '#FFFBEB', border: '#F59E0B', text: '#92400E', defaultTitle: 'Caution' },
+        { id: 'note', label: 'Highlight', icon: '📌', bg: '#FAF5FF', border: '#8B5CF6', text: '#5B21B6', defaultTitle: 'Key Takeaway' },
+    ];
+
+    const currentType = types.find(t => t.id === type) || types[0];
+
+    return (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-[2px] flex items-center justify-center z-[10001] animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xl">{currentType.icon}</span>
+                        <h3 className="text-base font-bold text-gray-900">Insert Callout / Highlight Box</h3>
+                    </div>
+                    <button type="button" onClick={onCancel} className="text-gray-400 hover:text-gray-600 p-1">
+                        <X size={20} />
+                    </button>
+                </div>
+                <div className="p-6 space-y-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Box Theme</label>
+                        <div className="grid grid-cols-4 gap-2">
+                            {types.map(t => (
+                                <button
+                                    key={t.id}
+                                    type="button"
+                                    onClick={() => { setType(t.id); setTitle(t.defaultTitle); }}
+                                    className={`py-2 px-1 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all ${
+                                        type === t.id 
+                                            ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50/50 text-blue-700 shadow-sm' 
+                                            : 'border-gray-200 hover:bg-gray-50 text-gray-600'
+                                    }`}
+                                >
+                                    <span>{t.icon}</span>
+                                    <span>{t.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Heading / Title</label>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={e => setTitle(e.target.value)}
+                            placeholder="Title..."
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-gray-50/50 focus:bg-white"
+                        />
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Content</label>
+                        <textarea
+                            rows={3}
+                            value={text}
+                            onChange={e => setText(e.target.value)}
+                            placeholder="Write your callout message here..."
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-gray-50/50 focus:bg-white resize-none"
+                        />
+                    </div>
+                </div>
+                <div className="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex justify-end gap-3">
+                    <button type="button" onClick={onCancel} className="px-5 py-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">Cancel</button>
+                    <button
+                        type="button"
+                        onClick={() => onSubmit({ type, title, text, currentType })}
+                        disabled={!text.trim()}
+                        className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-100 transition-all"
+                    >
+                        Insert Box
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- Video Embed Modal Component (YouTube / Instagram / Vimeo) ---
+const VideoEmbedModal = ({ visible, onCancel, onSubmit }) => {
+    const [videoUrl, setVideoUrl] = useState('');
+    const [platform, setPlatform] = useState('youtube');
+
+    if (!visible) return null;
+
+    const parseVideoUrl = (raw) => {
+        if (!raw) return '';
+        const trimmed = raw.trim();
+        const iframeSrcMatch = trimmed.match(/src=["'](.*?)["']/);
+        if (iframeSrcMatch) return iframeSrcMatch[1];
+
+        // YouTube
+        const ytMatch = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+        if (ytMatch) {
+            return `https://www.youtube.com/embed/${ytMatch[1]}`;
+        }
+
+        // Instagram
+        const igMatch = trimmed.match(/instagram\.com\/(?:p|reel|tv)\/([a-zA-Z0-9_-]+)/);
+        if (igMatch) {
+            return `https://www.instagram.com/p/${igMatch[1]}/embed/`;
+        }
+
+        // Vimeo
+        const vmMatch = trimmed.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)/);
+        if (vmMatch) {
+            return `https://player.vimeo.com/video/${vmMatch[3]}`;
+        }
+
+        return trimmed;
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-[2px] flex items-center justify-center z-[10001] animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div className="flex items-center gap-2">
+                        <div className="p-2 bg-rose-50 text-rose-600 rounded-lg">
+                            <Video size={18} />
+                        </div>
+                        <h3 className="text-base font-bold text-gray-900">Embed Video</h3>
+                    </div>
+                    <button type="button" onClick={onCancel} className="text-gray-400 hover:text-gray-600 p-1">
+                        <X size={20} />
+                    </button>
+                </div>
+                <div className="p-6 space-y-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Platform</label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {['youtube', 'instagram', 'vimeo'].map(p => (
+                                <button
+                                    key={p}
+                                    type="button"
+                                    onClick={() => setPlatform(p)}
+                                    className={`py-2 px-3 rounded-xl border text-xs font-bold capitalize transition-all ${
+                                        platform === p ? 'bg-rose-50 text-rose-600 border-rose-300 ring-2 ring-rose-200' : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    {p}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Video URL or Embed Code</label>
+                        <input
+                            type="text"
+                            value={videoUrl}
+                            onChange={e => setVideoUrl(e.target.value)}
+                            placeholder={platform === 'youtube' ? 'https://www.youtube.com/watch?v=...' : platform === 'instagram' ? 'https://www.instagram.com/reel/...' : 'https://vimeo.com/...'}
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 bg-gray-50/50 focus:bg-white"
+                        />
+                        <p className="text-[11px] text-gray-400">
+                            Paste standard share URL or iframe embed code. Will be rendered with a responsive 16:9 ratio.
+                        </p>
+                    </div>
+                </div>
+                <div className="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex justify-end gap-3">
+                    <button type="button" onClick={onCancel} className="px-5 py-2 text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">Cancel</button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const embedUrl = parseVideoUrl(videoUrl);
+                            if (embedUrl) onSubmit({ embedUrl, raw: videoUrl, platform });
+                        }}
+                        disabled={!videoUrl.trim()}
+                        className="px-6 py-2.5 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow-lg shadow-rose-100 transition-all"
+                    >
+                        Embed Video
                     </button>
                 </div>
             </div>
@@ -516,14 +837,20 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
     const quillRef = useRef(null);
     const onImageUploadRef = useRef(onImageUpload);
     const [slashMenu, setSlashMenu] = useState({ visible: false, position: null });
-    const [linkModal, setLinkModal] = useState({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false });
-    const [imageModal, setImageModal] = useState({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '' });
+    const [linkModal, setLinkModal] = useState({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false, initialColor: '' });
+    const [imageModal, setImageModal] = useState({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '', initialCaption: '' });
     const [tableModal, setTableModal] = useState({ visible: false });
+    const [calloutModal, setCalloutModal] = useState({ visible: false });
+    const [videoModal, setVideoModal] = useState({ visible: false });
     const [activeTable, setActiveTable] = useState(null);
+    const [tableColorPickerOpen, setTableColorPickerOpen] = useState(false);
 
-    useEffect(() => {
-        onImageUploadRef.current = onImageUpload;
-    }, [onImageUpload]);
+    const { wordCount, charCount } = useMemo(() => {
+        const text = (content || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        const words = text ? text.split(/\s+/).length : 0;
+        const chars = text.length;
+        return { wordCount: words, charCount: chars };
+    }, [content]);
 
     // Setup Image Click Listener
     useEffect(() => {
@@ -551,7 +878,8 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                     imgNode: img,
                     initialAlt: img.getAttribute('alt') || '',
                     initialWidth: currentWidth,
-                    initialAlign: alignVal
+                    initialAlign: alignVal,
+                    initialCaption: img.getAttribute('data-caption') || ''
                 });
             }
         };
@@ -596,21 +924,27 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             if (!container) return;
 
             const tooltips = [
+                { selector: '.ql-undo', title: 'Undo (Ctrl+Z)' },
+                { selector: '.ql-redo', title: 'Redo (Ctrl+Y)' },
                 { selector: '.ql-bold', title: 'Bold' },
                 { selector: '.ql-italic', title: 'Italic' },
                 { selector: '.ql-underline', title: 'Underline' },
                 { selector: '.ql-strike', title: 'Strikethrough' },
-                { selector: '.ql-header.ql-picker', title: 'Heading Style' },
+                { selector: '.ql-header.ql-picker', title: 'Heading Style (H1-H4)' },
                 { selector: '.ql-list[value="ordered"]', title: 'Numbered List' },
                 { selector: '.ql-list[value="bullet"]', title: 'Bullet List' },
+                { selector: '.ql-indent[value="-1"]', title: 'Decrease Indent' },
+                { selector: '.ql-indent[value="+1"]', title: 'Increase Indent' },
                 { selector: '.ql-blockquote', title: 'Quote / Blockquote' },
+                { selector: '.ql-callout-insert', title: 'Insert Callout / Highlight Box' },
                 { selector: '.ql-color.ql-picker', title: 'Text Color' },
+                { selector: '.ql-background.ql-picker', title: 'Background / Highlight Box' },
                 { selector: '.ql-align.ql-picker', title: 'Text Alignment' },
                 { selector: '.ql-link', title: 'Insert Link' },
                 { selector: '.ql-image', title: 'Insert Image' },
-                { selector: '.ql-video', title: 'Insert Video' },
+                { selector: '.ql-video', title: 'Embed Video (YouTube / Instagram)' },
                 { selector: '.ql-table-insert', title: 'Insert Table' },
-                { selector: '.ql-clean', title: 'Clear Formatting' }
+                { selector: '.ql-clean', title: 'Clear All Formatting / Remove Box (Tx)' }
             ];
 
             tooltips.forEach(({ selector, title }) => {
@@ -627,6 +961,17 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 const val = item.getAttribute('data-value');
                 const label = val ? `Heading ${val}` : 'Normal Text';
                 item.setAttribute('title', label);
+            });
+
+            const bgItems = container.querySelectorAll('.ql-background .ql-picker-item');
+            bgItems.forEach((item, idx) => {
+                const val = item.getAttribute('data-value');
+                if (!val || val === 'transparent' || idx === 0) {
+                    item.setAttribute('title', 'No Background (Remove / Delete Box)');
+                    item.setAttribute('aria-label', 'No Background');
+                } else {
+                    item.setAttribute('title', `Background: ${val}`);
+                }
             });
 
             const alignItems = container.querySelectorAll('.ql-align .ql-picker-item');
@@ -669,8 +1014,6 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
                     return;
                 }
-
-                // Prevent mousedown from stealing focus and deselecting text
                 e.preventDefault();
             };
 
@@ -692,7 +1035,6 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
         const tooltip = quill.theme.tooltip;
         const root = tooltip.root;
 
-        // Inject custom Open in New Tab checkbox inside tooltip
         let newTabWrapper = root.querySelector('.ql-newtab-wrapper');
         let newTabCheckbox = root.querySelector('.ql-newtab-checkbox');
 
@@ -715,7 +1057,6 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             newTabCheckbox = newTabWrapper.querySelector('.ql-newtab-checkbox');
         }
 
-        // Helper to get target of link at current position
         const getTargetAtPosition = (index) => {
             try {
                 const [linkBlot] = quill.scroll.descendant(CustomLink, index);
@@ -726,7 +1067,6 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             return false;
         };
 
-        // When checkbox is toggled directly in tooltip (preview or edit mode):
         const handleCheckboxChange = (e) => {
             const isChecked = e.target.checked;
             if (!root.classList.contains('ql-editing') && tooltip.linkRange) {
@@ -745,7 +1085,6 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
 
         newTabCheckbox?.addEventListener('change', handleCheckboxChange);
 
-        // Override tooltip.edit so that checkbox is accurately initialized with the current link status
         const origEdit = tooltip.edit.bind(tooltip);
         tooltip.edit = function(mode = 'link', preview = null) {
             origEdit(mode, preview);
@@ -760,7 +1099,6 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             }
         };
 
-        // Override tooltip.save so that formatted link value includes url and target
         const origSave = tooltip.save.bind(tooltip);
         tooltip.save = function() {
             const mode = root.getAttribute('data-mode');
@@ -795,7 +1133,6 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             }
         };
 
-        // Listen for selection changes to sync checkbox in preview mode
         const handleSelectionChange = (range, oldRange, source) => {
             if (range && range.length === 0 && source === Quill.sources.USER) {
                 const isBlank = getTargetAtPosition(range.index);
@@ -817,17 +1154,84 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
     const modules = useMemo(() => ({
         toolbar: {
             container: [
+                ['undo', 'redo'],
+                [{ 'header': [1, 2, 3, 4, false] }],
                 ['bold', 'italic', 'underline', 'strike'],
-                [{ 'header': [1, 2, 3, false] }],
+                [{ 'color': COLOR_PALETTE }, { 'background': BG_COLOR_PALETTE }],
+                [{ 'align': ['', 'center', 'right', 'justify'] }],
                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['blockquote'],
-                [{ 'color': COLOR_PALETTE }],
-                [{ 'align': [] }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                ['blockquote', 'callout-insert'],
                 ['link', 'image', 'video'],
                 ['table-insert'],
                 ['clean']
             ],
             handlers: {
+                undo: function() {
+                    this.quill.history.undo();
+                },
+                redo: function() {
+                    this.quill.history.redo();
+                },
+                clean: function() {
+                    const quill = this.quill;
+                    const range = quill.getSelection();
+                    if (!range) return;
+
+                    // 1. Remove standard inline formatting
+                    quill.removeFormat(range.index, range.length || 1, Quill.sources.USER);
+
+                    // 2. Remove block-level formats (background box, alignment, color)
+                    quill.formatLine(range.index, range.length || 1, 'background', false, Quill.sources.USER);
+                    quill.formatLine(range.index, range.length || 1, 'align', false, Quill.sources.USER);
+                    quill.formatLine(range.index, range.length || 1, 'color', false, Quill.sources.USER);
+
+                    // 3. Clear direct DOM styles on the current paragraph/block and all child elements
+                    const [line] = quill.getLine(range.index);
+                    if (line && line.domNode) {
+                        line.domNode.style.removeProperty('background-color');
+                        line.domNode.style.removeProperty('color');
+                        line.domNode.style.removeProperty('text-align');
+                        const styledElements = line.domNode.querySelectorAll('[style*="background-color"], [style*="color"]');
+                        styledElements.forEach(el => {
+                            el.style.removeProperty('background-color');
+                            el.style.removeProperty('color');
+                        });
+                    }
+
+                    quill.update();
+                    if (onChange) onChange(quill.root.innerHTML);
+                },
+                background: function(value) {
+                    const quill = this.quill;
+                    const range = quill.getSelection();
+                    if (!range) return;
+
+                    // Check if current selection/block already has this background color (click same color to toggle off)
+                    const currentFormats = quill.getFormat(range);
+                    const isCurrentColor = currentFormats.background === value;
+
+                    if (!value || value === 'transparent' || isCurrentColor) {
+                        // REMOVE / DELETE the background box
+                        quill.formatLine(range.index, range.length || 1, 'background', false, Quill.sources.USER);
+                        quill.formatText(range.index, range.length || 1, 'background', false, Quill.sources.USER);
+
+                        const [line] = quill.getLine(range.index);
+                        if (line && line.domNode) {
+                            line.domNode.style.removeProperty('background-color');
+                            const bgSpans = line.domNode.querySelectorAll('[style*="background-color"]');
+                            bgSpans.forEach(s => s.style.removeProperty('background-color'));
+                        }
+                    } else {
+                        // Clear any conflicting inline highlights within the selection
+                        quill.formatText(range.index, range.length || 1, 'background', false, Quill.sources.USER);
+                        // Apply block-level background container box
+                        quill.formatLine(range.index, range.length || 1, 'background', value, Quill.sources.USER);
+                    }
+
+                    quill.update();
+                    if (onChange) onChange(quill.root.innerHTML);
+                },
                 link: function(value) {
                     if (value) {
                         const quill = this.quill;
@@ -837,11 +1241,13 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                             const formats = quill.getFormat(range);
                             let existingUrl = '';
                             let existingNewTab = false;
+                            let existingColor = '';
 
                             if (formats.link) {
                                 if (typeof formats.link === 'object') {
                                     existingUrl = formats.link.url || '';
                                     existingNewTab = Boolean(formats.link.target);
+                                    existingColor = formats.link.color || '';
                                 } else if (typeof formats.link === 'string') {
                                     existingUrl = formats.link;
                                 }
@@ -852,7 +1258,8 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                                 range: range,
                                 initialText: selectedText,
                                 initialUrl: existingUrl,
-                                initialNewTab: existingNewTab
+                                initialNewTab: existingNewTab,
+                                initialColor: existingColor
                             });
                         }
                     } else {
@@ -861,6 +1268,12 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 },
                 'table-insert': function() {
                     setTableModal({ visible: true });
+                },
+                'callout-insert': function() {
+                    setCalloutModal({ visible: true });
+                },
+                video: function() {
+                    setVideoModal({ visible: true });
                 },
                 image: function() {
                     const quill = this.quill;
@@ -895,10 +1308,23 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                     };
                 }
             }
+        },
+        keyboard: {
+            bindings: {
+                'background empty enter': {
+                    key: 'Enter',
+                    collapsed: true,
+                    format: ['background'],
+                    empty: true,
+                    handler() {
+                        this.quill.format('background', false, Quill.sources.USER);
+                    }
+                }
+            }
         }
     }), []);
 
-    const handleLinkSubmit = ({ url, text, newTab }) => {
+    const handleLinkSubmit = ({ url, text, newTab, color }) => {
         const quill = quillRef.current?.getEditor();
         const range = linkModal.range;
         
@@ -908,20 +1334,58 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             if (text && text !== linkModal.initialText) {
                 quill.deleteText(range.index, range.length);
                 quill.insertText(range.index, text, {
-                    link: { url, target: newTab }
+                    link: { url, target: newTab, color: color || undefined }
                 });
                 quill.setSelection(range.index, text.length);
             } else {
-                quill.format('link', { url, target: newTab }, Quill.sources.USER);
+                quill.format('link', { url, target: newTab, color: color || undefined }, Quill.sources.USER);
             }
             if (onChange) {
                 onChange(quill.root.innerHTML);
             }
         }
-        setLinkModal({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false });
+        setLinkModal({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false, initialColor: '' });
     };
 
-    const handleImageSubmit = ({ alt, width, align }) => {
+    const handleCalloutSubmit = ({ type, title, text, currentType }) => {
+        const quill = quillRef.current?.getEditor();
+        if (!quill) return;
+        const range = quill.getSelection(true);
+        const index = range ? range.index : 0;
+
+        const calloutHtml = `
+            <div class="blog-callout blog-callout-${type}" style="border-left:4px solid ${currentType.border};background-color:${currentType.bg};padding:1.25rem 1.5rem;border-radius:0.75rem;margin:1.75rem 0;">
+                <div style="font-weight:700;color:${currentType.text};display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;font-size:1.05rem;">
+                    <span>${currentType.icon}</span>
+                    <span>${title}</span>
+                </div>
+                <p style="margin:0;color:#374151;font-size:1rem;line-height:1.6;">${text}</p>
+            </div>
+            <p><br></p>
+        `;
+        quill.clipboard.dangerouslyPasteHTML(index, calloutHtml);
+        setCalloutModal({ visible: false });
+        if (onChange) onChange(quill.root.innerHTML);
+    };
+
+    const handleVideoSubmit = ({ embedUrl }) => {
+        const quill = quillRef.current?.getEditor();
+        if (!quill) return;
+        const range = quill.getSelection(true);
+        const index = range ? range.index : 0;
+
+        const videoHtml = `
+            <div class="video-container" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:2rem 0;border-radius:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                <iframe src="${embedUrl}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:1rem;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <p><br></p>
+        `;
+        quill.clipboard.dangerouslyPasteHTML(index, videoHtml);
+        setVideoModal({ visible: false });
+        if (onChange) onChange(quill.root.innerHTML);
+    };
+
+    const handleImageSubmit = ({ alt, width, align, caption }) => {
         const img = imageModal.imgNode;
         if (img) {
             const quill = quillRef.current?.getEditor();
@@ -964,18 +1428,24 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             img.setAttribute('alt', alt || '');
             img.setAttribute('style', styleString);
             img.setAttribute('data-align', align || 'center');
+            if (caption) {
+                img.setAttribute('data-caption', caption);
+            } else {
+                img.removeAttribute('data-caption');
+            }
             if (widthAttr) {
                 img.setAttribute('width', widthAttr);
             } else {
                 img.removeAttribute('width');
             }
 
-            // Update Quill Blot so Quill delta and formats preserve width, style, alt, data-align
+            // Update Quill Blot
             const blot = Quill.find(img);
             if (blot) {
                 blot.format('alt', alt || '');
                 blot.format('style', styleString);
                 blot.format('data-align', align || 'center');
+                blot.format('data-caption', caption || null);
                 if (widthAttr) {
                     blot.format('width', widthAttr);
                 } else {
@@ -990,7 +1460,7 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 }
             }
         }
-        setImageModal({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '' });
+        setImageModal({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '', initialCaption: '' });
     };
 
     const handleTableSubmit = ({ rows, cols, hasHeader }) => {
@@ -1000,14 +1470,14 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
         const totalRows = parseInt(rows) || 3;
         const totalCols = parseInt(cols) || 3;
 
-        let tableHtml = '<table style="width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.95rem;"><tbody>';
+        let tableHtml = '<div class="table-responsive-wrapper" style="overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;margin:1.5rem 0;"><table style="width:100%; border-collapse:collapse; font-size:0.95rem;"><tbody>';
         
         for (let r = 1; r <= totalRows; r++) {
             const isHeaderRow = hasHeader && r === 1;
             tableHtml += `<tr style="${isHeaderRow ? 'background-color:#F9FAFB;' : ''}">`;
             for (let c = 1; c <= totalCols; c++) {
                 if (isHeaderRow) {
-                    tableHtml += `<td style="border:1px solid #E5E7EB; padding:0.75rem 1rem; text-align:left; font-weight:700; background-color:#F9FAFB; color:#111827;">Header ${c}</td>`;
+                    tableHtml += `<th style="border:1px solid #E5E7EB; padding:0.75rem 1rem; text-align:left; font-weight:700; background-color:#F9FAFB; color:#111827;">Header ${c}</th>`;
                 } else {
                     const dataRowIdx = hasHeader ? r - 1 : r;
                     tableHtml += `<td style="border:1px solid #E5E7EB; padding:0.75rem 1rem; color:#374151;">Row ${dataRowIdx} Col ${c}</td>`;
@@ -1015,7 +1485,7 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             }
             tableHtml += '</tr>';
         }
-        tableHtml += '</tbody></table><p><br></p>';
+        tableHtml += '</tbody></table></div><p><br></p>';
 
         quill.clipboard.dangerouslyPasteHTML(range ? range.index : 0, tableHtml);
         setTableModal({ visible: false });
@@ -1023,7 +1493,8 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
 
     const handleDeleteTable = () => {
         if (activeTable?.node) {
-            activeTable.node.remove();
+            const wrapper = activeTable.node.closest('.table-responsive-wrapper') || activeTable.node;
+            wrapper.remove();
             const quill = quillRef.current?.getEditor();
             if (quill) {
                 quill.update();
@@ -1061,14 +1532,32 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
         }
     };
 
+    const handleDeleteRow = () => {
+        if (activeTable?.node) {
+            const table = activeTable.node;
+            const tbody = table.querySelector('tbody') || table;
+            const rows = tbody.querySelectorAll('tr');
+            if (rows.length > 1) {
+                rows[rows.length - 1].remove();
+                const quill = quillRef.current?.getEditor();
+                if (quill) {
+                    quill.update();
+                    onChange(quill.root.innerHTML);
+                }
+            } else {
+                handleDeleteTable();
+            }
+        }
+    };
+
     const handleAddColumn = () => {
         if (activeTable?.node) {
             const table = activeTable.node;
             const rows = table.querySelectorAll('tr');
             rows.forEach((tr, idx) => {
                 const firstCell = tr.children[0];
-                const isHeaderRow = firstCell && (firstCell.tagName === 'TH' || firstCell.style.fontWeight === '700' || firstCell.style.backgroundColor.includes('249'));
-                const cell = document.createElement('td');
+                const isHeaderRow = firstCell && (firstCell.tagName === 'TH' || firstCell.style.fontWeight === '700' || firstCell.style.backgroundColor?.includes('249'));
+                const cell = document.createElement(isHeaderRow ? 'th' : 'td');
                 cell.style.border = '1px solid #E5E7EB';
                 cell.style.padding = '0.75rem 1rem';
                 cell.textContent = isHeaderRow ? `Header ${tr.children.length + 1}` : `Row ${idx} Col ${tr.children.length + 1}`;
@@ -1086,6 +1575,93 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             if (quill) {
                 quill.update();
                 onChange(quill.root.innerHTML);
+            }
+        }
+    };
+
+    const handleDeleteColumn = () => {
+        if (activeTable?.node) {
+            const table = activeTable.node;
+            const rows = table.querySelectorAll('tr');
+            if (rows.length > 0 && rows[0].children.length > 1) {
+                rows.forEach(tr => {
+                    if (tr.lastElementChild) tr.lastElementChild.remove();
+                });
+                const quill = quillRef.current?.getEditor();
+                if (quill) {
+                    quill.update();
+                    onChange(quill.root.innerHTML);
+                }
+            }
+        }
+    };
+
+    const handleToggleHeader = () => {
+        if (activeTable?.node) {
+            const table = activeTable.node;
+            const rows = table.querySelectorAll('tr');
+            if (rows.length > 0) {
+                const firstRow = rows[0];
+                const cells = Array.from(firstRow.children);
+                const isCurrentlyHeader = cells.some(c => c.tagName === 'TH' || c.style.fontWeight === '700');
+                
+                cells.forEach(c => {
+                    if (isCurrentlyHeader) {
+                        c.style.backgroundColor = '';
+                        c.style.fontWeight = 'normal';
+                        c.style.color = '#374151';
+                    } else {
+                        c.style.backgroundColor = '#F9FAFB';
+                        c.style.fontWeight = '700';
+                        c.style.color = '#111827';
+                    }
+                });
+
+                const quill = quillRef.current?.getEditor();
+                if (quill) {
+                    quill.update();
+                    onChange(quill.root.innerHTML);
+                }
+            }
+        }
+    };
+
+    const handleBoldCell = () => {
+        if (activeTable?.node) {
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount > 0 && !sel.isCollapsed && activeTable.node.contains(sel.anchorNode)) {
+                document.execCommand('bold', false, null);
+            } else {
+                const cells = activeTable.node.querySelectorAll('td, th');
+                const anyNotBold = Array.from(cells).some(c => c.style.fontWeight !== '700');
+                cells.forEach(c => {
+                    c.style.fontWeight = anyNotBold ? '700' : 'normal';
+                });
+            }
+            const quill = quillRef.current?.getEditor();
+            if (quill) {
+                quill.update();
+                if (onChange) onChange(quill.root.innerHTML);
+            }
+        }
+    };
+
+    const handleCellColor = (color) => {
+        if (activeTable?.node) {
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount > 0 && !sel.isCollapsed && activeTable.node.contains(sel.anchorNode)) {
+                document.execCommand('foreColor', false, color);
+            } else {
+                const cells = activeTable.node.querySelectorAll('td, th');
+                cells.forEach(c => {
+                    c.style.color = color;
+                });
+            }
+            setTableColorPickerOpen(false);
+            const quill = quillRef.current?.getEditor();
+            if (quill) {
+                quill.update();
+                if (onChange) onChange(quill.root.innerHTML);
             }
         }
     };
@@ -1133,6 +1709,9 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
             case 'h1': quill.format('header', 1); break;
             case 'h2': quill.format('header', 2); break;
             case 'h3': quill.format('header', 3); break;
+            case 'h4': quill.format('header', 4); break;
+            case 'callout': setCalloutModal({ visible: true }); break;
+            case 'video': setVideoModal({ visible: true }); break;
             case 'list-ul': quill.format('list', 'bullet'); break;
             case 'list-ol': quill.format('list', 'ordered'); break;
             case 'blockquote': quill.format('blockquote', true); break;
@@ -1157,17 +1736,42 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
         }
     };
 
+    // Initial one-time normalization for legacy content
+    useEffect(() => {
+        if (content && content.includes('background-color') && !content.includes('p style="background-color')) {
+            const normalized = normalizeBackgroundBoxes(content);
+            if (normalized !== content) {
+                onChange(normalized);
+            }
+        }
+    }, []);
+
     return (
-        <div className="rich-text-editor-container bg-white rounded-xl shadow-sm border border-gray-200 relative overflow-hidden" onKeyDown={handleKeyDown}>
+        <div className="rich-text-editor-container bg-white rounded-xl shadow-sm border border-gray-200 relative overflow-visible" onKeyDown={handleKeyDown}>
             <ReactQuill
                 ref={quillRef}
                 theme="snow"
                 value={content}
                 onChange={onChange}
                 modules={modules}
-                placeholder="Type something..."
-                className="min-h-[500px] text-lg"
+                placeholder="Type your story or paste rich content here..."
+                className="min-h-[800px] text-lg flex-1 flex flex-col"
             />
+
+            {/* Editor Stats / Hints Footer */}
+            <div className="bg-slate-50 border-t border-gray-200 px-4 py-2 flex flex-wrap items-center justify-between gap-3 text-xs text-gray-500 select-none">
+                <div className="flex items-center gap-4">
+                    <span>Words: <strong className="text-gray-800 font-semibold">{wordCount}</strong></span>
+                    <span>Characters: <strong className="text-gray-800 font-semibold">{charCount}</strong></span>
+                    <span className="hidden sm:inline-flex items-center gap-1">
+                        Est. Reading: <strong className="text-gray-800 font-semibold">{Math.max(1, Math.ceil(wordCount / 200))} min</strong>
+                    </span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="px-1.5 py-0.5 bg-gray-200/80 text-gray-700 rounded font-mono font-bold">/</span>
+                    <span>Type slash anywhere in editor for quick blocks</span>
+                </div>
+            </div>
 
             {slashMenu.visible && (
                 <SlashMenu
@@ -1182,7 +1786,8 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 initialText={linkModal.initialText}
                 initialUrl={linkModal.initialUrl}
                 initialNewTab={linkModal.initialNewTab}
-                onCancel={() => setLinkModal({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false })}
+                initialColor={linkModal.initialColor}
+                onCancel={() => setLinkModal({ visible: false, range: null, initialText: '', initialUrl: '', initialNewTab: false, initialColor: '' })}
                 onSubmit={handleLinkSubmit}
             />
 
@@ -1191,7 +1796,8 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 initialAlt={imageModal.initialAlt}
                 initialWidth={imageModal.initialWidth}
                 initialAlign={imageModal.initialAlign}
-                onCancel={() => setImageModal({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '' })}
+                initialCaption={imageModal.initialCaption}
+                onCancel={() => setImageModal({ visible: false, imgNode: null, initialAlt: '', initialWidth: '', initialAlign: '', initialCaption: '' })}
                 onSubmit={handleImageSubmit}
             />
 
@@ -1201,9 +1807,21 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 onSubmit={handleTableSubmit}
             />
 
+            <CalloutModal
+                visible={calloutModal.visible}
+                onCancel={() => setCalloutModal({ visible: false })}
+                onSubmit={handleCalloutSubmit}
+            />
+
+            <VideoEmbedModal
+                visible={videoModal.visible}
+                onCancel={() => setVideoModal({ visible: false })}
+                onSubmit={handleVideoSubmit}
+            />
+
             {activeTable && (
                 <div 
-                    className="table-floating-toolbar absolute z-[999] bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-200/90 p-1.5 flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-100"
+                    className="table-floating-toolbar absolute z-[999] bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-200/90 p-1.5 flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-100 flex-wrap"
                     style={{
                         top: activeTable.top,
                         left: activeTable.left
@@ -1219,30 +1837,95 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                         type="button"
                         onClick={handleAddRow}
                         className="flex items-center gap-1 px-2.5 py-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold transition-colors border border-gray-200"
-                        title="Add New Row"
+                        title="Add Row Below"
                     >
                         + Row
                     </button>
 
                     <button
                         type="button"
-                        onClick={handleAddColumn}
-                        className="flex items-center gap-1 px-2.5 py-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold transition-colors border border-gray-200"
-                        title="Add New Column"
+                        onClick={handleDeleteRow}
+                        className="flex items-center gap-1 px-2 py-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold transition-colors border border-gray-200"
+                        title="Delete Last Row"
                     >
-                        + Column
+                        - Row
                     </button>
 
                     <div className="h-4 w-px bg-gray-200" />
 
                     <button
                         type="button"
+                        onClick={handleAddColumn}
+                        className="flex items-center gap-1 px-2.5 py-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold transition-colors border border-gray-200"
+                        title="Add Column Right"
+                    >
+                        + Col
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={handleDeleteColumn}
+                        className="flex items-center gap-1 px-2 py-1 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold transition-colors border border-gray-200"
+                        title="Delete Last Column"
+                    >
+                        - Col
+                    </button>
+
+                    <div className="h-4 w-px bg-gray-200" />
+
+                    <button
+                        type="button"
+                        onClick={handleToggleHeader}
+                        className="flex items-center gap-1 px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold transition-colors border border-blue-200"
+                        title="Toggle Header Row"
+                    >
+                        Header
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={handleBoldCell}
+                        className="px-2.5 py-1 bg-gray-50 hover:bg-gray-100 text-gray-800 rounded-lg text-xs font-bold transition-colors border border-gray-200"
+                        title="Toggle Bold for Cell or Selection"
+                    >
+                        B
+                    </button>
+
+                    <div className="relative">
+                        <button
+                            type="button"
+                            onClick={() => setTableColorPickerOpen(!tableColorPickerOpen)}
+                            className="flex items-center gap-1 px-2 py-1 bg-gray-50 hover:bg-gray-100 text-gray-800 rounded-lg text-xs font-semibold transition-colors border border-gray-200"
+                            title="Set Text Color in Table"
+                        >
+                            <span className="font-bold underline text-blue-600">A</span>
+                            <span className="text-[9px]">▼</span>
+                        </button>
+                        {tableColorPickerOpen && (
+                            <div className="absolute left-0 bottom-full mb-1.5 bg-white border border-gray-200 rounded-xl shadow-2xl p-2 flex items-center gap-1.5 z-[10002]">
+                                {['#111827', '#DC2626', '#EA580C', '#059669', '#2563EB', '#7C3AED'].map(c => (
+                                    <button
+                                        key={c}
+                                        type="button"
+                                        onClick={() => handleCellColor(c)}
+                                        style={{ backgroundColor: c }}
+                                        className="w-5 h-5 rounded-full border border-gray-300 hover:scale-110 transition-transform"
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="h-4 w-px bg-gray-200" />
+
+                    <button
+                        type="button"
                         onClick={handleDeleteTable}
-                        className="flex items-center gap-1.5 px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold transition-all border border-rose-200/60 shadow-sm"
+                        className="flex items-center gap-1.5 px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold transition-all border border-rose-200/60 shadow-sm"
                         title="Delete Entire Table"
                     >
                         <Trash2 size={13} />
-                        Delete Table
+                        Delete
                     </button>
 
                     <button
@@ -1262,38 +1945,73 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                     border-radius: 1rem;
                     background-color: #FFFFFF;
                     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+                    min-height: 900px;
                     height: 100%;
                     display: flex;
                     flex-direction: column;
+                    position: relative;
                 }
 
-                /* Fixed & Sticky Top Toolbar Bar */
+                /* Fixed & Sticky Top Toolbar Bar in Navbar Position */
                 .rich-text-editor-container .ql-toolbar.ql-snow {
-                    background-color: #1F2937 !important;
+                    background-color: #0F172A !important;
                     border: none !important;
-                    border-bottom: 1px solid #374151 !important;
-                    padding: 0.65rem 1rem !important;
+                    border-bottom: 1px solid #1E293B !important;
+                    padding: 0.65rem 0.85rem !important;
                     display: flex;
                     flex-wrap: wrap;
                     align-items: center;
-                    gap: 0.4rem;
-                    position: sticky;
-                    top: 0;
-                    z-index: 30;
+                    gap: 0.35rem;
+                    position: sticky !important;
+                    top: 0 !important;
+                    z-index: 50 !important;
                     border-top-left-radius: 0.9rem;
                     border-top-right-radius: 0.9rem;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+                }
+
+                /* Toolbar Group Capsules */
+                .rich-text-editor-container .ql-snow .ql-formats {
+                    margin-right: 0.35rem !important;
+                    padding: 2px 4px !important;
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                    border-radius: 8px !important;
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    gap: 2px !important;
+                }
+
+                .rich-text-editor-container .ql-snow button {
+                    width: 28px !important;
+                    height: 28px !important;
+                    border-radius: 6px !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    transition: all 0.15s ease !important;
+                }
+
+                .rich-text-editor-container .ql-snow button:hover {
+                    background: rgba(255, 255, 255, 0.12) !important;
+                }
+
+                .rich-text-editor-container .ql-snow button.ql-active {
+                    background: rgba(59, 130, 246, 0.25) !important;
                 }
 
                 .rich-text-editor-container .ql-container.ql-snow {
                     border: none !important;
                     flex: 1;
-                    height: calc(100% - 48px);
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 800px;
                 }
 
                 .rich-text-editor-container .ql-editor {
-                    height: 100%;
-                    overflow-y: auto;
-                    padding: 1.75rem 2rem;
+                    flex: 1;
+                    min-height: 800px;
+                    padding: 2rem 2.5rem;
                     font-family: 'Inter', sans-serif;
                     line-height: 1.8;
                     font-size: 1.125rem;
@@ -1314,14 +2032,34 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 }
 
                 /* Icon and Button Styling inside Dark Header Toolbar */
+                .rich-text-editor-container .ql-snow button {
+                    color: #E2E8F0 !important;
+                }
+                .rich-text-editor-container .ql-snow button svg {
+                    color: #E2E8F0 !important;
+                }
                 .rich-text-editor-container .ql-snow .ql-stroke {
-                    stroke: #E5E7EB !important;
+                    stroke: #E2E8F0 !important;
                 }
                 .rich-text-editor-container .ql-snow .ql-fill {
-                    fill: #E5E7EB !important;
+                    fill: #E2E8F0 !important;
+                }
+                .rich-text-editor-container .ql-snow button.ql-undo svg *,
+                .rich-text-editor-container .ql-snow button.ql-redo svg *,
+                .rich-text-editor-container .ql-snow button.ql-table-insert svg *,
+                .rich-text-editor-container .ql-snow button.ql-callout-insert svg * {
+                    stroke: #E2E8F0 !important;
+                }
+                .rich-text-editor-container .ql-snow button:hover,
+                .rich-text-editor-container .ql-snow button:hover svg {
+                    color: #60A5FA !important;
                 }
                 .rich-text-editor-container .ql-snow button:hover .ql-stroke,
-                .rich-text-editor-container .ql-snow .ql-active .ql-stroke {
+                .rich-text-editor-container .ql-snow .ql-active .ql-stroke,
+                .rich-text-editor-container .ql-snow button:hover.ql-undo svg *,
+                .rich-text-editor-container .ql-snow button:hover.ql-redo svg *,
+                .rich-text-editor-container .ql-snow button:hover.ql-table-insert svg *,
+                .rich-text-editor-container .ql-snow button:hover.ql-callout-insert svg * {
                     stroke: #60A5FA !important;
                 }
                 .rich-text-editor-container .ql-snow button:hover .ql-fill,
@@ -1329,15 +2067,72 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                     fill: #60A5FA !important;
                 }
                 .rich-text-editor-container .ql-snow .ql-picker {
-                    color: #E5E7EB !important;
+                    color: #E2E8F0 !important;
+                }
+
+                /* Header picker neat dropdown styling */
+                .rich-text-editor-container .ql-snow .ql-header.ql-picker {
+                    width: 125px !important;
+                    height: 28px !important;
+                    border-radius: 6px !important;
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    color: #F1F5F9 !important;
+                }
+
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-label {
+                    padding: 4px 8px !important;
+                    font-size: 12px !important;
+                    font-weight: 600 !important;
+                }
+
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-label::before {
+                    content: 'Paragraph' !important;
+                }
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-label[data-value="1"]::before {
+                    content: 'Heading 1' !important;
+                }
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-label[data-value="2"]::before {
+                    content: 'Heading 2' !important;
+                }
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-label[data-value="3"]::before {
+                    content: 'Heading 3' !important;
+                }
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-label[data-value="4"]::before {
+                    content: 'Heading 4' !important;
+                }
+
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-item[data-value="1"]::before {
+                    content: 'Heading 1' !important;
+                    font-size: 15px !important;
+                    font-weight: 700 !important;
+                }
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-item[data-value="2"]::before {
+                    content: 'Heading 2' !important;
+                    font-size: 14px !important;
+                    font-weight: 700 !important;
+                }
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-item[data-value="3"]::before {
+                    content: 'Heading 3' !important;
+                    font-size: 13px !important;
+                    font-weight: 600 !important;
+                }
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-item[data-value="4"]::before {
+                    content: 'Heading 4' !important;
+                    font-size: 12px !important;
+                    font-weight: 600 !important;
+                }
+                .rich-text-editor-container .ql-snow .ql-header .ql-picker-item:not([data-value])::before {
+                    content: 'Normal (Paragraph)' !important;
+                    font-size: 12px !important;
+                    font-weight: 400 !important;
                 }
 
                 /* Toolbar Dropdown Popovers */
                 .rich-text-editor-container .ql-snow .ql-picker-options {
-                    background-color: #1F2937 !important;
-                    border: 1px solid #374151 !important;
+                    background-color: #0F172A !important;
+                    border: 1px solid #334155 !important;
                     border-radius: 8px !important;
-                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
+                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
                     padding: 8px !important;
                     z-index: 10005 !important;
                 }
@@ -1347,21 +2142,150 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                 .rich-text-editor-container .ql-snow .ql-icon-picker.ql-expanded .ql-picker-options {
                     display: flex !important;
                     flex-wrap: wrap !important;
-                    gap: 4px !important;
-                    width: 200px !important;
+                    gap: 5px !important;
+                    width: 190px !important;
                 }
 
                 .rich-text-editor-container .ql-snow .ql-color-picker .ql-picker-item,
                 .rich-text-editor-container .ql-snow .ql-background .ql-picker-item {
-                    width: 20px !important;
-                    height: 20px !important;
+                    width: 22px !important;
+                    height: 22px !important;
                     border-radius: 4px !important;
                     padding: 0 !important;
+                    border: 1px solid rgba(255, 255, 255, 0.2) !important;
                 }
 
-                .ql-editor h1 { font-size: 2.5em; font-weight: 800; margin-top: 1em; margin-bottom: 0.5em; }
-                .ql-editor h2 { font-size: 2em; font-weight: 700; margin-top: 1em; margin-bottom: 0.5em; }
-                .ql-editor h3 { font-size: 1.75em; font-weight: 600; margin-top: 1em; margin-bottom: 0.5em; }
+                /* Style transparent / Remove Background swatch in background picker */
+                .ql-background .ql-picker-item[data-value="transparent"],
+                .ql-background .ql-picker-item:first-child {
+                    background-color: #FFFFFF !important;
+                    position: relative !important;
+                    border: 1.5px dashed #DC2626 !important;
+                }
+                .ql-background .ql-picker-item[data-value="transparent"]::after,
+                .ql-background .ql-picker-item:first-child::after {
+                    content: "" !important;
+                    position: absolute !important;
+                    top: 50% !important;
+                    left: 15% !important;
+                    right: 15% !important;
+                    height: 2px !important;
+                    background-color: #DC2626 !important;
+                    transform: rotate(-45deg) !important;
+                }
+
+                /* WordPress-Style Text Background Box Containers */
+                .ql-editor p[style*="background-color"],
+                .ql-editor h1[style*="background-color"],
+                .ql-editor h2[style*="background-color"],
+                .ql-editor h3[style*="background-color"],
+                .ql-editor h4[style*="background-color"],
+                .ql-editor blockquote[style*="background-color"] {
+                    display: block !important;
+                    padding: 1.25rem 1.75rem !important;
+                    border-radius: 0.75rem !important;
+                    margin: 1.25rem 0 1.5rem !important;
+                    line-height: 1.8 !important;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+                    box-sizing: border-box !important;
+                }
+
+                /* Fallback: If paragraph text is wrapped in a background span */
+                .ql-editor p > span[style*="background-color"]:only-child {
+                    display: block !important;
+                    padding: 1.25rem 1.75rem !important;
+                    border-radius: 0.75rem !important;
+                    margin: 0.5rem 0 !important;
+                    line-height: 1.8 !important;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+                    box-sizing: border-box !important;
+                }
+
+                /* Partial text / inline highlight (smooth pill with no broken line gaps) */
+                .ql-editor span[style*="background-color"]:not(:only-child) {
+                    display: inline !important;
+                    padding: 0.18em 0.45em !important;
+                    border-radius: 0.35rem !important;
+                    -webkit-box-decoration-break: clone !important;
+                    box-decoration-break: clone !important;
+                    line-height: 1.8 !important;
+                }
+
+                /* Headings & Paragraph Color Inheritance */
+                .ql-editor h1 { font-size: 2.5em; font-weight: 800; margin-top: 1em; margin-bottom: 0.5em; color: inherit; }
+                .ql-editor h2 { font-size: 2em; font-weight: 700; margin-top: 1em; margin-bottom: 0.5em; color: inherit; }
+                .ql-editor h3 { font-size: 1.6em; font-weight: 600; margin-top: 1em; margin-bottom: 0.5em; color: inherit; }
+                .ql-editor h4 { font-size: 1.25em; font-weight: 600; margin-top: 0.8em; margin-bottom: 0.4em; color: inherit; }
+                .ql-editor p { color: inherit; }
+
+                /* Text Color Works Whether Bold or Normal */
+                .ql-editor strong, .ql-editor b {
+                    font-weight: 700 !important;
+                }
+                .ql-editor strong:not([style*="color"]), .ql-editor b:not([style*="color"]) {
+                    color: inherit;
+                }
+
+                /* Links Color and Styling */
+                .ql-editor a:not([style*="color"]) {
+                    color: #2563EB;
+                }
+                .ql-editor a {
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+                }
+                .ql-editor a[style*="color"] strong, .ql-editor a[style*="color"] b {
+                    color: inherit !important;
+                }
+                .ql-editor strong a:not([style*="color"]), .ql-editor b a:not([style*="color"]) {
+                    color: inherit;
+                }
+                
+                /* Alignment Classes */
+                .ql-editor .ql-align-center { text-align: center; }
+                .ql-editor .ql-align-right { text-align: right; }
+                .ql-editor .ql-align-justify { text-align: justify; }
+
+                /* Indent Classes - Paragraphs & Headings */
+                .ql-editor p.ql-indent-1, .ql-editor h1.ql-indent-1, .ql-editor h2.ql-indent-1, .ql-editor h3.ql-indent-1, .ql-editor h4.ql-indent-1 { padding-left: 2rem !important; }
+                .ql-editor p.ql-indent-2, .ql-editor h1.ql-indent-2, .ql-editor h2.ql-indent-2, .ql-editor h3.ql-indent-2, .ql-editor h4.ql-indent-2 { padding-left: 4rem !important; }
+                .ql-editor p.ql-indent-3 { padding-left: 6rem !important; }
+                .ql-editor p.ql-indent-4 { padding-left: 8rem !important; }
+
+                /* Indent Classes - Bullet Lists & Numbered Lists (Preserve bullet point position) */
+                .ql-editor li.ql-indent-1:not(.ql-direction-rtl) { padding-left: 3em !important; }
+                .ql-editor li.ql-indent-2:not(.ql-direction-rtl) { padding-left: 6em !important; }
+                .ql-editor li.ql-indent-3:not(.ql-direction-rtl) { padding-left: 9em !important; }
+                .ql-editor li.ql-indent-4:not(.ql-direction-rtl) { padding-left: 12em !important; }
+
+                /* Callout Block inside Editor */
+                .ql-editor .blog-callout {
+                    border-radius: 0.75rem;
+                    padding: 1.25rem 1.5rem;
+                    margin: 1.75rem 0;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+                }
+
+                /* Responsive Video Embeds */
+                .ql-editor .video-container {
+                    position: relative;
+                    padding-bottom: 56.25%;
+                    height: 0;
+                    overflow: hidden;
+                    border-radius: 1rem;
+                    margin: 2rem 0;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+                }
+                .ql-editor .video-container iframe {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    border-radius: 1rem;
+                }
+
                 .ql-editor img { 
                     border-radius: 0.5rem; 
                     max-width: 100%; 
@@ -1389,28 +2313,32 @@ const RichTextEditor = ({ content, onChange, onImageUpload }) => {
                     margin: 0.5rem 0 1rem 1.5rem !important;
                 }
                 
-                /* Styled Quote & Callout Blocks */
+                /* Styled Quote / Blockquote */
                 .ql-editor blockquote { 
-                    background-color: #EFF6FF; 
-                    border: none;
-                    border-radius: 0.75rem; 
+                    border-left: 4px solid #3B82F6 !important;
+                    border-radius: 0.5rem; 
                     padding: 1.25rem 1.5rem; 
                     margin: 1.5rem 0; 
-                    color: #1E293B; 
-                    font-style: normal; 
+                    font-style: italic; 
                     box-shadow: 0 1px 3px rgba(0,0,0,0.04); 
                 }
-
-                /* Ensure text inside Callout Tab Box inherits solid container background without line-by-line text highlights */
-                .ql-editor blockquote span {
-                    background-color: transparent !important;
+                .ql-editor blockquote:not([style*="background-color"]) {
+                    background-color: #EFF6FF;
+                }
+                .ql-editor blockquote:not([style*="color"]) {
+                    color: #1E293B;
                 }
 
                 /* Styled Tables */
+                .ql-editor .table-responsive-wrapper {
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                    width: 100%;
+                    margin: 1.5rem 0;
+                }
                 .ql-editor table { 
                     width: 100%; 
                     border-collapse: collapse; 
-                    margin: 1.5rem 0; 
                     font-size: 0.95rem; 
                     cursor: pointer;
                     transition: outline 0.2s, box-shadow 0.2s;

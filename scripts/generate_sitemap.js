@@ -60,9 +60,9 @@ async function run() {
     process.exit(0);
   }
   
-  // Generate XML blocks for published blogs
-  const publishedBlogs = blogs.filter(b => b.status === 'Published' && b.slug);
-  console.log(`[Sitemap Generator] Found ${publishedBlogs.length} published blogs.`);
+  // Generate XML blocks for published blogs (exclude noindex posts)
+  const publishedBlogs = blogs.filter(b => b.status === 'Published' && b.slug && !b.is_noindex);
+  console.log(`[Sitemap Generator] Found ${publishedBlogs.length} indexable published blogs.`);
   
   const blogBlocks = publishedBlogs.map(blog => {
     const lastmod = formatDate(blog.date);

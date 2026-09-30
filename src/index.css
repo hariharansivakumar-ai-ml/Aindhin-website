@@ -41,6 +41,39 @@ body,
   white-space: pre-wrap !important;
 }
 
+/* WordPress-Style Text Background Box Containers */
+p[style*="background-color"],
+h1[style*="background-color"],
+h2[style*="background-color"],
+h3[style*="background-color"],
+h4[style*="background-color"],
+blockquote[style*="background-color"] {
+  display: block;
+  padding: 1.25rem 1.75rem;
+  border-radius: 0.75rem;
+  margin: 1.25rem 0 1.5rem;
+  line-height: 1.8;
+  box-sizing: border-box;
+}
+
+p > span[style*="background-color"]:only-child {
+  display: block;
+  padding: 1.25rem 1.75rem;
+  border-radius: 0.75rem;
+  margin: 0.5rem 0;
+  line-height: 1.8;
+  box-sizing: border-box;
+}
+
+span[style*="background-color"]:not(:only-child) {
+  display: inline;
+  padding: 0.18em 0.45em;
+  border-radius: 0.35rem;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  line-height: 1.8;
+}
+
 @keyframes colorBlink {
   0% { background-color: #2563eb; } /* Blue */
   25% { background-color: #dc2626; } /* Red */
