@@ -290,13 +290,13 @@ const HomeCourseSlider = () => {
     };
 
     const formatStartDate = (dateStr) => {
-        if (!dateStr || dateStr.toLowerCase() === 'flexible') return 'Upcoming';
+        if (!dateStr || ['flexible', 'coming soon', 'coming_soon', 'null'].includes(String(dateStr).toLowerCase()) || String(dateStr).trim() === '') return 'Coming Soon';
         try {
             const d = new Date(dateStr);
-            if (isNaN(d.getTime())) return dateStr.toLowerCase() === 'flexible' ? 'Upcoming' : dateStr;
+            if (isNaN(d.getTime())) return 'Coming Soon';
             return `Starts: ${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
         } catch (_) {
-            return 'Upcoming';
+            return 'Coming Soon';
         }
     };
 

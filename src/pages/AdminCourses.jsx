@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     BookOpen, Search, PlusCircle, Trash2, Edit2, CheckCircle2, XCircle,
     Layers, Clock, Award, Users, FileText, Image, IndianRupee, ChevronDown,
-    ChevronUp, Plus, X, AlertCircle, Sparkles, Check, RefreshCw, ArrowRight, ArrowLeft
+    ChevronUp, Plus, X, AlertCircle, Sparkles, Check, RefreshCw, ArrowRight, ArrowLeft, Calendar
 } from 'lucide-react';
 import {
     apiGetSession, apiGetAdminPanelCourses, apiGetAdminPanelCourse,
@@ -57,6 +57,7 @@ const AdminCourses = () => {
     const [frequency, setFrequency] = useState('Once');
     const [skillLevel, setSkillLevel] = useState('Beginner');
     const [includes, setIncludes] = useState('');
+    const [isComingSoon, setIsComingSoon] = useState(false);
     const [startDate, setStartDate] = useState('');
     const [completionDate, setCompletionDate] = useState('');
     const [certificateDetails, setCertificateDetails] = useState('');
@@ -80,13 +81,13 @@ const AdminCourses = () => {
     const [showClassModePrompt, setShowClassModePrompt] = useState(false);
 
     useEffect(() => {
-        if (!durationVal || !durationUnit || classMode === 'Module Class') {
+        if (isComingSoon || !durationVal || !durationUnit || classMode === 'Module Class' || !startDate) {
             setCompletionDate('');
             return;
         }
 
         try {
-            const start = startDate ? new Date(startDate) : new Date();
+            const start = new Date(startDate);
             if (isNaN(start.getTime())) {
                 setCompletionDate('');
                 return;
@@ -162,7 +163,7 @@ const AdminCourses = () => {
         } catch (e) {
             setCompletionDate('');
         }
-    }, [startDate, durationVal, durationUnit, frequency, classMode]);
+    }, [startDate, durationVal, durationUnit, frequency, classMode, isComingSoon]);
 
     useEffect(() => {
         const checkAuthAndLoad = async () => {
@@ -237,7 +238,12 @@ const AdminCourses = () => {
                 setFrequency(fullCourse.frequency || 'Once');
                 setSkillLevel(fullCourse.skill_level || 'Beginner');
                 setIncludes(fullCourse.includes || '');
-                setStartDate(fullCourse.course_start_date || '');
+                const rawStart = fullCourse.course_start_date;
+                const isCS = !rawStart || 
+                    ['flexible', 'coming soon', 'coming_soon', 'null'].includes(String(rawStart).toLowerCase()) ||
+                    String(rawStart).trim() === '';
+                setIsComingSoon(isCS);
+                setStartDate(isCS ? '' : (rawStart || ''));
                 setCertificateDetails(fullCourse.certificate_details || '');
                 setIsActive(fullCourse.is_active !== false);
                 setIsProjectActive(fullCourse.is_project_active !== false);
@@ -282,6 +288,7 @@ const AdminCourses = () => {
             setFrequency('Once');
             setSkillLevel('Beginner');
             setIncludes('Live Sessions, Study Materials, Certificate');
+            setIsComingSoon(false);
             setStartDate(new Date().toISOString().split('T')[0]);
             setCertificateDetails('Certificate of Completion');
             setIsActive(true);
@@ -372,7 +379,7 @@ const AdminCourses = () => {
                 course_duration: combinedDuration,
                 skill_level: skillLevel,
                 includes,
-                course_start_date: startDate || new Date().toISOString().split('T')[0],
+                course_start_date: isComingSoon ? '' : (startDate || ''),
                 certificate_details: certificateDetails,
                 modules: moduleData,
                 frequency: frequency || 'Once',
@@ -646,7 +653,17 @@ const AdminCourses = () => {
                                             </div>
 
                                             <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                                                <div className="flex items-center gap-3">
+                                                <div className="flex items-center gap-2">
+                                                    {(!course.course_start_date || ['flexible', 'coming soon', 'coming_soon', 'null'].includes(String(course.course_start_date).toLowerCase()) || String(course.course_start_date).trim() === '') ? (
+                                                        <span className="inline-flex items-center gap-1 font-bold text-[11px] px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-md">
+                                                            ⚡ Coming Soon
+                                                        </span>
+                                                    ) : (
+                                                        <span className="flex items-center gap-1 font-medium text-slate-600">
+                                                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                                                            {course.course_start_date}
+                                                        </span>
+                                                    )}
                                                     {!(course.class_mode === 'Module Class' || course.classMode === 'Module Class') && (
                                                         <span className="flex items-center gap-1 font-medium">
                                                             <Clock className="w-3.5 h-3.5 text-slate-400" />
@@ -991,26 +1008,75 @@ const AdminCourses = () => {
                                         {/* Selectable Date & Skill Level */}
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                             {classMode !== 'Module Class' ? (
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Course Start Date</label>
-                                                        <input
-                                                            type="date"
-                                                            value={startDate}
-                                                            onChange={(e) => setStartDate(e.target.value)}
-                                                            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15 cursor-pointer"
-                                                        />
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs font-bold uppercase text-slate-700">Course Schedule</span>
+                                                        <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={isComingSoon}
+                                                                onChange={(e) => {
+                                                                    const checked = e.target.checked;
+                                                                    setIsComingSoon(checked);
+                                                                    if (checked) {
+                                                                        setStartDate('');
+                                                                        setCompletionDate('');
+                                                                    } else {
+                                                                        setStartDate(new Date().toISOString().split('T')[0]);
+                                                                    }
+                                                                }}
+                                                                className="w-4 h-4 text-violet-600 rounded border-slate-300 focus:ring-violet-500 cursor-pointer accent-violet-600"
+                                                            />
+                                                            <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full transition-colors ${
+                                                                isComingSoon 
+                                                                    ? 'bg-amber-100 text-amber-800 border border-amber-300 shadow-sm' 
+                                                                    : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'
+                                                            }`}>
+                                                                ⚡ Coming Soon (No Dates)
+                                                            </span>
+                                                        </label>
                                                     </div>
-                                                    <div>
-                                                        <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Completion Date</label>
-                                                        <input
-                                                            type="text"
-                                                            readOnly
-                                                            value={completionDate}
-                                                            placeholder="Auto-calculated"
-                                                            className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 font-medium cursor-not-allowed"
-                                                        />
-                                                    </div>
+
+                                                    {isComingSoon ? (
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5">Course Start Date</label>
+                                                                <div className="w-full bg-amber-50/70 border border-dashed border-amber-300 rounded-xl px-4 py-3 text-sm text-amber-800 font-semibold flex items-center justify-between">
+                                                                    <span>Coming Soon</span>
+                                                                    <span className="text-[10px] uppercase font-bold tracking-wider bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded">TBA</span>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <label className="block text-xs font-bold uppercase text-slate-400 mb-1.5">Completion Date</label>
+                                                                <div className="w-full bg-amber-50/70 border border-dashed border-amber-300 rounded-xl px-4 py-3 text-sm text-amber-800 font-semibold flex items-center justify-between">
+                                                                    <span>To Be Announced</span>
+                                                                    <span className="text-[10px] uppercase font-bold tracking-wider bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded">TBA</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">Course Start Date</label>
+                                                                <input
+                                                                    type="date"
+                                                                    value={startDate}
+                                                                    onChange={(e) => setStartDate(e.target.value)}
+                                                                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15 cursor-pointer"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">Completion Date</label>
+                                                                <input
+                                                                    type="text"
+                                                                    readOnly
+                                                                    value={completionDate}
+                                                                    placeholder="Auto-calculated"
+                                                                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 font-medium cursor-not-allowed"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             ) : <div />}
                                             <div>

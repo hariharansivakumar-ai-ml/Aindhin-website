@@ -541,12 +541,19 @@ const Courses = () => {
 
                                                 </div>
 
-                                                {!course.isCompleted && course.startDate && (
-                                                    <div className="text-[13px] font-semibold text-primary bg-blue-50 px-4 py-1.5 rounded-full inline-block">
-                                                        {course.startDate.toLowerCase() === 'flexible'
-                                                            ? 'Upcoming'
-                                                            : `Starts: ${formatCourseDate(course.startDate)} ${course.startTime ? `at ${formatCourseTime(course.startTime)}` : ''}`}
-                                                    </div>
+                                                {!course.isCompleted && (
+                                                    (() => {
+                                                        const isCS = !course.startDate || ['flexible', 'coming soon', 'coming_soon', 'null'].includes(String(course.startDate).toLowerCase()) || String(course.startDate).trim() === '';
+                                                        return (
+                                                            <div className={`text-[13px] font-semibold px-4 py-1.5 rounded-full inline-block ${
+                                                                isCS ? 'text-amber-700 bg-amber-50 border border-amber-200' : 'text-primary bg-blue-50'
+                                                            }`}>
+                                                                {isCS
+                                                                    ? 'Coming Soon'
+                                                                    : `Starts: ${formatCourseDate(course.startDate)} ${course.startTime ? `at ${formatCourseTime(course.startTime)}` : ''}`}
+                                                            </div>
+                                                        );
+                                                    })()
                                                 )}
                                             </div>
 
