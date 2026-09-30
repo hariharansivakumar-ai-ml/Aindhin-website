@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronRight, Menu, X, LayoutGrid, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import CourseTicker from './CourseTicker';
 
 import { USER_APP_URL, apiGetPublicCategories } from '../utils/apiClient';
 
@@ -363,10 +362,6 @@ const Header = () => {
                     <a href={`${USER_APP_URL}/signin`} target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileMenuOpen(false)} className="mt-2 text-center py-4 bg-primary text-white rounded-full font-bold shadow-lg">Login / Sign Up</a>
                 </div>
             </div>
-
-            {/* Course Ticker rendered exactly below the header navigation */}
-            <CourseTicker />
-
 
         </header>
     );
