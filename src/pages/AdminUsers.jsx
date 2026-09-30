@@ -129,7 +129,12 @@ const AdminUsers = () => {
                         
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
                             <div>
-                                <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Users</h2>
+                                <div className="flex items-center gap-3">
+                                    <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Users</h2>
+                                    <span className="bg-violet-100 text-violet-700 text-xs font-bold px-3 py-1 rounded-full">
+                                        {filteredUsers.length} {filteredUsers.length === 1 ? 'User' : 'Users'}
+                                    </span>
+                                </div>
                                 <p className="text-slate-500 mt-1 text-sm">Manage and export registered users.</p>
                             </div>
                             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">

@@ -70,8 +70,53 @@ const CourseRegistration = () => {
         return `${USER_API_URL}${img.startsWith('/') ? '' : '/'}${img}`;
     };
 
-    const isCourseOpen = (c) => {
+    const isCourseCompleted = (c) => {
         if (c.is_ended || c.is_completed || c.is_active === false || c.is_deleted) {
+            return true;
+        }
+        if (c.class_mode === 'Module Class') return false;
+        const total = parseInt(c.total_classes, 10);
+        const startStr = c.course_start_date || c.course_date;
+        if (!total || total <= 0 || !startStr || String(startStr).toLowerCase() === 'flexible') {
+            return false;
+        }
+        try {
+            const start = new Date(startStr);
+            const now = new Date();
+            if (now < start) return false;
+
+            const freq = (c.frequency || 'Daily').toLowerCase();
+            let allowedDays = [1, 2, 3, 4, 5]; // Mon-Fri
+            if (total === 1 || freq.includes('once')) allowedDays = [start.getDay() === 0 ? 7 : start.getDay()];
+            else if (freq.includes('all 7 days') || freq.includes('daily') || freq.includes('everyday')) allowedDays = [1, 2, 3, 4, 5, 6, 7];
+            else if (freq.includes('mon') && freq.includes('sat')) allowedDays = [1, 2, 3, 4, 5, 6];
+            else if (freq.includes('mon') && freq.includes('wed') && freq.includes('fri')) allowedDays = [1, 3, 5];
+            else if (freq.includes('tue') && freq.includes('thu')) allowedDays = [2, 4];
+            else if (freq.includes('weekend')) allowedDays = [6, 7];
+            else if (freq.includes('monday')) allowedDays = [1];
+            else if (freq.includes('tuesday')) allowedDays = [2];
+            else if (freq.includes('wednesday')) allowedDays = [3];
+            else if (freq.includes('thursday')) allowedDays = [4];
+            else if (freq.includes('friday')) allowedDays = [5];
+            else if (freq.includes('saturday')) allowedDays = [6];
+            else if (freq.includes('sunday')) allowedDays = [7];
+
+            let completed = 0;
+            let cur = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            while (cur <= today) {
+                const day = cur.getDay() === 0 ? 7 : cur.getDay();
+                if (allowedDays.includes(day)) completed++;
+                cur.setDate(cur.getDate() + 1);
+            }
+            return completed >= total;
+        } catch (_) {
+            return false;
+        }
+    };
+
+    const isCourseOpen = (c) => {
+        if (c.is_ended || c.is_completed || c.is_active === false || c.is_deleted || isCourseCompleted(c)) {
             return false;
         }
         return true;
@@ -118,10 +163,8 @@ const CourseRegistration = () => {
                 const seenTitles = new Set();
 
                 const addCourse = (c, isLiveBatch) => {
-                    const isLiveClass = c.class_mode ? (c.class_mode === 'Live Class') : isLiveBatch;
-
-                    // Only filter out ended/completed courses if they are Live Classes
-                    if (isLiveClass && !isCourseOpen(c)) return;
+                    // Filter out ended, completed, or inactive courses
+                    if (isCourseCompleted(c) || !isCourseOpen(c)) return;
 
                     const batchId = String(c.id || c.course_id || '').trim();
                     const courseId = String(c.course_id || c.id || '').trim();
