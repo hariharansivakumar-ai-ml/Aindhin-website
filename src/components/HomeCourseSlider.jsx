@@ -2,7 +2,8 @@ import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Play, BookOpen, Clock, Users, Calendar } from 'lucide-react';
-import { apiGetAssignedCourses, USER_API_URL } from '../utils/apiClient';
+import { apiGetAssignedCourses, USER_APP_URL, USER_API_URL } from '../utils/apiClient';
+import { encodeCourseId } from '../utils/idObfuscator';
 import SignInModal from './SignInModal';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
@@ -121,7 +122,7 @@ const ExpandedCard = ({ course, anchorRect, onMouseEnter, onMouseMove, onMouseLe
                     </p>
 
                     <button
-                        onClick={onEnrollClick}
+                        onClick={() => onEnrollClick && onEnrollClick(course)}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-blue-700 text-white text-[13px] font-bold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/30 border-none cursor-pointer"
                     >
                         <Play className="w-3.5 h-3.5 fill-white" />
@@ -137,7 +138,7 @@ const ExpandedCard = ({ course, anchorRect, onMouseEnter, onMouseMove, onMouseLe
 /* ─────────────────────────────────────────────────────────────────────────────
    CourseCard — turns invisible when hovered so the portal card takes its place
 ───────────────────────────────────────────────────────────────────────────── */
-const CourseCard = ({ course, rowId, instanceId, onHover, onLeave, isActive }) => {
+const CourseCard = ({ course, rowId, instanceId, onHover, onLeave, isActive, onEnroll }) => {
     const cardRef = useRef(null);
     const navigate = useNavigate();
 
@@ -146,8 +147,10 @@ const CourseCard = ({ course, rowId, instanceId, onHover, onLeave, isActive }) =
     };
 
     const handleClick = () => {
-        if (course.link && course.link !== '#') {
+        if (course.link && course.link !== '#' && !course.link.startsWith('/register')) {
             navigate(course.link);
+        } else if (onEnroll) {
+            onEnroll(course);
         } else {
             navigate(`/register?course_id=${course.id}&course=${encodeURIComponent(course.title)}`);
         }
@@ -193,7 +196,7 @@ const CourseCard = ({ course, rowId, instanceId, onHover, onLeave, isActive }) =
    MarqueeRow — Smooth, Seamless Infinite Slideshow
    Uses duplicated halves with translate3d(-50%) for 100% glitch-free loop
 ───────────────────────────────────────────────────────────────────────────── */
-const MarqueeRow = ({ title, courses, seeMoreLink, rowId, onCardHover, onCardLeave, isPaused, activeInstanceId }) => {
+const MarqueeRow = ({ title, courses, seeMoreLink, rowId, onCardHover, onCardLeave, isPaused, activeInstanceId, onEnroll }) => {
     // Generate enough items to cover any screen width, then duplicate for seamless -50% loop
     const marqueeItems = useMemo(() => {
         if (!courses || courses.length === 0) return [];
@@ -244,6 +247,7 @@ const MarqueeRow = ({ title, courses, seeMoreLink, rowId, onCardHover, onCardLea
                                 onHover={onCardHover}
                                 onLeave={onCardLeave}
                                 isActive={activeInstanceId === instanceId}
+                                onEnroll={onEnroll}
                             />
                         );
                     })}
@@ -266,6 +270,7 @@ const HomeCourseSlider = () => {
     const [pausedRowId,   setPausedRowId]   = useState(null);
     const [activeInstanceId, setActiveInstanceId] = useState(null);
     const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+    const [signInRedirectUrl, setSignInRedirectUrl] = useState(`${USER_APP_URL}/signin`);
     const leaveTimer = useRef(null);
     const isOverCard = useRef(false);
 
@@ -322,22 +327,31 @@ const HomeCourseSlider = () => {
                     // If upcoming courses exist, show ONLY upcoming; otherwise fallback to active courses
                     const targetList = upcomingOnly.length > 0 ? upcomingOnly : activeCourses;
 
-                    const mapped = targetList.map(c => ({
-                        id: c.id,
-                        title: c.title,
-                        image: resolveCourseImage(c),
-                        link: `/register?course_id=${c.id}&course=${encodeURIComponent(c.title)}`,
-                        description: c.about_course || c.description || 'Master job-ready industry skills with hands-on live sessions and professional certification.',
-                        duration: c.course_duration || 'Flexible',
-                        students: c.total_enrolled || 120,
-                        level: c.skill_level || 'Beginner',
-                        category: (c.category || 'Certification').trim(),
-                        dateBadge: formatStartDate(c.course_start_date),
-                        tags: [
-                            (c.category || 'Certification').trim(),
-                            formatStartDate(c.course_start_date),
-                            c.class_mode || 'Live Class'
-                        ].filter(Boolean)
+                    const mapped = await Promise.all(targetList.map(async (c) => {
+                        let encodedId = c.id;
+                        try {
+                            encodedId = await encodeCourseId(c.id);
+                        } catch (_) {}
+
+                        return {
+                            id: c.id,
+                            encodedId,
+                            title: c.title,
+                            image: resolveCourseImage(c),
+                            userCourseUrl: `${USER_APP_URL}/course/${encodedId}`,
+                            link: `/register?course_id=${c.id}&course=${encodeURIComponent(c.title)}`,
+                            description: c.about_course || c.description || 'Master job-ready industry skills with hands-on live sessions and professional certification.',
+                            duration: c.course_duration || 'Flexible',
+                            students: c.total_enrolled || 120,
+                            level: c.skill_level || 'Beginner',
+                            category: (c.category || 'Certification').trim(),
+                            dateBadge: formatStartDate(c.course_start_date),
+                            tags: [
+                                (c.category || 'Certification').trim(),
+                                formatStartDate(c.course_start_date),
+                                c.class_mode || 'Live Class'
+                            ].filter(Boolean)
+                        };
                     }));
 
                     setCourses(mapped);
@@ -415,15 +429,87 @@ const HomeCourseSlider = () => {
         return null; // Gracefully hide if no active courses exist
     }
 
+    const checkIsLoggedIn = () => {
+        try {
+            const token = localStorage.getItem('aindhin_token') ||
+                          localStorage.getItem('token') ||
+                          localStorage.getItem('access_token') ||
+                          localStorage.getItem('user_token') ||
+                          localStorage.getItem('auth_token') ||
+                          localStorage.getItem('user') ||
+                          localStorage.getItem('aindhin_user') ||
+                          sessionStorage.getItem('aindhin_token') ||
+                          sessionStorage.getItem('token');
+            if (token) return true;
+
+            if (typeof document !== 'undefined' && document.cookie) {
+                if (/sessionid=|token=|jwt=|auth=|aindhin_token=/i.test(document.cookie)) {
+                    return true;
+                }
+            }
+        } catch (_) {}
+        return false;
+    };
+
+    const handleEnrollClick = async (courseToEnroll) => {
+        const targetCourse = courseToEnroll || hoveredCourse;
+        if (!targetCourse) return;
+
+        let targetUrl = targetCourse.userCourseUrl;
+        let encoded = targetCourse.encodedId;
+        if (!targetUrl) {
+            try {
+                encoded = await encodeCourseId(targetCourse.id);
+                targetUrl = `${USER_APP_URL}/course/${encoded}`;
+            } catch (_) {
+                targetUrl = `${USER_APP_URL}/course/${targetCourse.id}`;
+            }
+        }
+
+        const isLogged = checkIsLoggedIn();
+        if (isLogged) {
+            window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        } else {
+            const redirectParam = encodeURIComponent(`/course/${encoded || targetCourse.id}`);
+            setSignInRedirectUrl(`${USER_APP_URL}/signin?redirect=${redirectParam}`);
+            setIsSignInModalOpen(true);
+        }
+        handleLeave();
+    };
+
     return (
-        <section className="py-12 bg-white overflow-hidden">
+        <section className="py-12 bg-white relative overflow-hidden select-none">
             <style>{`
                 @keyframes smoothInfiniteMarquee {
+                    0%   { transform: translate3d(0, 0, 0); }
+                    100% { transform: translate3d(-50%, 0, 0); }
+                }
+                .expanded-card-container {
+                    box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+                    animation: cardPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    transform-origin: center top;
+                }
+                @keyframes cardPopIn {
                     0% {
-                        transform: translate3d(0, 0, 0);
+                        opacity: 0.85;
+                        transform: scale(0.97) translateY(-3px);
                     }
                     100% {
-                        transform: translate3d(-50%, 0, 0);
+                        opacity: 1;
+                        transform: scale(1.04) translateY(0);
+                    }
+                }
+                .expanded-info {
+                    animation: infoSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+                @keyframes infoSlideDown {
+                    0% {
+                        opacity: 0;
+                        transform: translateY(-8px);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translateY(0);
                     }
                 }
             `}</style>
@@ -450,6 +536,7 @@ const HomeCourseSlider = () => {
                         onCardLeave={handleLeave}
                         isPaused={pausedRowId === row.rowId}
                         activeInstanceId={activeInstanceId}
+                        onEnroll={handleEnrollClick}
                     />
                 ))
             )}
@@ -467,19 +554,13 @@ const HomeCourseSlider = () => {
                     clearTimeout(leaveTimer.current);
                 }}
                 onMouseLeave={handleLeave}
-                onEnrollClick={() => {
-                    if (hoveredCourse) {
-                        navigate(hoveredCourse.link || `/register?course_id=${hoveredCourse.id}&course=${encodeURIComponent(hoveredCourse.title)}`);
-                    } else {
-                        setIsSignInModalOpen(true);
-                    }
-                    handleLeave();
-                }}
+                onEnrollClick={handleEnrollClick}
             />
 
             <SignInModal 
                 isOpen={isSignInModalOpen} 
                 onClose={() => setIsSignInModalOpen(false)} 
+                redirectUrl={signInRedirectUrl}
             />
         </section>
     );
