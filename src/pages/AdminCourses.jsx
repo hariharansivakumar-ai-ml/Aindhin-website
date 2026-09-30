@@ -52,7 +52,7 @@ const AdminCourses = () => {
 
     // Form fields - Tab 2 (Specs)
     const [aboutCourse, setAboutCourse] = useState('');
-    const [durationVal, setDurationVal] = useState('4');
+    const [durationVal, setDurationVal] = useState('');
     const [durationUnit, setDurationUnit] = useState('Weeks');
     const [frequency, setFrequency] = useState('Once');
     const [skillLevel, setSkillLevel] = useState('Beginner');
@@ -81,7 +81,7 @@ const AdminCourses = () => {
     const [showClassModePrompt, setShowClassModePrompt] = useState(false);
 
     useEffect(() => {
-        if (isComingSoon || !durationVal || !durationUnit || classMode === 'Module Class' || !startDate) {
+        if (isComingSoon || !durationVal || !durationVal.toString().trim() || !durationUnit || classMode === 'Module Class' || !startDate) {
             setCompletionDate('');
             return;
         }
@@ -223,15 +223,15 @@ const AdminCourses = () => {
                 // Parse duration value & unit
                 const rawDur = (fullCourse.course_duration || '').trim();
                 const parts = rawDur.split(' ');
-                if (parts.length >= 2) {
+                if (parts.length >= 2 && !isNaN(parseInt(parts[0], 10))) {
                     setDurationVal(parts[0]);
                     const unit = parts[1];
                     setDurationUnit(durationUnits.includes(unit) ? unit : 'Weeks');
-                } else if (parts.length === 1 && parts[0]) {
+                } else if (parts.length === 1 && parts[0] && !isNaN(parseInt(parts[0], 10))) {
                     setDurationVal(parts[0]);
                     setDurationUnit('Weeks');
                 } else {
-                    setDurationVal('4');
+                    setDurationVal('');
                     setDurationUnit('Weeks');
                 }
 
@@ -283,7 +283,7 @@ const AdminCourses = () => {
             setCourseType('Free');
             setClassMode('Live Class');
             setAboutCourse('');
-            setDurationVal('4');
+            setDurationVal('');
             setDurationUnit('Weeks');
             setFrequency('Once');
             setSkillLevel('Beginner');
@@ -366,7 +366,9 @@ const AdminCourses = () => {
                 }))
             }));
 
-            const combinedDuration = `${durationVal || '1'} ${durationUnit || 'Weeks'}`;
+            const combinedDuration = durationVal && durationVal.toString().trim() 
+                ? `${durationVal.toString().trim()} ${durationUnit || 'Weeks'}` 
+                : 'Flexible';
             const courseStartDateVal = (isComingSoon || !startDate || !startDate.trim()) ? 'Coming Soon' : startDate.trim();
 
             const payloadData = {
@@ -969,13 +971,15 @@ const AdminCourses = () => {
                                         {classMode !== 'Module Class' && (
                                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                                                 <div>
-                                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Duration (Value)</label>
+                                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-2">
+                                                        Duration (Value) <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                                                    </label>
                                                     <input
                                                         type="number"
                                                         min="1"
                                                         value={durationVal}
                                                         onChange={(e) => setDurationVal(e.target.value)}
-                                                        placeholder="e.g. 4"
+                                                        placeholder="e.g. 4 (optional)"
                                                         className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15"
                                                     />
                                                 </div>
@@ -1072,7 +1076,7 @@ const AdminCourses = () => {
                                                                     type="text"
                                                                     readOnly
                                                                     value={completionDate}
-                                                                    placeholder="Auto-calculated"
+                                                                    placeholder={durationVal ? "Auto-calculated" : "Requires duration"}
                                                                     className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 font-medium cursor-not-allowed"
                                                                 />
                                                             </div>
