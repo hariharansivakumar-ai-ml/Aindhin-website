@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Play, BookOpen, Clock, Users, Calendar } from 'lucide-react';
 import { apiGetAssignedCourses, USER_APP_URL, USER_API_URL } from '../utils/apiClient';
 import { encodeCourseId } from '../utils/idObfuscator';
-import SignInModal from './SignInModal';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
 import digitalMarketingImg from '../assets/digital_marketing_hero.webp';
@@ -22,10 +21,10 @@ import cloudComputingImg from '../assets/cloud_computing.webp';
 const ExpandedCard = ({ course, anchorRect, onMouseEnter, onMouseMove, onMouseLeave, onEnrollClick }) => {
     if (!course || !anchorRect) return null;
 
-    const left   = anchorRect.left + window.scrollX;
-    const top    = anchorRect.top + window.scrollY;
-    const width  = anchorRect.width;
-    const IMG_H  = anchorRect.height;
+    const left = anchorRect.left + window.scrollX;
+    const top = anchorRect.top + window.scrollY;
+    const width = anchorRect.width;
+    const IMG_H = anchorRect.height;
     const INFO_H = 175;
 
     return createPortal(
@@ -165,14 +164,14 @@ const CourseCard = ({ course, rowId, instanceId, onHover, onLeave, isActive, onE
             className="w-[260px] md:w-[320px] aspect-[16/9] shrink-0 relative rounded-2xl overflow-hidden shadow-sm cursor-pointer select-none transition-transform hover:scale-[1.01]"
             style={{ opacity: isActive ? 0 : 1, transition: 'opacity 0.12s' }}
         >
-            <img 
-                src={course.image} 
-                alt={course.title} 
+            <img
+                src={course.image}
+                alt={course.title}
                 onError={(e) => { e.target.src = aiMlBasicsImg; }}
-                className="w-full h-full object-cover" 
+                className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            
+
             {/* Tag chip at top */}
             {course.dateBadge && (
                 <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
@@ -266,11 +265,9 @@ const HomeCourseSlider = () => {
     const [loading, setLoading] = useState(true);
 
     const [hoveredCourse, setHoveredCourse] = useState(null);
-    const [anchorRect,    setAnchorRect]    = useState(null);
-    const [pausedRowId,   setPausedRowId]   = useState(null);
+    const [anchorRect, setAnchorRect] = useState(null);
+    const [pausedRowId, setPausedRowId] = useState(null);
     const [activeInstanceId, setActiveInstanceId] = useState(null);
-    const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
-    const [signInRedirectUrl, setSignInRedirectUrl] = useState(`${USER_APP_URL}/signin`);
     const leaveTimer = useRef(null);
     const isOverCard = useRef(false);
 
@@ -331,7 +328,7 @@ const HomeCourseSlider = () => {
                         let encodedId = c.id;
                         try {
                             encodedId = await encodeCourseId(c.id);
-                        } catch (_) {}
+                        } catch (_) { }
 
                         return {
                             id: c.id,
@@ -432,14 +429,14 @@ const HomeCourseSlider = () => {
     const checkIsLoggedIn = () => {
         try {
             const token = localStorage.getItem('aindhin_token') ||
-                          localStorage.getItem('token') ||
-                          localStorage.getItem('access_token') ||
-                          localStorage.getItem('user_token') ||
-                          localStorage.getItem('auth_token') ||
-                          localStorage.getItem('user') ||
-                          localStorage.getItem('aindhin_user') ||
-                          sessionStorage.getItem('aindhin_token') ||
-                          sessionStorage.getItem('token');
+                localStorage.getItem('token') ||
+                localStorage.getItem('access_token') ||
+                localStorage.getItem('user_token') ||
+                localStorage.getItem('auth_token') ||
+                localStorage.getItem('user') ||
+                localStorage.getItem('aindhin_user') ||
+                sessionStorage.getItem('aindhin_token') ||
+                sessionStorage.getItem('token');
             if (token) return true;
 
             if (typeof document !== 'undefined' && document.cookie) {
@@ -447,7 +444,7 @@ const HomeCourseSlider = () => {
                     return true;
                 }
             }
-        } catch (_) {}
+        } catch (_) { }
         return false;
     };
 
@@ -471,8 +468,8 @@ const HomeCourseSlider = () => {
             window.open(targetUrl, '_blank', 'noopener,noreferrer');
         } else {
             const redirectParam = encodeURIComponent(`/course/${encoded || targetCourse.id}`);
-            setSignInRedirectUrl(`${USER_APP_URL}/signin?redirect=${redirectParam}`);
-            setIsSignInModalOpen(true);
+            const signInUrl = `${USER_APP_URL}/signin?redirect=${redirectParam}`;
+            window.open(signInUrl, '_blank', 'noopener,noreferrer');
         }
         handleLeave();
     };
@@ -555,12 +552,6 @@ const HomeCourseSlider = () => {
                 }}
                 onMouseLeave={handleLeave}
                 onEnrollClick={handleEnrollClick}
-            />
-
-            <SignInModal 
-                isOpen={isSignInModalOpen} 
-                onClose={() => setIsSignInModalOpen(false)} 
-                redirectUrl={signInRedirectUrl}
             />
         </section>
     );

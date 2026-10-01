@@ -215,8 +215,16 @@ const AdminCourses = () => {
                 setCategory(cat);
                 setCustomCategory('');
                 setDescription(fullCourse.description || '');
-                setPrice(fullCourse.price?.toString() || '');
-                setCourseType(fullCourse.course_type || 'Free');
+                const rawType = fullCourse.course_type || '';
+                const rawCert = fullCourse.certificate_details || '';
+                const hasNoPrice = fullCourse.price === null || fullCourse.price === '' || fullCourse.price === '0' || fullCourse.price === '0.00' || parseFloat(fullCourse.price) === 0;
+                const isNM = rawCert.includes('[type:not_mentioned]') ||
+                    ['not mentioned', 'not mention', 'none', 'not_mentioned'].includes(rawType.toLowerCase()) ||
+                    (rawType === 'Free' && hasNoPrice);
+
+                setPrice(isNM ? '' : (fullCourse.price?.toString() || ''));
+                setCourseType(isNM ? 'Not Mentioned' : (rawType || 'Free'));
+                setCertificateDetails(rawCert.replace(/\s*\[type:not_mentioned\]/g, '').trim());
                 setClassMode(fullCourse.class_mode || 'Live Class');
                 setAboutCourse(fullCourse.about_course || '');
 
@@ -371,19 +379,27 @@ const AdminCourses = () => {
                 : 'Flexible';
             const courseStartDateVal = (isComingSoon || !startDate || !startDate.trim()) ? 'Coming Soon' : startDate.trim();
 
+            const isNotMentioned = courseType === 'Not Mentioned';
+            // Django ChoiceField only accepts 'Free' or 'Paid'
+            const backendCourseType = (courseType === 'Paid' || courseType === 'University') ? 'Paid' : 'Free';
+            let finalCertDetails = (certificateDetails || '').replace(/\s*\[type:not_mentioned\]/g, '').trim();
+            if (isNotMentioned) {
+                finalCertDetails = finalCertDetails ? `${finalCertDetails} [type:not_mentioned]` : '[type:not_mentioned]';
+            }
+
             const payloadData = {
                 title,
                 description,
                 category: finalCategory,
-                price: price.toString(),
-                course_type: courseType,
+                price: isNotMentioned ? '' : (price ? price.toString() : '0'),
+                course_type: backendCourseType,
                 class_mode: classMode,
                 about_course: aboutCourse,
                 course_duration: combinedDuration,
                 skill_level: skillLevel,
                 includes,
                 course_start_date: courseStartDateVal,
-                certificate_details: certificateDetails,
+                certificate_details: finalCertDetails,
                 modules: moduleData,
                 frequency: frequency || 'Once',
                 is_active: isActive.toString(),
@@ -597,7 +613,13 @@ const AdminCourses = () => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredCourses.map((course) => {
-                                const isPaid = course.course_type?.toLowerCase() === 'paid' || course.course_type?.toLowerCase() === 'university';
+                                const typeStr = (course.course_type || '').toLowerCase();
+                                const certDet = course.certificate_details || '';
+                                const hasNoPrice = course.price === null || course.price === '' || course.price === '0' || course.price === '0.00' || parseFloat(course.price) === 0;
+                                const isNotMentioned = certDet.includes('[type:not_mentioned]') ||
+                                    typeStr === 'not mentioned' || typeStr === 'not mention' || typeStr === 'none' || typeStr === 'not_mentioned' ||
+                                    (typeStr === 'free' && hasNoPrice);
+                                const isPaid = !isNotMentioned && (typeStr === 'paid' || typeStr === 'university');
                                 return (
                                     <motion.div
                                         key={course.id}
@@ -626,11 +648,13 @@ const AdminCourses = () => {
                                                 }`}>
                                                     {course.is_ended ? 'Completed' : course.is_active !== false ? 'Active' : 'Inactive'}
                                                 </span>
-                                                <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide uppercase shadow-sm ${
-                                                    isPaid ? 'bg-amber-500 text-white' : 'bg-violet-600 text-white'
-                                                }`}>
-                                                    {course.course_type || 'Free'}
-                                                </span>
+                                                {!isNotMentioned && (
+                                                    <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide uppercase shadow-sm ${
+                                                        isPaid ? 'bg-amber-500 text-white' : 'bg-violet-600 text-white'
+                                                    }`}>
+                                                        {course.course_type || 'Free'}
+                                                    </span>
+                                                )}
                                                 {course.class_mode && (
                                                     <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wide uppercase shadow-sm ${
                                                         course.class_mode === 'Module Class' ? 'bg-indigo-500 text-white' : 'bg-cyan-500 text-white'
@@ -674,15 +698,17 @@ const AdminCourses = () => {
                                                         </span>
                                                     )}
                                                 </div>
-                                                {isPaid ? (
-                                                    <span className="text-sm font-black text-slate-900">₹{course.price}</span>
-                                                ) : (
-                                                    <div className="flex items-center gap-1.5">
-                                                        {course.price && parseFloat(course.price) > 0 && (
-                                                            <span className="text-xs font-bold text-slate-400 line-through decoration-red-500 decoration-2">₹{course.price}</span>
-                                                        )}
-                                                        <span className="text-xs font-bold px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-md">FREE</span>
-                                                    </div>
+                                                {!isNotMentioned && (
+                                                    isPaid ? (
+                                                        <span className="text-sm font-black text-slate-900">₹{course.price}</span>
+                                                    ) : (
+                                                        <div className="flex items-center gap-1.5">
+                                                            {course.price && parseFloat(course.price) > 0 && (
+                                                                <span className="text-xs font-bold text-slate-400 line-through decoration-red-500 decoration-2">₹{course.price}</span>
+                                                            )}
+                                                            <span className="text-xs font-bold px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-md">FREE</span>
+                                                        </div>
+                                                    )
                                                 )}
                                             </div>
 
@@ -914,31 +940,34 @@ const AdminCourses = () => {
                                                     <option value="Free">Free Certification</option>
                                                     <option value="Paid">Paid Professional Program</option>
                                                     <option value="University">University Degree Program</option>
+                                                    <option value="Not Mentioned">Not Mentioned</option>
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                            <div>
-                                                <label className="block text-xs font-bold uppercase text-slate-700 mb-2">
-                                                    {courseType === 'Free' ? 'Original Price (INR / ₹)' : 'Price (in INR / ₹)'}
-                                                </label>
-                                                <div className="relative">
-                                                    <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                                    <input
-                                                        type="number"
-                                                        value={price}
-                                                        onChange={(e) => setPrice(e.target.value)}
-                                                        placeholder="e.g. 14999"
-                                                        className={`w-full border border-slate-300 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15 transition-all ${
-                                                            courseType === 'Free'
-                                                                ? 'bg-slate-50 text-slate-500 font-bold line-through decoration-red-500 decoration-2'
-                                                                : 'bg-white text-slate-900'
-                                                        }`}
-                                                    />
+                                        {courseType !== 'Not Mentioned' && (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase text-slate-700 mb-2">
+                                                        {courseType === 'Free' ? 'Original Price (INR / ₹)' : 'Price (in INR / ₹)'}
+                                                    </label>
+                                                    <div className="relative">
+                                                        <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                                        <input
+                                                            type="number"
+                                                            value={price}
+                                                            onChange={(e) => setPrice(e.target.value)}
+                                                            placeholder="e.g. 14999"
+                                                            className={`w-full border border-slate-300 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-violet-600 focus:ring-2 focus:ring-violet-600/15 transition-all ${
+                                                                courseType === 'Free'
+                                                                    ? 'bg-slate-50 text-slate-500 font-bold line-through decoration-red-500 decoration-2'
+                                                                    : 'bg-white text-slate-900'
+                                                            }`}
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        )}
 
                                         <div>
                                             <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Short Overview / Subtitle</label>

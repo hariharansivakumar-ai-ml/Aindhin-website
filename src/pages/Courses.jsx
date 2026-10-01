@@ -5,7 +5,6 @@ import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2, Cloud, Sear
 import FAQSection from '../components/FAQSection';
 import { apiGetAssignedCourses, apiGetPublicCategories, USER_APP_URL, USER_API_URL } from '../utils/apiClient';
 import EnquiryModal from '../components/EnquiryModal';
-import SignInModal from '../components/SignInModal';
 import { encodeCourseId } from '../utils/idObfuscator';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
@@ -129,7 +128,6 @@ const Courses = () => {
     });
     const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
     const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
-    const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -615,11 +613,6 @@ const Courses = () => {
                 isOpen={isEnquiryModalOpen} 
                 onClose={() => setIsEnquiryModalOpen(false)} 
                 courseTitle={selectedCourseTitle} 
-            />
-
-            <SignInModal 
-                isOpen={isSignInModalOpen} 
-                onClose={() => setIsSignInModalOpen(false)} 
             />
         </section>
     );

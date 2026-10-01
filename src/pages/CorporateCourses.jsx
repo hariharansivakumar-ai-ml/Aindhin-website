@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
 import EnquiryModal from '../components/EnquiryModal';
-import SignInModal from '../components/SignInModal';
 import { USER_APP_URL } from '../utils/apiClient';
 import { encodeCourseId } from '../utils/idObfuscator';
 
@@ -24,7 +23,6 @@ const CorporateCourses = () => {
     const [searchParams] = useSearchParams();
     const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
     const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
-    const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
 
     const handleExploreCourse = async (courseId) => {
         try {
@@ -279,10 +277,6 @@ const CorporateCourses = () => {
                 isOpen={isEnquiryModalOpen} 
                 onClose={() => setIsEnquiryModalOpen(false)} 
                 courseTitle={selectedCourseTitle} 
-            />
-            <SignInModal 
-                isOpen={isSignInModalOpen} 
-                onClose={() => setIsSignInModalOpen(false)} 
             />
         </section>
     );

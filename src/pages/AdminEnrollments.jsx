@@ -524,8 +524,21 @@ const AdminEnrollments = () => {
                                                     {course.is_ended ? 'Completed' : course.is_active !== false ? 'Active' : 'Inactive'}
                                                 </span>
                                                 <span className="text-violet-600 font-extrabold">{course.category || 'General'}</span>
-                                                <span className="text-slate-300">•</span>
-                                                <span className="uppercase text-slate-500 font-semibold">{course.course_type || 'Free'}</span>
+                                                {(() => {
+                                                    const t = (course.course_type || '').toLowerCase();
+                                                    const certDet = course.certificate_details || '';
+                                                    const hasNoPrice = course.price === null || course.price === '' || course.price === '0' || course.price === '0.00' || parseFloat(course.price) === 0;
+                                                    const isNM = certDet.includes('[type:not_mentioned]') ||
+                                                        ['not mentioned', 'none', 'not mention', 'not_mentioned'].includes(t) ||
+                                                        (t === 'free' && hasNoPrice);
+                                                    if (isNM) return null;
+                                                    return (
+                                                        <>
+                                                            <span className="text-slate-300">•</span>
+                                                            <span className="uppercase text-slate-500 font-semibold">{course.course_type || 'Free'}</span>
+                                                        </>
+                                                    );
+                                                })()}
                                                 {course.class_mode && (
                                                     <span className={`px-2.5 py-0.5 rounded-md text-[10px] uppercase font-extrabold tracking-wider shadow-xs ${
                                                         course.class_mode === 'Module Class' ? 'bg-indigo-500 text-white' : 'bg-cyan-500 text-white'

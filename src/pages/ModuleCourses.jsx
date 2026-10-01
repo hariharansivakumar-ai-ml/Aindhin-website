@@ -5,7 +5,6 @@ import { LayoutGrid, Brain, BarChart2, Megaphone, Monitor, Gamepad2, Cloud, Sear
 import FAQSection from '../components/FAQSection';
 import { apiGetAssignedCourses, apiGetPublicCategories, USER_APP_URL, USER_API_URL } from '../utils/apiClient';
 import EnquiryModal from '../components/EnquiryModal';
-import SignInModal from '../components/SignInModal';
 import { encodeCourseId } from '../utils/idObfuscator';
 
 import aiMlBasicsImg from '../assets/aiml.webp';
@@ -86,7 +85,6 @@ const ModuleCourses = () => {
     const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
     const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
     const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
-    const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -173,7 +171,7 @@ const ModuleCourses = () => {
                             includes: c.includes || "Certificate of completion",
                             price: c.price || "0.00",
                             certificateDetails: c.certificate_details || "Yes",
-                            courseType: c.course_type || "Free",
+                            courseType: c.course_type || "",
                             link: `/course/module/${c.id}`,
                             externalLink: `${USER_APP_URL}/signin`,
                             classMode: c.class_mode || "Module Class"
@@ -500,11 +498,6 @@ const ModuleCourses = () => {
                 isOpen={isEnquiryModalOpen} 
                 onClose={() => setIsEnquiryModalOpen(false)} 
                 courseTitle={selectedCourseTitle} 
-            />
-
-            <SignInModal 
-                isOpen={isSignInModalOpen} 
-                onClose={() => setIsSignInModalOpen(false)} 
             />
 
         </section>
