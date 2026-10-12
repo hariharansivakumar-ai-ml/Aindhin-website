@@ -52,6 +52,7 @@ const Footer = () => {
                 <motion.div variants={fadeIn("up", 0.5)} className="flex flex-col gap-6">
                     <h4 className="text-primary font-bold text-lg">Resources</h4>
                     <ul className="flex flex-col gap-3 text-text text-[15px]">
+                        <li><Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
                         <li><a href="/sitemap.xml" className="hover:text-primary transition-colors">Sitemap</a></li>
                     </ul>
                     <h4 className="text-primary font-bold text-lg">Follow Us</h4>
@@ -85,7 +86,11 @@ const Footer = () => {
             >
                 <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between text-sm gap-4">
                     <p>© 2026. Aindhin. All Rights Reserved.</p>
-                    <p>Powered By Aindhin</p>
+                    <div className="flex items-center gap-6 text-xs text-white/90">
+                        <Link to="/privacy-policy" className="hover:underline">Privacy Policy</Link>
+                        <span>•</span>
+                        <p>Powered By Aindhin</p>
+                    </div>
                 </div>
             </motion.div>
         </footer>

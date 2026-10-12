@@ -21,6 +21,7 @@ const DownloadApp = safeLazy(() => import('./pages/DownloadApp'));
 const Blogs = safeLazy(() => import('./pages/Blogs'));
 const CourseRegistration = safeLazy(() => import('./pages/CourseRegistration'));
 const CourseRegistrationSuccess = safeLazy(() => import('./pages/CourseRegistrationSuccess'));
+const PrivacyPolicy = safeLazy(() => import('./pages/PrivacyPolicy'));
 const AdminLogin = safeLazy(() => import('./pages/AdminLogin'));
 const AdminDashboard = safeLazy(() => import('./pages/AdminDashboard'));
 const AddBlogPost = safeLazy(() => import('./pages/AddBlogPost'));
@@ -164,6 +165,7 @@ function Layout() {
                         <Route path="/design-thinking" element={<DesignThinkingCourse />} />
                         <Route path="/abacus-mental-math-masterclass" element={<AbacusCourse />} />
                         <Route path="/contact-us" element={<ContactUs />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
                         {/* Catch-all 404 Route */}
                         <Route path="*" element={<NotFound />} />
