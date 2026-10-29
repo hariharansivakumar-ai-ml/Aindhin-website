@@ -443,13 +443,6 @@ const ModuleCourses = () => {
                                                     <strong className="text-secondary font-bold">Skills you'll gain:</strong> {course.skills}
                                                 </p>
 
-                                                <div className="flex items-center gap-4 text-sm font-medium text-gray-400">
-                                                    <span className="flex items-center gap-1">
-                                                        <span className="text-yellow-400 text-lg">★</span>
-                                                        <span className="text-secondary font-bold">{course.rating}</span>
-                                                        <span>({course.reviews})</span>
-                                                    </span>
-                                                </div>
 
                                             </div>
 

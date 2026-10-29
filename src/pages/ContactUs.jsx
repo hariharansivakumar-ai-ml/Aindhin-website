@@ -20,10 +20,10 @@ const ContactUs = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        document.title = "Contact Aindhin | Get Expert Guidance on Your Learning Journey";
+        document.title = "Contact Aindhin | We're Happy to Help";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "Have a question about a course? Get in touch with the Aindhin team and we'll help you choose.");
         }
     }, []);
 
@@ -90,7 +90,7 @@ const ContactUs = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white flex flex-col pt-32 lg:pt-36 pb-0 relative overflow-hidden">
+        <div className="min-h-screen bg-white flex flex-col pt-4 lg:pt-8 pb-0 relative overflow-hidden">
 
             {/* --- SECTION 1: "Let us help you" + Contact Grid --- */}
             <div className="mb-0">
@@ -99,28 +99,30 @@ const ContactUs = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
-                        className="flex items-center gap-2 mb-4"
+                        className="mb-4"
                     >
-                        <Monitor className="w-5 h-5 text-primary" />
-                        <span className="text-primary font-medium font-inter">Get In Touch</span>
+                        <span className="inline-flex items-center gap-2 text-primary font-bold text-xs sm:text-sm font-poppins tracking-wider uppercase bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100">
+                            <Monitor className="w-4 h-4 text-primary" />
+                            Get In Touch
+                        </span>
                     </motion.div>
 
                     <motion.h1
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-4xl lg:text-[64px] font-bold text-secondary font-inter mb-6 leading-[1.15]"
+                        className="text-3xl sm:text-4xl lg:text-[42px] xl:text-[48px] font-bold text-secondary leading-snug md:leading-[1.28] lg:leading-[1.32] font-poppins mb-4 max-w-4xl"
                     >
-                        Contact Us: Get Expert Guidance for Your Career Success
+                        Contact Us: Get Expert Guidance for Your <span className="text-primary">Career Success</span>
                     </motion.h1>
 
                     <motion.p
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.4 }}
-                        className="text-gray-500 text-lg lg:text-[20px] font-inter max-w-2xl leading-relaxed"
+                        className="text-sm sm:text-base lg:text-[16px] xl:text-[17px] text-gray-600 leading-relaxed font-poppins max-w-2xl"
                     >
-                        Our platform is built on the principles of innovation, quality, and inclusivity, aiming to provide a seamless learning
+                        Our platform is built on the principles of innovation, quality, and inclusivity, aiming to provide a seamless learning experience for your professional growth.
                     </motion.p>
                 </div>
 
@@ -189,16 +191,16 @@ const ContactUs = () => {
                         transition={{ duration: 0.6 }}
                         className="flex flex-col items-start gap-6"
                     >
-                        <div className="flex items-center gap-2 text-primary font-bold font-inter uppercase tracking-wider text-sm bg-blue-50 px-3 py-1 rounded-md">
+                        <div className="flex items-center gap-2 text-primary font-bold font-poppins uppercase tracking-wider text-sm bg-blue-50 px-3 py-1 rounded-md">
                             <Monitor className="w-4 h-4" />
                             <span>Contact Us</span>
                         </div>
 
-                        <h2 className="text-4xl lg:text-[56px] font-bold text-secondary font-inter leading-[1.15]">
-                            Have questions? don't hesitate to contact us
+                        <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                            Have Questions? <span className="text-primary">Don't Hesitate to Contact Us</span>
                         </h2>
 
-                        <p className="text-gray-500 text-lg font-inter leading-relaxed max-w-lg">
+                        <p className="text-gray-500 text-lg font-poppins leading-relaxed max-w-lg">
                             We are passionate about transforming lives through education. Founded with a vision to make learning accessible to all, we believe in the power of knowledge to unlock opportunities and shape the future.
                         </p>
 
@@ -220,7 +222,7 @@ const ContactUs = () => {
                                         <span key={star} className="text-yellow-400 text-lg">★</span>
                                     ))}
                                 </div>
-                                <span className="text-gray-700 font-bold font-inter text-sm">
+                                <span className="text-gray-700 font-bold font-poppins text-sm">
                                     2.5k+ reviews (4.95 of 5)
                                 </span>
                             </div>
@@ -264,7 +266,7 @@ const ContactUs = () => {
 
                             {/* Name */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-gray-700 font-bold font-inter text-sm">Name <span className="text-red-500">*</span></label>
+                                <label className="text-gray-700 font-bold font-poppins text-sm">Name <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     name="name"
@@ -272,13 +274,13 @@ const ContactUs = () => {
                                     onChange={handleChange}
                                     placeholder="Enter Your Name"
                                     required
-                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white"
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-poppins bg-gray-50/50 focus:bg-white"
                                 />
                             </div>
 
                             {/* Email */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-gray-700 font-bold font-inter text-sm">Email <span className="text-red-500">*</span></label>
+                                <label className="text-gray-700 font-bold font-poppins text-sm">Email <span className="text-red-500">*</span></label>
                                 <input
                                     type="email"
                                     name="email"
@@ -286,13 +288,13 @@ const ContactUs = () => {
                                     onChange={handleChange}
                                     placeholder="Email Address"
                                     required
-                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white"
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-poppins bg-gray-50/50 focus:bg-white"
                                 />
                             </div>
 
                             {/* Phone */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-gray-700 font-bold font-inter text-sm">Phone Number <span className="text-red-500">*</span></label>
+                                <label className="text-gray-700 font-bold font-poppins text-sm">Phone Number <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     name="phone"
@@ -300,27 +302,27 @@ const ContactUs = () => {
                                     onChange={handleChange}
                                     placeholder="Enter your Phone Number"
                                     required
-                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-inter bg-gray-50/50 focus:bg-white"
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-poppins bg-gray-50/50 focus:bg-white"
                                 />
                             </div>
 
                             {/* Message */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-gray-700 font-bold font-inter text-sm">Message <span className="text-red-500">*</span></label>
+                                <label className="text-gray-700 font-bold font-poppins text-sm">Message <span className="text-red-500">*</span></label>
                                 <textarea
                                     name="message"
                                     value={formData.message}
                                     onChange={handleChange}
                                     rows="4"
                                     required
-                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none font-inter bg-gray-50/50 focus:bg-white"
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none font-poppins bg-gray-50/50 focus:bg-white"
                                 ></textarea>
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={status === 'loading'}
-                                className="mt-2 bg-primary text-white py-4 rounded-xl font-bold font-inter text-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
+                                className="mt-2 bg-primary text-white py-4 rounded-xl font-bold font-poppins text-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
                             >
                                 {status === 'loading' ? (
                                     <>
@@ -347,11 +349,11 @@ const ContactUs = () => {
                         viewport={{ once: true }}
                         className="flex flex-col items-start text-white max-w-xl z-20 space-y-6"
                     >
-                        <span className="text-white/80 font-inter text-lg font-medium tracking-wide uppercase">Mobile App</span>
-                        <h2 className="text-3xl md:text-4xl font-bold font-inter leading-tight">
-                            Download Our Application!
+                        <span className="text-white/80 font-poppins text-lg font-medium tracking-wide uppercase">Mobile App</span>
+                        <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
+                            <span className="text-white">Download Our </span><span className="text-blue-200">Mobile Application!</span>
                         </h2>
-                        <p className="text-white/90 text-lg leading-relaxed font-inter max-w-lg">
+                        <p className="text-white/90 text-lg leading-relaxed font-poppins max-w-lg">
                             Aindhin is an edutech platform that makes learning simple, interactive, and accessible from anywhere. Explore lessons, quizzes, and progress tracking right from your phone.
                             <br /><br />
                             Stay ahead in your studies and keep learning on the go with the Aindhin mobile app.
@@ -360,7 +362,7 @@ const ContactUs = () => {
                         <div className="hidden lg:block">
                             <button
                                 onClick={() => navigate('/download-app')}
-                                className="flex items-center gap-2 bg-primary hover:bg-[#1D4ED8] text-white px-8 py-4 rounded-xl font-bold font-inter transition-all shadow-xl text-lg mt-4 group"
+                                className="flex items-center gap-2 bg-primary hover:bg-[#1D4ED8] text-white px-8 py-4 rounded-xl font-bold font-poppins transition-all shadow-xl text-lg mt-4 group"
                             >
                                 Download App
                                 <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
@@ -386,7 +388,7 @@ const ContactUs = () => {
                         <div className="block lg:hidden mt-8 w-full flex justify-center">
                             <button
                                 onClick={() => navigate('/download-app')}
-                                className="flex items-center gap-2 bg-primary hover:bg-[#1D4ED8] text-white px-8 py-4 rounded-xl font-bold font-inter transition-all shadow-xl text-lg group"
+                                className="flex items-center gap-2 bg-primary hover:bg-[#1D4ED8] text-white px-8 py-4 rounded-xl font-bold font-poppins transition-all shadow-xl text-lg group"
                             >
                                 Download App
                                 <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
@@ -418,11 +420,11 @@ const ContactCard = ({ icon, title, content, linkText, href, delay }) => {
                 {icon}
             </div>
 
-            <h3 className="text-xl font-bold text-secondary font-inter">
+            <h3 className="text-xl font-bold text-secondary font-poppins">
                 {title}
             </h3>
 
-            <p className="text-gray-500 font-inter text-sm leading-relaxed min-h-[60px]">
+            <p className="text-gray-500 font-poppins text-sm leading-relaxed min-h-[60px]">
                 {content}
             </p>
 

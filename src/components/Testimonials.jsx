@@ -99,8 +99,13 @@ const Testimonials = () => {
         <section className="py-6 px-4 md:px-8 bg-white relative overflow-hidden">
             <div className="max-w-[1400px] mx-auto flex flex-col items-center gap-8 md:gap-16 relative z-10">
                 <div className="flex flex-col items-center text-center gap-2">
-                    <h2 className="text-5xl lg:text-6xl font-bold text-primary font-inter mb-2">Testimonial</h2>
-                    <p className="text-gray-500 font-medium tracking-wide">What Our Students Say!!!</p>
+                    <span className="font-poppins text-primary font-bold text-xs uppercase tracking-widest bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100 mb-1">
+                        TESTIMONIALS
+                    </span>
+                    <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                        What Our Students <span className="text-primary">Say</span>
+                    </h2>
+                    <p className="text-gray-500 font-medium tracking-wide text-sm md:text-base font-poppins">Real stories and feedback from learners who upskilled with Aindhin.</p>
                 </div>
 
                 <div className="w-full relative">

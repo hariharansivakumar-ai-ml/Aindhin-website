@@ -1,23 +1,19 @@
 import { useEffect } from 'react';
 import Hero from '../components/Hero';
 import HomeVideo from '../components/HomeVideo';
-import HomeCourseSlider from '../components/HomeCourseSlider';
 import CourseCard from '../components/CourseCard';
 import Testimonials from '../components/Testimonials';
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer, zoomIn, float } from '../utils/motion';
 import FAQSection from '../components/FAQSection';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, Users, BookOpen, PieChart, EyeOff, ThumbsUp, Code, ArrowDown } from 'lucide-react';
+import { ChevronRight, Users, BookOpen, ThumbsUp, Code, ArrowDown } from 'lucide-react';
 import blogIdeasImg from '../assets/blog_ideas.webp';
 import blogSkillsImg from '../assets/blog_skills.webp';
 import blogTechImg from '../assets/blog_tech.webp';
 import aboutShapeImg from '../assets/about_shape.webp';
 import imageAnimeImg from '../assets/image_anime.webp';
 import shape3Img from '../assets/shape_3.webp';
-import whyChoose1Img from '../assets/why_choose_1.webp';
-import whyChoose2Img from '../assets/why_choose_2.webp';
-import whyChoose3Img from '../assets/why_choose_3.webp';
 import mobilePicImg from '../assets/mobile pic.webp';
 
 const blogPreviews = [
@@ -45,17 +41,16 @@ const Home = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        document.title = "Online Courses in India | Aindhin - Master Job-Ready Skills";
+        document.title = "Aindhin | Online Courses to Build Job-Ready Skills";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "Learn AI, data analytics, digital marketing, web development and more at your own pace. Practical courses with real projects and certificates.");
         }
     }, []);
     return (
         <div className="flex flex-col">
             <Hero />
             {import.meta.env.VITE_SHOW_VIDEO === 'true' && <HomeVideo />}
-            <HomeCourseSlider />
 
             {/* About Aindhin Section */}
             <section className="pt-12 md:pt-16 pb-6 px-6 lg:px-12 bg-white relative overflow-hidden">
@@ -73,27 +68,38 @@ const Home = () => {
                         className="w-full lg:w-1/2 space-y-8"
                     >
                         <div className="space-y-4">
-                            <span className="font-inter text-primary font-bold text-lg tracking-wide uppercase block mb-2">About Aindhin</span>
-                            <h2 className="font-inter text-3xl md:text-4xl lg:text-5xl font-bold text-secondary leading-tight">
-                                What is an Online Learning Platform in India?
+                            <span className="font-inter text-primary font-bold text-sm tracking-widest uppercase block mb-2 bg-blue-50 w-fit px-3 py-1 rounded-full">ONLINE COURSES IN INDIA</span>
+                            <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                                Learn Today. <span className="text-primary">Lead Tomorrow.</span>
                             </h2>
                             <p className="font-inter text-gray-600 text-base lg:text-lg leading-relaxed max-w-lg">
-                                Aindhin is the best provider of <span className="font-semibold text-gray-900">online courses in India</span>, offering career-focused skill development programs and industry-ready training for students and professionals. By providing accessible digital education, we help learners build practical skills, earn recognized certifications, and bridge the gap between academic knowledge and real-world employment opportunities.
+                                Industry-relevant courses with real projects, expert guidance and certification, available whenever you are ready to begin.
                             </p>
                         </div>
 
-                        <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            animate={float(4, 5)}
-                        >
-                            <Link
-                                to="/about-us"
-                                className="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-bold font-inter text-lg rounded-xl shadow-lg hover:bg-[#5236FF] transition-all duration-300 transform"
-                            >
-                                Explore More
-                            </Link>
-                        </motion.div>
+                        <div className="space-y-4">
+                            <div className="flex flex-wrap items-center gap-4">
+                                <Link
+                                    to="/our-courses"
+                                    className="inline-flex items-center justify-center px-7 py-3.5 bg-primary text-white font-bold font-inter text-base rounded-xl shadow-lg hover:bg-[#5236FF] transition-all duration-300 transform hover:-translate-y-0.5"
+                                >
+                                    Explore Courses
+                                </Link>
+                                <Link
+                                    to="/contact-us"
+                                    className="inline-flex items-center justify-center px-7 py-3.5 bg-white border-2 border-primary text-primary hover:bg-blue-50 font-bold font-inter text-base rounded-xl shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+                                >
+                                    Speak to Our Team
+                                </Link>
+                            </div>
+                            <p className="text-xs md:text-sm font-medium text-gray-500 font-inter flex flex-wrap items-center gap-2">
+                                <span>Self-paced learning</span>
+                                <span className="text-gray-300">|</span>
+                                <span>Hands-on projects</span>
+                                <span className="text-gray-300">|</span>
+                                <span>Certificate on completion</span>
+                            </p>
+                        </div>
                     </motion.div>
 
                     <motion.div
@@ -110,7 +116,7 @@ const Home = () => {
                         <div className="relative z-10 flex justify-center">
                             <img
                                 src={imageAnimeImg}
-                                alt="Students learning on the best online learning platform in India"
+                                alt="Students learning on online courses platform in India"
                                 className="w-full max-w-[350px] h-auto drop-shadow-2xl relative z-20"
                             />
                             <motion.div
@@ -156,66 +162,109 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Mission & Vision Section */}
-            <section className="py-6 px-6 lg:px-12 bg-white relative">
-                <motion.div
-                    variants={fadeIn("up", 0.1)}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true }}
-                    className="max-w-[1400px] mx-auto text-center mb-16"
-                >
-                    <h2 className="font-inter text-[#644BFF] font-semibold text-xl md:text-2xl tracking-wide uppercase">How Aindhin Supports Career Growth</h2>
-                </motion.div>
-                <motion.div
-                    variants={staggerContainer(0.2, 0.2)}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true }}
-                    className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24"
-                >
-                    <motion.div
-                        variants={fadeIn("up", 0.2)}
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true }}
-                        className="flex flex-col items-center text-center space-y-6"
-                    >
-                        <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg mb-2">
-                            <PieChart className="w-10 h-10 text-white stroke-[1.5]" />
+            {/* Primary Training Categories Section */}
+            <section className="py-12 px-6 lg:px-12 bg-[#F8FAFC]">
+                <div className="max-w-[1400px] mx-auto space-y-10">
+                    <div className="text-center max-w-2xl mx-auto space-y-3">
+                        <span className="font-inter text-primary font-bold text-sm tracking-widest uppercase bg-blue-50 px-3 py-1 rounded-full inline-block">Featured Domains</span>
+                        <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                            Primary Training <span className="text-primary">Categories</span>
+                        </h2>
+                        <p className="text-gray-600 font-inter text-base">Practical, career-focused learning paths designed for real-world application.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <Link to="/ai-and-machine-learning" className="group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-blue-50 text-primary rounded-xl flex items-center justify-center text-2xl font-bold">🤖</div>
+                                <h3 className="font-inter font-bold text-xl text-secondary group-hover:text-primary transition-colors">AI &amp; Machine Learning</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">Build models with real data and learn how they work outside a textbook.</p>
+                            </div>
+                            <span className="text-primary font-semibold text-sm mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore Domain →</span>
+                        </Link>
+
+                        <Link to="/data-analytics" className="group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-2xl font-bold">📊</div>
+                                <h3 className="font-inter font-bold text-xl text-secondary group-hover:text-primary transition-colors">Data Analytics</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">Turn messy spreadsheets into clear answers using SQL, Power BI and Tableau.</p>
+                            </div>
+                            <span className="text-primary font-semibold text-sm mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore Domain →</span>
+                        </Link>
+
+                        <Link to="/digital-marketing-from-basics-to-growth-campaigns" className="group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center text-2xl font-bold">📈</div>
+                                <h3 className="font-inter font-bold text-xl text-secondary group-hover:text-primary transition-colors">Digital Marketing</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">Run real SEO, social media and ad campaigns, and see what works.</p>
+                            </div>
+                            <span className="text-primary font-semibold text-sm mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore Domain →</span>
+                        </Link>
+
+                        <Link to="/full-stack-development" className="group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-2xl font-bold">💻</div>
+                                <h3 className="font-inter font-bold text-xl text-secondary group-hover:text-primary transition-colors">Full Stack Development</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">Start with a blank screen and finish with a working web app.</p>
+                            </div>
+                            <span className="text-primary font-semibold text-sm mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore Domain →</span>
+                        </Link>
+
+                        <Link to="/leadership-courses" className="group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-2xl font-bold">🎯</div>
+                                <h3 className="font-inter font-bold text-xl text-secondary group-hover:text-primary transition-colors">Leadership &amp; Management</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">Learn how to lead a team, make tough calls and communicate better.</p>
+                            </div>
+                            <span className="text-primary font-semibold text-sm mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore Domain →</span>
+                        </Link>
+
+                        {/* Other Courses Row 9 */}
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100 shadow-sm flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-white text-primary rounded-xl flex items-center justify-center text-2xl font-bold shadow-sm">⚡</div>
+                                <h3 className="font-inter font-bold text-xl text-secondary">Also On Offer</h3>
+                                <p className="font-inter text-gray-700 text-sm font-medium">Python, Java, Cyber Security, Cloud Computing (AWS and Azure)</p>
+                                <div className="flex flex-wrap gap-2 pt-2">
+                                    <Link to="/python-certification" className="text-xs bg-white text-gray-700 hover:text-primary px-2.5 py-1 rounded-full border border-gray-200 hover:border-primary font-medium transition-colors">Python</Link>
+                                    <Link to="/java-certification" className="text-xs bg-white text-gray-700 hover:text-primary px-2.5 py-1 rounded-full border border-gray-200 hover:border-primary font-medium transition-colors">Java</Link>
+                                    <Link to="/cyber-security" className="text-xs bg-white text-gray-700 hover:text-primary px-2.5 py-1 rounded-full border border-gray-200 hover:border-primary font-medium transition-colors">Cyber Security</Link>
+                                    <Link to="/cloud-computing" className="text-xs bg-white text-gray-700 hover:text-primary px-2.5 py-1 rounded-full border border-gray-200 hover:border-primary font-medium transition-colors">Cloud Computing</Link>
+                                </div>
+                            </div>
+                            <Link to="/our-courses" className="text-primary font-semibold text-sm mt-4 inline-flex items-center gap-1 hover:translate-x-1 transition-transform">View All Courses →</Link>
                         </div>
-                        <h3 className="font-inter text-2xl md:text-3xl font-bold text-secondary">Career-Focused Online Courses in India</h3>
-                        <p className="font-inter text-gray-600 text-base lg:text-lg leading-relaxed max-w-md">
-                            Our mission is to make high-quality education and job-ready online courses accessible to everyone through a technology-driven, learner-centric ecosystem...
-                        </p>
-                    </motion.div>
-                    <motion.div
-                        variants={fadeIn("up", 0.4)}
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true }}
-                        className="flex flex-col items-center text-center space-y-6"
-                    >
-                        <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg mb-2">
-                            <EyeOff className="w-10 h-10 text-white stroke-[1.5]" />
-                        </div>
-                        <h3 className="font-inter text-2xl md:text-3xl font-bold text-secondary">Industry-Ready Certification Courses in India</h3>
-                        <p className="font-inter text-gray-600 text-base lg:text-lg leading-relaxed max-w-md">
-                            To become a global EdTech ecosystem that democratizes education and career growth by uniting learners, educators, and organizations...
-                        </p>
-                    </motion.div>
-                </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* About / Learning Advantage Section */}
+            <section className="py-12 px-6 lg:px-12 bg-white relative">
+                <div className="max-w-[1000px] mx-auto text-center space-y-6">
+                    <span className="font-inter text-primary font-bold text-sm tracking-widest uppercase bg-blue-50 px-3 py-1 rounded-full inline-block">About Aindhin</span>
+                    <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                        The Aindhin <span className="text-primary">Learning Advantage</span>
+                    </h2>
+                    <p className="font-inter text-gray-700 text-lg md:text-xl leading-relaxed">
+                        We started Aindhin because practical skill development should be accessible to everyone. Today we help students, working professionals and career-switchers pick up practical skills without leaving home.
+                    </p>
+                    <p className="font-inter text-gray-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+                        We're a small team that cares about one thing: that you finish a course and feel ready for the next step.
+                    </p>
+                </div>
             </section>
 
             {/* Why Choose Us Section */}
-            <section className="py-8 px-6 lg:px-12 bg-white">
+            <section className="py-12 px-6 lg:px-12 bg-[#F8FAFC]">
                 <div className="max-w-[1400px] mx-auto">
-                    <div className="text-center mb-16 space-y-4">
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary font-inter leading-tight">Benefits of Online Learning in India</h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto font-inter text-lg">
-                            Online learning offers unparalleled flexibility and access to industry-aligned training programs. By focusing on practical application and globally recognized certifications, digital platforms empower students and professionals to learn at their own pace, gain confidence, and thrive in highly competitive job markets across India.
+                    <div className="text-center mb-12 space-y-3">
+                        <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                            Why Choose <span className="text-primary">Aindhin</span>
+                        </h2>
+                        <p className="text-gray-600 max-w-2xl mx-auto font-inter text-base md:text-lg">
+                            Clear, practical training built around how you actually learn and work.
                         </p>
-                        <div className="flex justify-center gap-1 mt-6">
+                        <div className="flex justify-center gap-1 mt-4">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary opacity-60"></span>
                             <span className="w-1.5 h-1.5 rounded-full bg-primary opacity-80"></span>
                             <span className="w-8 h-1.5 rounded-full bg-primary"></span>
@@ -226,25 +275,35 @@ const Home = () => {
                         initial="hidden"
                         whileInView="show"
                         viewport={{ once: true, amount: 0.25 }}
-                        className="grid grid-cols-1 md:grid-cols-3 gap-8"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                     >
-                        <motion.div variants={fadeIn("up", 0.2)} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all duration-300">
-                            <div className="h-56 overflow-hidden">
-                                <img src={whyChoose1Img} alt="Online education platform in India providing industry standards" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                        <motion.div variants={fadeIn("up", 0.1)} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-blue-50 text-primary rounded-xl flex items-center justify-center text-2xl font-bold">🏢</div>
+                                <h3 className="font-inter text-lg font-bold text-secondary">Industry Relevance</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">Our courses follow what companies actually use today.</p>
                             </div>
-                            <div className="p-8"><div className="border-l-4 border-primary pl-4"><h3 className="font-inter text-xl font-bold text-primary mb-3">Industry-Aligned</h3><p className="font-inter text-gray-600">Relevant to current industrial standards.</p></div></div>
                         </motion.div>
-                        <motion.div variants={fadeIn("up", 0.4)} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all duration-300">
-                            <div className="h-56 overflow-hidden">
-                                <img src={whyChoose2Img} alt="Skill development platform in India with self-paced learning" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                        <motion.div variants={fadeIn("up", 0.2)} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-2xl font-bold">⏱️</div>
+                                <h3 className="font-inter text-lg font-bold text-secondary">Flexible Pace</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">Lessons are recorded by working educators, so you can pause, rewind and learn when it suits you.</p>
                             </div>
-                            <div className="p-8"><div className="border-l-4 border-primary pl-4"><h3 className="font-inter text-xl font-bold text-primary mb-3">Flexible Learning</h3><p className="font-inter text-gray-600">Access self-paced modules anytime.</p></div></div>
                         </motion.div>
-                        <motion.div variants={fadeIn("up", 0.6)} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all duration-300">
-                            <div className="h-56 overflow-hidden">
-                                <img src={whyChoose3Img} alt="Career-focused online courses in India for professional growth" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                        <motion.div variants={fadeIn("up", 0.3)} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-2xl font-bold">🛠️</div>
+                                <h3 className="font-inter text-lg font-bold text-secondary">Hands-On Projects</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">Every course has hands-on projects, so you finish with something to show.</p>
                             </div>
-                            <div className="p-8"><div className="border-l-4 border-primary pl-4"><h3 className="font-inter text-xl font-bold text-primary mb-3">Recognized</h3><p className="font-inter text-gray-600">Earn globally accepted certificates.</p></div></div>
+                        </motion.div>
+                        <motion.div variants={fadeIn("up", 0.4)} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                            <div className="space-y-3">
+                                <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-2xl font-bold">🎓</div>
+                                <h3 className="font-inter text-lg font-bold text-secondary">Certification</h3>
+                                <p className="font-inter text-gray-600 text-sm leading-relaxed">You get a certificate when you complete a course.</p>
+                            </div>
                         </motion.div>
                     </motion.div>
                 </div>
@@ -278,6 +337,27 @@ const Home = () => {
                 />
             </div>
 
+            {/* Closing Guidance Section */}
+            <section className="py-8 px-6 lg:px-12 bg-white flex justify-center">
+                <div className="max-w-[1000px] w-full bg-gradient-to-br from-blue-50 via-indigo-50/40 to-purple-50/30 rounded-[32px] p-8 md:p-12 border border-blue-100/80 shadow-md text-center space-y-6">
+                    <span className="text-4xl inline-block">👋</span>
+                    <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                        Not Sure <span className="text-primary">Where to Start?</span>
+                    </h2>
+                    <p className="font-inter text-gray-600 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
+                        That's completely normal. Tell us what you're hoping to do, and we'll help you find the right course. No pressure, no sales pitch.
+                    </p>
+                    <div className="pt-2">
+                        <Link
+                            to="/contact-us"
+                            className="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-bold font-inter text-base md:text-lg rounded-xl shadow-lg hover:bg-[#5236FF] transition-all duration-300 transform hover:-translate-y-0.5"
+                        >
+                            Talk to Us
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
             {/* Download App Section - Refined to match screenshot */}
             <section className="py-2 pb-12 px-6 lg:px-12 bg-white flex justify-center">
                 <div className="max-w-[1000px] w-full bg-gradient-to-br from-[#002FA7] via-[#0051D4] to-[#4FA1FF] rounded-[40px] px-6 py-6 md:px-12 md:py-8 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 shadow-2xl">
@@ -291,8 +371,8 @@ const Home = () => {
                         className="flex flex-col items-start text-white max-w-xl z-20 space-y-6"
                     >
                         <span className="text-white/80 font-inter text-lg font-medium tracking-wide uppercase">Mobile App</span>
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-inter leading-tight">
-                            Access Our Skill Development Platform on Mobile
+                        <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
+                            <span className="text-white">Access Skill Development </span><span className="text-blue-200">on Mobile</span>
                         </h2>
                         <p className="text-white/90 text-base lg:text-lg leading-relaxed font-inter max-w-lg">
                             Aindhin is an edutech platform that makes learning simple, interactive, and accessible from anywhere. Explore lessons, quizzes, and progress tracking right from your phone.

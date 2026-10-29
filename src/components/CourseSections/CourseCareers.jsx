@@ -1,11 +1,12 @@
 import React from 'react';
+import DualColorHeading from '../DualColorHeading';
 
 const CourseCareers = ({ title, subtitle, cards }) => {
     return (
         <section className="fs-more fs-section">
             <div className="fs-more-inner">
                 <div className="fs-more-header">
-                    <h2>{title}</h2>
+                    <DualColorHeading>{title}</DualColorHeading>
                     {subtitle && <p>{subtitle}</p>}
                 </div>
 

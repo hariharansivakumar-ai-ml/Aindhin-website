@@ -26,6 +26,13 @@ import JupyterLogo from '../assets/jupyter_logo.svg';
 import GitHubLogo from '../assets/github_logo.svg';
 
 const AIMachineLearningCourse = () => {
+    useEffect(() => {
+        document.title = "AI & Machine Learning Course Online | Aindhin";
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+            metaDescription.setAttribute("content", "Learn machine learning with Python by building real projects. Online, self-paced, with a certificate.");
+        }
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries, obs) => {

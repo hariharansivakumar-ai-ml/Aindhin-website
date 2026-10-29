@@ -12,9 +12,15 @@ html,
 body,
 #root {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   overflow-x: hidden;
   width: 100%;
+}
+
+*,
+h1, h2, h3, h4, h5, h6,
+p, span, a, button, input, textarea, select, li {
+  font-family: 'Poppins', sans-serif;
 }
 
 * {

@@ -1,4 +1,5 @@
 import React from 'react';
+import DualColorHeading from '../DualColorHeading';
 
 const CourseHighlights = ({ title, subtitle, cards, dashboard }) => {
     return (
@@ -6,7 +7,7 @@ const CourseHighlights = ({ title, subtitle, cards, dashboard }) => {
             <div className="fs-highlights-inner">
                 <div>
                     <div className="fs-highlights-heading">
-                        <h2>{title}</h2>
+                        <DualColorHeading>{title}</DualColorHeading>
                         {subtitle && <p>{subtitle}</p>}
                     </div>
 

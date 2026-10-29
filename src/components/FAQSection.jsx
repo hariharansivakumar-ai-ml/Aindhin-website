@@ -32,10 +32,25 @@ const FAQSection = ({ faqs, title = "Frequently Asked Questions", subtitle = "Fi
 
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl lg:text-4xl font-extrabold text-[#0B1221] font-inter mb-4 tracking-tight">
-                        {title}
+                    <span className="font-poppins text-primary font-bold text-xs uppercase tracking-widest bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100 inline-block mb-3">
+                        FAQS
+                    </span>
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-secondary font-poppins mb-4 tracking-tight leading-tight">
+                        {typeof title === 'string' && title.includes(' ') ? (
+                            (() => {
+                                const words = title.trim().split(/\s+/);
+                                const last = words.slice(-1).join('');
+                                const rest = words.slice(0, -1).join(' ');
+                                return (
+                                    <>
+                                        <span>{rest} </span>
+                                        <span className="text-primary">{last}</span>
+                                    </>
+                                );
+                            })()
+                        ) : title}
                     </h2>
-                    <p className="text-gray-500 text-lg font-inter max-w-2xl mx-auto">
+                    <p className="text-gray-500 text-sm md:text-base font-poppins max-w-2xl mx-auto">
                         {subtitle}
                     </p>
                 </div>

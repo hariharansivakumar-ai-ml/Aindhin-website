@@ -66,10 +66,10 @@ const LeadershipCourses = () => {
     const [activeTab, setActiveTab] = useState('all');
 
     useEffect(() => {
-        document.title = "Executive Leadership & Management Courses | Aindhin Professional";
+        document.title = "Leadership & Management Course Online | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "Build the skills to lead a team, communicate clearly and make better decisions. Online course with certificate.");
         }
     }, []);
 

@@ -31,10 +31,10 @@ import VSCodeLogo from '../assets/vscode_logo.svg';
 
 const FullStackDevelopmentCourse = () => {
     useEffect(() => {
-        document.title = "Full Stack Development Course: Build Job-Ready Web Apps | Aindhin";
+        document.title = "Full Stack Web Development Course | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "Learn front end, back end and databases, and build a complete web app. Online and self-paced.");
         }
     }, []);
 

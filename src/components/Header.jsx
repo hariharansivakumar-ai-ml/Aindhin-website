@@ -134,10 +134,7 @@ const Header = () => {
         <header className={cn(
             "fixed top-0 left-0 right-0 w-full z-[9999] transition-all duration-300 bg-white shadow-sm flex flex-col"
         )}>
-            <div className={cn(
-                "max-w-[1400px] mx-auto w-full flex items-center justify-between",
-                isScrolled ? "py-2" : "py-3 px-6 lg:px-12"
-            )}>
+            <div className="w-full flex items-center justify-between py-3 px-4 sm:px-6 lg:px-8">
                 {/* Left Section: Logo & Category */}
                 <div className="flex items-center gap-12">
                     <Link to="/">

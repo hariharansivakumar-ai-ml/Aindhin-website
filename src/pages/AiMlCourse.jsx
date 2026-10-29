@@ -47,10 +47,10 @@ const Section = ({ children, className }) => {
 
 const AiMlCourse = () => {
   useEffect(() => {
-    document.title = "Best AI and Machine Learning Course in India | Aindhin";
+    document.title = "AI & Machine Learning Course Online | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Learn Artificial Intelligence and Machine Learning with live projects, mentorship, certification, and placement support at Aindhin. Enroll online today.");
+      metaDescription.setAttribute("content", "Learn machine learning with Python by building real projects. Online, self-paced, with a certificate.");
     }
   }, []);
 

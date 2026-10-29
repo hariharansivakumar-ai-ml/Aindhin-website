@@ -48,10 +48,10 @@ const Section = ({ children, className }) => {
 
 const PythonCertificationCourse = () => {
   useEffect(() => {
-    document.title = "Python Certification Course: Master Python Programming | Aindhin";
+    document.title = "Python Programming Course with Certificate | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+      metaDescription.setAttribute("content", "Learn Python from scratch with hands-on practice and small projects. Online, self-paced, certificate included.");
     }
   }, []);
 

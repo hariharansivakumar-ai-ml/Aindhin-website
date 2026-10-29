@@ -18,10 +18,10 @@ import { cyberSecurityData } from '../data/courses/cyberSecurityData';
 const CyberSecurityCourse = () => {
 
     useEffect(() => {
-        document.title = "Online Cyber Security Course | Ethical Hacking & SOC";
+        document.title = "Cyber Security & Ethical Hacking Course | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Learn Cyber Security with Ethical Hacking, Network Security, SOC Operations & Incident Response. Get certification, labs & career support at Aindhin.");
+            metaDescription.setAttribute("content", "Learn how attacks happen and how to defend against them, with practice in safe lab setups. Online course.");
         }
     }, []);
 

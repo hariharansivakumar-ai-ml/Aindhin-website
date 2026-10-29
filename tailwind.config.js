@@ -13,8 +13,9 @@ export default {
         text: "#576070",
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
-        inter: ["Inter", "sans-serif"],
+        sans: ["Poppins", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
+        inter: ["Poppins", "sans-serif"],
       },
     },
   },

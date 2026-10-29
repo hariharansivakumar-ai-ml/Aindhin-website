@@ -46,10 +46,10 @@ const Section = ({ children, className }) => {
 
 const JavaCertificationCourse = () => {
   useEffect(() => {
-    document.title = "Java Certification Course: Master Object-Oriented Programming | Aindhin";
+    document.title = "Java Development Course Online | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+      metaDescription.setAttribute("content", "Learn Java and object-oriented programming by building real applications. Online course with certificate.");
     }
   }, []);
 

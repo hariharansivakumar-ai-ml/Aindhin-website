@@ -99,7 +99,7 @@ function Layout() {
         <div className="min-h-screen bg-white flex flex-col w-full overflow-x-hidden">
             <ScrollToTop />
             {!isAdminRoute && <Header />}
-            <main className={`flex-grow w-full ${!isAdminRoute ? 'pt-[120px]' : ''}`}>
+            <main className={`flex-grow w-full ${!isAdminRoute ? (location.pathname === '/' ? 'pt-[68px] lg:pt-[72px]' : 'pt-[100px] lg:pt-[120px]') : ''}`}>
                 <RecoveryBoundary key={location.pathname}>
                     <Suspense fallback={getFallback()}>
                         <Routes>

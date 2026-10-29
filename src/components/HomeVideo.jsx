@@ -59,8 +59,8 @@ const HomeVideo = () => {
                     <span className="font-inter text-primary font-bold text-sm lg:text-base tracking-widest uppercase block">
                         Featured Video
                     </span>
-                    <h2 className="font-inter text-2xl md:text-3xl lg:text-4xl font-extrabold text-secondary leading-tight">
-                        See Aindhin in Action
+                    <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                        See Aindhin <span className="text-primary">in Action</span>
                     </h2>
                     <p className="font-inter text-gray-500 text-sm lg:text-base max-w-xl mx-auto">
                         Explore our learning ecosystem, meet industry instructors, and see how our hands-on certification programs accelerate your career.

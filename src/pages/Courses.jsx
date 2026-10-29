@@ -152,10 +152,10 @@ const Courses = () => {
     }, []);
 
     useEffect(() => {
-        document.title = "Explore Job-Ready Online Certification Courses in India | Aindhin";
+        document.title = "All Courses | Aindhin Online Learning";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "Explore AI, data analytics, digital marketing, web development, cyber security, cloud and more. Learn online at your own pace.");
         }
     }, []);
 

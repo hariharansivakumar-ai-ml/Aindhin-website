@@ -43,10 +43,10 @@ const Section = ({ children, className }) => {
 
 const DigitalMarketingStrategyCourse = () => {
   useEffect(() => {
-    document.title = "Digital Marketing Strategy, Ads & Analytics Course | Aindhin";
+    document.title = "Digital Marketing Course Online | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+      metaDescription.setAttribute("content", "Learn SEO, social media and paid ads by running real campaigns. Online course with certificate.");
     }
   }, []);
 

@@ -1,286 +1,293 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer, float } from '../utils/motion';
-import { BookOpen, GraduationCap, Briefcase, Users } from 'lucide-react';
-import aboutImg from '../assets/about_img.webp';
+import { BookOpen, Compass, Users, Award, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import servicesHeroImg from '../assets/Gemini_Generated_Image_2ly66v2ly66v2ly6.webp';
 import collegePartnershipImg from '../assets/steptodown.com436606 (1).webp';
-
 import { useEffect } from 'react';
+
+const services = [
+    {
+        icon: BookOpen,
+        title: "Online Courses",
+        description: "Self-paced courses with recorded lessons, projects and a certificate.",
+        badge: "Self-Paced Learning",
+        linkText: "Explore Courses",
+        link: "/our-courses",
+        accent: "bg-blue-50 text-primary border-blue-100",
+        bulletPoints: [
+            "Recorded lessons by working educators",
+            "Hands-on portfolio projects",
+            "Learn on your own schedule"
+        ]
+    },
+    {
+        icon: Compass,
+        title: "Guidance & Selection",
+        description: "Not sure which course to take? Talk to us and we'll suggest what fits your goal.",
+        badge: "Personal Advisory",
+        linkText: "Talk to Us",
+        link: "/contact-us",
+        accent: "bg-purple-50 text-purple-600 border-purple-100",
+        bulletPoints: [
+            "Honest, goal-aligned recommendations",
+            "No pressure or aggressive sales pitch",
+            "Guidance for beginners and switchers"
+        ]
+    },
+    {
+        icon: Users,
+        title: "Team Training",
+        description: "Want to train your team? We can arrange courses for groups and companies.",
+        badge: "Teams & Groups",
+        linkText: "Arrange Team Training",
+        link: "/corporate-courses",
+        accent: "bg-emerald-50 text-emerald-600 border-emerald-100",
+        bulletPoints: [
+            "Tailored cohorts for companies & institutions",
+            "Directly applicable workplace tools",
+            "Track team participation & completion"
+        ]
+    },
+    {
+        icon: Award,
+        title: "Certificates",
+        description: "Complete a course and get a certificate you can add to your resume and LinkedIn.",
+        badge: "Career Credential",
+        linkText: "View Programs",
+        link: "/our-courses",
+        accent: "bg-amber-50 text-amber-600 border-amber-100",
+        bulletPoints: [
+            "Verifiable course completion certificates",
+            "Easy to attach to resumes & LinkedIn",
+            "Demonstrates real project work"
+        ]
+    }
+];
 
 const Services = () => {
     useEffect(() => {
-        document.title = "Professional Training & Certification | Online Skill Development in India";
+        document.title = "Our Services | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "See how Aindhin supports learners and teams with practical online training.");
         }
     }, []);
 
     return (
         <div className="min-h-screen bg-white relative overflow-hidden flex flex-col pt-8 lg:pt-0">
-            {/* Background Blobs (Optional/Subtle) */}
+            {/* Background Blobs */}
             <motion.div
                 animate={float(10, 40)}
                 className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#F5F3FF] rounded-full blur-3xl opacity-60 z-0 pointer-events-none"
             ></motion.div>
+            <div className="absolute top-[20%] left-[-5%] w-[400px] h-[400px] bg-[#EFF6FF] rounded-full blur-3xl opacity-50 z-0 pointer-events-none"></div>
 
-            {/* Hero Section */}
+            {/* 1. Hero Section */}
             <section className="w-full relative z-10 overflow-hidden bg-white">
-                <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-4 lg:gap-0">
-
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 items-center min-h-[520px] lg:min-h-[580px]">
+                    
                     {/* Left Content */}
-                    <div className="flex flex-col items-start gap-4 lg:gap-2 px-6 lg:pl-12 pt-8 pb-0 lg:py-12 z-20">
-                        <motion.h1
-                            variants={fadeIn("down", 0.2)}
-                            initial="hidden"
-                            animate="show"
-                            className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary font-inter uppercase leading-tight"
-                        >
-                            Future-Proof Your Career: <br className="hidden lg:block" /> Online Skill Development
-                        </motion.h1>
+                    <div className="flex flex-col items-start gap-6 z-20 px-6 sm:px-12 lg:pl-16 xl:pl-28 lg:pr-8 py-10 lg:py-16 max-w-2xl justify-self-center lg:justify-self-end w-full">
+                        <span className="font-inter text-primary font-bold text-xs md:text-sm tracking-widest uppercase bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100">
+                            SERVICES & SUPPORT
+                        </span>
 
-                        <motion.p
-                            variants={fadeIn("right", 0.4)}
-                            initial="hidden"
-                            animate="show"
-                            className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter max-w-3xl"
-                        >
-                            Aindhin offers <span className="font-bold text-gray-900">online skill development courses in India</span> with career-focused training, certification programs, and industry-ready learning for students.
-                        </motion.p>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary font-inter leading-tight">
+                            How we can help you
+                        </h1>
+
+                        <p className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter">
+                            Learning works best when someone is on your side. Here is how Aindhin supports you.
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-4 pt-2">
+                            <Link
+                                to="/our-courses"
+                                className="inline-flex items-center justify-center px-7 py-3.5 bg-primary text-white font-bold font-inter text-base rounded-xl shadow-lg hover:bg-[#5236FF] transition-all duration-300 transform hover:-translate-y-0.5"
+                            >
+                                Explore Courses
+                            </Link>
+                            <Link
+                                to="/contact-us"
+                                className="inline-flex items-center justify-center px-7 py-3.5 bg-white border-2 border-primary text-primary hover:bg-blue-50 font-bold font-inter text-base rounded-xl shadow-sm transition-all duration-300 transform hover:-translate-y-0.5"
+                            >
+                                Speak to Our Team
+                            </Link>
+                        </div>
                     </div>
 
-                    {/* Right Illustration */}
-                    <div className="relative w-full h-full min-h-[300px] lg:min-h-[600px] flex items-center justify-center mt-10 md:mt-12 lg:mt-0">
-
-                        {/* Main Image */}
+                    {/* Right Hero Image - Fully Occupied */}
+                    <div className="relative w-full h-[380px] sm:h-[460px] lg:h-full lg:min-h-[580px] self-stretch flex items-center justify-end overflow-hidden">
                         <motion.div
-                            variants={fadeIn("left", 0.4)}
+                            variants={fadeIn("left", 0.3)}
                             initial="hidden"
                             animate="show"
-                            className="relative z-10 w-full max-w-[500px] lg:max-w-[600px] lg:mr-[-50px]"
+                            className="w-full h-full"
                         >
-                            <div className="relative">
-                                <img
-                                    src={servicesHeroImg}
-                                    alt="Career-focused online courses in India – Leading online career development courses India for professionals"
-                                    className="w-full h-auto object-contain relative z-10 scale-125 translate-x-12"
-                                />
-                            </div>
+                            <img
+                                src={servicesHeroImg}
+                                alt="Aindhin services and career development support"
+                                className="w-full h-full object-cover object-center lg:object-left"
+                            />
                         </motion.div>
                     </div>
                 </div>
             </section>
 
-            {/* How Aindhin Works Section */}
-            <section className="w-full px-6 lg:px-12 pt-4 pb-12 lg:pt-8 lg:pb-16 bg-[#F8FAFC]">
-                <div className="max-w-[1200px] mx-auto">
-                    {/* Section Header */}
-                    <div className="flex flex-col items-center text-center mb-16 lg:mb-20">
-                        <motion.h2
-                            variants={fadeIn("up", 0.2)}
-                            initial="hidden"
-                            whileInView="show"
-                            viewport={{ once: true }}
-                            className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary font-inter mb-6 leading-tight"
-                        >
-                            Professional Skill Training Programs in India
-                        </motion.h2>
-
-                        {/* Decorative Line (Matches screenshot's accent) */}
-                        <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: 60 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="h-1.5 bg-gradient-to-r from-[#9333EA] to-[#E11D48] rounded-full mb-8"
-                        ></motion.div>
-
-                        <motion.p
-                            variants={fadeIn("up", 0.3)}
-                            initial="hidden"
-                            whileInView="show"
-                            viewport={{ once: true }}
-                            className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter max-w-2xl"
-                        >
-                            Select Your Learning Path: Aindhin Provides Four Specialized Course Categories
-                        </motion.p>
+            {/* 2. Core Services Grid */}
+            <section className="w-full px-6 lg:px-12 py-16 bg-[#F8FAFC]/80 border-y border-gray-100 relative z-10">
+                <div className="max-w-[1400px] mx-auto space-y-12">
+                    
+                    {/* Header */}
+                    <div className="text-center max-w-2xl mx-auto space-y-3">
+                        <span className="font-inter text-primary font-bold text-xs uppercase tracking-widest bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100">
+                            WHAT WE OFFER
+                        </span>
+                        <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                            Support Tailored to <span className="text-primary">Your Goals</span>
+                        </h2>
+                        <p className="text-gray-600 text-base font-inter">
+                            Whether you're an individual learner or upgrading an entire team, we provide practical tools and genuine guidance.
+                        </p>
                     </div>
 
-                    {/* Service Cards Grid */}
-                    <motion.div
-                        variants={staggerContainer(0.2, 0.1)}
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true }}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8"
-                    >
-                        {/* Card 1: Certification Courses */}
-                        <ServiceCard
-                            icon={<BookOpen className="w-10 h-10 text-white" />}
-                            title="INDUSTRY-READY CERTIFICATION COURSES IN INDIA"
-                            description="Certifications are offered either directly by Aindhin or through industry-leading companies such as AWS, Google, Microsoft, and more. These programs include short-term skill-building courses, career-focused certificates, and practical hands-on learning, delivered through a flexible blend of self-paced modules and live classes."
-                            delay={0.1}
-                        />
+                    {/* 4 Cards Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {services.map((item, idx) => {
+                            const IconComp = item.icon;
+                            return (
+                                <motion.div
+                                    key={idx}
+                                    variants={fadeIn("up", 0.1 * (idx + 1))}
+                                    initial="hidden"
+                                    whileInView="show"
+                                    viewport={{ once: true }}
+                                    className="bg-white rounded-3xl p-8 md:p-10 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-6"
+                                >
+                                    <div className="space-y-5">
+                                        <div className="flex items-center justify-between">
+                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border ${item.accent}`}>
+                                                <IconComp className="w-7 h-7" />
+                                            </div>
+                                            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 bg-slate-50 border border-slate-200/60 px-3 py-1 rounded-full font-inter">
+                                                {item.badge}
+                                            </span>
+                                        </div>
 
-                        {/* Card 2: University Degree Courses */}
-                        <ServiceCard
-                            icon={<GraduationCap className="w-10 h-10 text-white" />}
-                            title="UNIVERSITY DEGREE COURSES"
-                            description="Learners can study with top Indian and international universities through our academic partnerships, gaining access to a wide range of high-quality programs. These offerings include Bachelors, Masters, PG Diplomas, and global online degree pathways designed to support diverse educational and career goals."
-                            delay={0.2}
-                        />
+                                        <h3 className="text-2xl font-bold text-secondary font-inter">
+                                            {item.title}
+                                        </h3>
 
-                        {/* Card 3: Corporate Courses */}
-                        <ServiceCard
-                            icon={<Briefcase className="w-10 h-10 text-white" />}
-                            title="CORPORATE COURSES"
-                            description="Aindhin’s corporate courses help organizations upskill employees with practical, industry-relevant skills. Delivered through online modules and live sessions, these programs enhance performance and provide professional certifications."
-                            delay={0.3}
-                        />
+                                        <p className="text-gray-600 text-base leading-relaxed font-inter">
+                                            {item.description}
+                                        </p>
 
-                        {/* Card 4: Leadership Courses */}
-                        <ServiceCard
-                            icon={<Users className="w-10 h-10 text-white" />}
-                            title="LEADERSHIP COURSES"
-                            description="Leadership courses are designed to develop managerial and strategic skills. Through workshops, live sessions, and mentorship, learners gain the knowledge and confidence to lead teams effectively and drive business impact."
-                            delay={0.4}
-                        />
-                    </motion.div>
+                                        {/* Key Points */}
+                                        <ul className="space-y-2.5 pt-2">
+                                            {item.bulletPoints.map((point, pIdx) => (
+                                                <li key={pIdx} className="flex items-center gap-2.5 text-sm text-slate-700 font-inter">
+                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                                                    <span>{point}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className="pt-4 border-t border-slate-100">
+                                        <Link
+                                            to={item.link}
+                                            className="inline-flex items-center gap-2 text-primary hover:text-[#5236FF] font-bold font-inter text-sm group"
+                                        >
+                                            <span>{item.linkText}</span>
+                                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </Link>
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
                 </div>
             </section>
 
-            {/* Why Colleges Partner Section */}
-            <section className="w-full px-6 lg:px-12 py-12 lg:py-16 bg-white">
-                <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                    {/* Left Content */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="flex flex-col items-start gap-6"
-                    >
-                        <div className="flex items-center gap-4">
-                            <span className="h-px w-10 bg-primary"></span>
-                            <span className="text-secondary font-inter font-medium tracking-wider uppercase text-sm">
-                                Learn and Live
-                            </span>
-                        </div>
-
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-inter text-secondary leading-tight">
-                            Why Colleges and <br /> Universities Partner <br /> with Aindhin?
+            {/* 3. Partnerships & Groups Section */}
+            <section className="w-full px-6 lg:px-12 py-16 bg-white relative z-10">
+                <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    
+                    {/* Left: Info */}
+                    <div className="flex flex-col items-start gap-6">
+                        <span className="font-inter text-primary font-bold text-xs uppercase tracking-widest bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100">
+                            PARTNERSHIPS
+                        </span>
+                        
+                        <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                            Partner with Aindhin for <span className="text-primary">Group & Institutional Training</span>
                         </h2>
 
-                        <div className="text-text text-base lg:text-lg leading-relaxed font-inter w-full lg:max-w-lg space-y-2">
+                        <p className="text-gray-600 text-base leading-relaxed font-inter">
+                            We collaborate with colleges, universities, and enterprise teams to bring modern, job-ready curriculum directly to learners.
+                        </p>
+
+                        <div className="space-y-3 w-full">
                             {[
-                                "Industry-aligned curriculum, job-ready skills,",
-                                "flexible online learning, global certifications,",
-                                "seamless integration, lifelong career support,",
-                                "and affordable licensing."
+                                "Curriculum mapped to active company tech stacks and tools",
+                                "Self-paced video modules paired with hands-on labs",
+                                "Recognized completion certificates for portfolios and resumes",
+                                "Dedicated cohort management and instructor guidance"
                             ].map((text, i) => (
-                                <motion.p
-                                    key={i}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: 0.2 + (i * 0.1), duration: 0.5 }}
-                                >
-                                    {text}
-                                </motion.p>
+                                <div key={i} className="flex items-start gap-3">
+                                    <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                    <span className="text-slate-700 text-sm font-inter">{text}</span>
+                                </div>
                             ))}
                         </div>
-                    </motion.div>
 
-                    {/* Right Image */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        whileHover={{ scale: 1.02, rotate: 1 }}
-                        className="relative flex justify-center lg:justify-end cursor-pointer"
-                    >
-                        <div className="absolute inset-0 bg-[#9333EA]/10 rounded-3xl -rotate-3 transition-transform group-hover:rotate-2"></div>
-                        <img
-                            src={collegePartnershipImg}
-                            alt="Professional skill training programs in India – Industry-ready certification courses for colleges"
-                            className="relative z-10 w-full max-w-[550px] object-contain drop-shadow-2xl rounded-2xl"
-                        />
-                    </motion.div>
+                        <div className="pt-2">
+                            <Link
+                                to="/corporate-courses"
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold font-inter text-sm rounded-xl transition-all shadow-sm"
+                            >
+                                <span>Learn More About Corporate Programs</span>
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Right: Illustration */}
+                    <div className="flex justify-center lg:justify-end">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-blue-100/50 rounded-3xl -rotate-2 transform"></div>
+                            <img
+                                src={collegePartnershipImg}
+                                alt="Institutional partnerships with Aindhin"
+                                className="relative z-10 w-full max-w-[500px] rounded-2xl object-contain drop-shadow-xl"
+                            />
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* Partnership Models Section */}
-            <section className="w-full py-12 lg:py-16 bg-white overflow-hidden">
-                <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-
-                        {/* Left Column: Visuals */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
-                            className="hidden lg:flex items-end justify-center h-[400px] relative bg-blue-50 rounded-[30px] overflow-hidden"
+            {/* 4. Bottom Banner */}
+            <section className="py-12 px-6 lg:px-12 bg-white flex justify-center relative z-10">
+                <div className="max-w-[1000px] w-full bg-gradient-to-br from-blue-50 via-indigo-50/40 to-purple-50/30 rounded-[32px] p-8 md:p-12 border border-blue-100/80 shadow-md text-center space-y-6">
+                    <span className="text-4xl inline-block">💡</span>
+                    <h2 className="font-poppins text-2xl md:text-3xl lg:text-4xl font-bold text-secondary leading-tight">
+                        Have something <span className="text-primary">specific in mind?</span>
+                    </h2>
+                    <p className="font-inter text-gray-600 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
+                        Tell us what you need. Whether you're looking for tailored training, group arrangements, or custom course guidance, our team is ready to assist.
+                    </p>
+                    <div className="pt-2">
+                        <Link
+                            to="/contact-us"
+                            className="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-bold font-inter text-base md:text-lg rounded-xl shadow-lg hover:bg-[#5236FF] transition-all duration-300 transform hover:-translate-y-0.5"
                         >
-                            {/* Decorative Background Elements */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#1A237E]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#9333EA]/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
-
-                            {/* Bars Illustration */}
-                            <div className="flex items-end gap-3 sm:gap-4 mb-20 relative z-10">
-                                <motion.div initial={{ height: 0 }} whileInView={{ height: 120 }} transition={{ duration: 1 }} className="w-8 sm:w-10 bg-[#E11D48]/20 rounded-t-lg"></motion.div>
-                                <motion.div initial={{ height: 0 }} whileInView={{ height: 180 }} transition={{ duration: 1, delay: 0.1 }} className="w-8 sm:w-10 bg-[#E11D48]/40 rounded-t-lg"></motion.div>
-                                <motion.div initial={{ height: 0 }} whileInView={{ height: 150 }} transition={{ duration: 1, delay: 0.2 }} className="w-8 sm:w-10 bg-[#E11D48]/30 rounded-t-lg"></motion.div>
-                                <motion.div initial={{ height: 0 }} whileInView={{ height: 240 }} transition={{ duration: 1, delay: 0.3 }} className="w-8 sm:w-10 bg-[#E11D48]/60 rounded-t-lg"></motion.div>
-                                <motion.div initial={{ height: 0 }} whileInView={{ height: 200 }} transition={{ duration: 1, delay: 0.4 }} className="w-8 sm:w-10 bg-[#E11D48]/50 rounded-t-lg"></motion.div>
-                            </div>
-                        </motion.div>
-
-                        {/* Right Column: Text Content */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
-                            className="flex flex-col gap-6"
-                        >
-                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary font-inter uppercase leading-tight">
-                                Advanced Online <br /> Skill Training Programs <br /> in India
-                            </h1>
-                            <p className="text-gray-600 text-base lg:text-lg leading-relaxed font-inter max-w-3xl">
-                                Aindhin provides professional online training programs in India designed to help students and professionals excel in their careers with job-ready expertise.
-                            </p>
-                        </motion.div>
-
+                            Contact Us
+                        </Link>
                     </div>
                 </div>
             </section>
         </div>
-    );
-};
-
-// Helper Component for Service Cards
-const ServiceCard = ({ icon, title, description, delay }) => {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -10 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay }}
-            className="bg-white rounded-[24px] p-6 lg:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-all flex flex-col items-center text-center group max-w-[550px] mx-auto w-full"
-        >
-            <div className="w-16 h-16 bg-[#9333EA] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <div className="scale-75 origin-center">{icon}</div>
-            </div>
-            <h3 className="text-lg lg:text-xl font-bold text-[#1A1A1A] font-inter mb-4 tracking-tight">
-                {title}
-            </h3>
-            <p className="text-gray-600 text-sm lg:text-[15px] leading-[1.6] font-inter">
-                {description}
-            </p>
-        </motion.div>
     );
 };
 

@@ -211,8 +211,22 @@ const MarqueeRow = ({ title, courses, seeMoreLink, rowId, onCardHover, onCardLea
     return (
         <div className="mb-10 last:mb-0">
             <div className="max-w-[1400px] mx-auto px-6 lg:px-12 mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <h2 className="text-[20px] md:text-[22px] font-bold text-[#1e293b] font-inter">{title}</h2>
+                    <h2 className="text-xl md:text-2xl font-bold font-poppins text-secondary">
+                        {typeof title === 'string' && title.includes(' ') ? (
+                            (() => {
+                                const words = title.trim().split(/\s+/);
+                                const highlightCount = words.length >= 4 ? 2 : 1;
+                                const base = words.slice(0, -highlightCount).join(' ');
+                                const highlight = words.slice(-highlightCount).join(' ');
+                                return (
+                                    <>
+                                        <span>{base} </span>
+                                        <span className="text-primary">{highlight}</span>
+                                    </>
+                                );
+                            })()
+                        ) : title}
+                    </h2>
                     <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
                         Upcoming Cohorts
                     </span>

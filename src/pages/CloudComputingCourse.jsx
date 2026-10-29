@@ -18,10 +18,10 @@ import { cloudComputingData } from '../data/courses/cloudComputingData';
 const CloudComputingCourse = () => {
 
     useEffect(() => {
-        document.title = "Cloud Computing Course: Master AWS, Azure & GCP | Aindhin";
+        document.title = "Cloud Computing Course (AWS & Azure) | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "Learn core AWS and Azure services and deploy your own project on the cloud. Online and self-paced.");
         }
     }, []);
 

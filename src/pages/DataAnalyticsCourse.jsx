@@ -18,10 +18,10 @@ import { dataAnalyticsData } from '../data/courses/dataAnalyticsData';
 const DataAnalyticsCourse = () => {
 
     useEffect(() => {
-        document.title = "Data Analytics Course: Master Business Intelligence | Aindhin";
+        document.title = "Data Analytics Course (SQL, Power BI, Tableau) | Aindhin";
         const metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-            metaDescription.setAttribute("content", "Aindhin is an online learning platform in India offering skill-based and career-oriented courses.");
+            metaDescription.setAttribute("content", "Learn to turn raw data into clear dashboards and reports with SQL, Power BI and Tableau. Online and self-paced.");
         }
     }, []);
 

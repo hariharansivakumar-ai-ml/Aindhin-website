@@ -44,10 +44,10 @@ const Section = ({ children, className }) => {
 
 const DigitalMarketingCourse = () => {
   useEffect(() => {
-    document.title = "Online Digital Marketing Course with Certificate | Aindhin";
+    document.title = "Digital Marketing Course Online | Aindhin";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Become a job-ready digital marketer with hands-on training in SEO, Google Ads, Analytics, AI Marketing, and real-world projects.");
+      metaDescription.setAttribute("content", "Learn SEO, social media and paid ads by running real campaigns. Online course with certificate.");
     }
   }, []);
 
