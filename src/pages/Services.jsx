@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer, float } from '../utils/motion';
 import { BookOpen, Compass, Users, Award, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import servicesHeroImg from '../assets/Gemini_Generated_Image_2ly66v2ly66v2ly6.webp';
-import collegePartnershipImg from '../assets/steptodown.com436606 (1).webp';
+import collegePartnershipImg from '../assets/institutional_training.webp';
 import { useEffect } from 'react';
 
 const services = [
@@ -253,14 +253,14 @@ const Services = () => {
                         </div>
                     </div>
 
-                    {/* Right: Illustration */}
+                    {/* Right: Realistic Institutional Training Visual */}
                     <div className="flex justify-center lg:justify-end">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-blue-100/50 rounded-3xl -rotate-2 transform"></div>
+                        <div className="relative w-full max-w-[540px]">
+                            <div className="absolute inset-0 bg-blue-100/60 rounded-3xl -rotate-2 transform"></div>
                             <img
                                 src={collegePartnershipImg}
-                                alt="Institutional partnerships with Aindhin"
-                                className="relative z-10 w-full max-w-[500px] rounded-2xl object-contain drop-shadow-xl"
+                                alt="Institutional partnerships with Aindhin - modern workshop and computer lab training"
+                                className="relative z-10 w-full h-[320px] sm:h-[360px] md:h-[380px] rounded-2xl object-cover shadow-2xl border-4 border-white"
                             />
                         </div>
                     </div>

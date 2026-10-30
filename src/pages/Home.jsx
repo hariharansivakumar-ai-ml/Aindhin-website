@@ -12,7 +12,7 @@ import blogIdeasImg from '../assets/blog_ideas.webp';
 import blogSkillsImg from '../assets/blog_skills.webp';
 import blogTechImg from '../assets/blog_tech.webp';
 import aboutShapeImg from '../assets/about_shape.webp';
-import imageAnimeImg from '../assets/image_anime.webp';
+import studentLearningImg from '../assets/student_learning_hero.webp';
 import shape3Img from '../assets/shape_3.webp';
 import mobilePicImg from '../assets/mobile pic.webp';
 
@@ -114,46 +114,40 @@ const Home = () => {
                         </div>
 
                         <div className="relative z-10 flex justify-center">
-                            <img
-                                src={imageAnimeImg}
-                                alt="Students learning on online courses platform in India"
-                                className="w-full max-w-[350px] h-auto drop-shadow-2xl relative z-20"
-                            />
-                            <motion.div
-                                animate={{ y: [0, -15, 0] }}
-                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute top-0 right-10 z-30"
-                            >
-                                <div className="w-14 h-14 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg flex items-center justify-center rotate-12">
-                                    <span className="text-3xl">🚀</span>
-                                </div>
-                            </motion.div>
-                            <motion.div
-                                animate={{ scale: [1, 1.1, 1] }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute top-[40%] left-[-20px] z-30"
-                            >
-                                <div className="w-12 h-12 bg-[#4D94FF] rounded-full shadow-lg flex items-center justify-center transform -rotate-12 border-2 border-white">
-                                    <span className="text-xl text-white">👍</span>
-                                </div>
-                            </motion.div>
-                            <motion.div
-                                animate={{ y: [0, 8, 0] }}
-                                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute bottom-20 left-0 z-30"
-                            >
-                                <div className="w-14 h-14 bg-[#FF4D4D] rounded-full shadow-xl flex items-center justify-center text-white text-2xl border-4 border-white">
-                                    ❤️
-                                </div>
-                            </motion.div>
-                            <motion.div
-                                animate={{ rotate: [0, 10, -10, 0] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute bottom-10 right-10 z-30"
-                            >
-                                <div className="text-4xl drop-shadow-md text-[#FFD700]">⚡</div>
-                            </motion.div>
-                            <div className="absolute top-20 left-[-40px] w-10 h-10 bg-blue-100 rounded-lg -z-10 rotate-45 opacity-60"></div>
+                            <div className="relative w-full max-w-[500px]">
+                                <div className="absolute inset-0 bg-gradient-to-tr from-blue-100 to-indigo-50 rounded-3xl rotate-2 transform -z-10"></div>
+                                <img
+                                    src={studentLearningImg}
+                                    alt="Student studying on online courses platform in India"
+                                    className="w-full h-[320px] sm:h-[380px] md:h-[400px] object-cover rounded-2xl shadow-2xl border-4 border-white relative z-10"
+                                />
+                                
+                                {/* Floating Trust / Project Badge */}
+                                <motion.div
+                                    animate={{ y: [0, -10, 0] }}
+                                    transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                                    className="absolute -bottom-6 -left-4 sm:left-4 z-20 bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl border border-blue-50 flex items-center gap-3"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center font-bold text-lg">
+                                        🚀
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] font-medium text-gray-500 font-inter">Industry Curriculum</p>
+                                        <p className="text-xs sm:text-sm font-bold text-secondary font-poppins">Hands-On Projects</p>
+                                    </div>
+                                </motion.div>
+
+                                <motion.div
+                                    animate={{ y: [0, 8, 0] }}
+                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                                    className="absolute -top-4 -right-3 sm:right-4 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-xl border border-blue-50 flex items-center gap-2.5"
+                                >
+                                    <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">
+                                        ✓
+                                    </div>
+                                    <p className="text-xs font-bold text-secondary font-poppins">Job-Ready Skills</p>
+                                </motion.div>
+                            </div>
                         </div>
                         <div className="absolute bottom-0 right-0 -z-10 translate-x-10 translate-y-10">
                             <img src={shape3Img} alt="" className="w-24 opacity-30 rotate-180" />
